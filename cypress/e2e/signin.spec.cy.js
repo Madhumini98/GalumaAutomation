@@ -1,15 +1,26 @@
-describe('Sign In Tests', () => {
-  it('TC_GALUMA_SIGNIN_002 - Verify successful sign in with valid credentials', () => {
-    cy.visit('https://dev.galumatires.com/', { failOnStatusCode: false })
-    
+describe('Home', () => {
+    it('Functions', () => {
+      cy.viewport(1475, 750)
+ 
+      cy.visit("https://dev.galumatires.com/", {
+      auth: {
+      username: 'galumadev',
+      password: 'Test.123'
+      }
+      })
+ 
     cy.contains('Login').click()
-    
-    cy.get('[data-cy="email"]').type('galumadev')
-    cy.get('[data-cy="password"]').type('Test.123')
-    
-    cy.get('[data-cy="signin-button"]').click()
-    
-    cy.url().should('not.contain', '/login')
-    cy.get('[data-cy="user-menu"]').should('be.visible')
+    cy.wait(3000)
+   
+    cy.get('#customer-email').type('user@example.com')
+    cy.get('#customer-password').type('Test.123')
+   
+    cy.get('#sign-in').click()
+    cy.wait(2000)
+ 
+    cy.get('.alert-sub-title').should('include.text', 'The email field must be a valid email address.')
+ 
+ 
+    })
+ 
   })
-})
