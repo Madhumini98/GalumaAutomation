@@ -1,6 +1,6 @@
 describe('Galuma Sign-in Tests', () => {
   beforeEach(() => {
-    // Common setup for both test cases
+    // Common setup for all test cases
     cy.viewport(1475, 750)
     cy.visit("https://dev.galumatires.com/", {
       auth: {
