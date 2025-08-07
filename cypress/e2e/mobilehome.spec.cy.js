@@ -142,7 +142,6 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(2000)
     })
 
-
     it('TC_GALUMA_SERVICEICONS_MOBILE_005 - Verify service icons navigate to correct details pages', () => {
         // Test Tires icon
         cy.get('#zoomableImg1').should('be.visible').click()
