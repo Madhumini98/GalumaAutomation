@@ -1,7 +1,7 @@
 describe('Galuma Mobile Home Page Tests', () => {
     beforeEach(() => {
         // Common setup for all test cases
-        cy.viewport(360, 480)
+        cy.viewport(360, 640)
         cy.visit("https://dev.galumatires.com/", {
             auth: {
                 username: 'galumadev',
@@ -24,6 +24,124 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.url().should('include', 'pirelli')
         cy.get('body').should('contain', 'Pirelli')
     })
+
+
+    it('TC_SHOPTIRESBYSIZE_MOBILE_003 - Shop Tires by Size on Mobile Version', () => {
+        // Test How to read your tire size functionality
+        // Navigate to "Search by Size" section again
+        cy.get('[data-id="size"]').click()
+        cy.wait(2000)
+
+        // Verify "Find out here!" popup visibility
+        cy.get('.findout_popup').should('be.visible')
+
+        // Click on "Find out here!" button
+        cy.get('#open-mobile-findout-popup').click()
+
+        // Verify the popup tab appears
+        cy.get('.popup-home-mobile > .popup-content > :nth-child(2) > em').should('be.visible')
+
+        // Click on "click here to learn more" text
+        cy.get('.popup-home-mobile > .popup-content > #learn_more').click()
+
+        // Wait for navigation to read-my-tires page
+        cy.wait(2000)
+
+        // Verify navigation to read-my-tires page
+        cy.url().should('include', '/read-my-tires')
+
+        // Verify the page content
+        cy.get('body').should('be.visible')
+
+        // Navigate back to home page
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+
+        // Navigate to "Shop Tires by Size" section
+        cy.get('[data-id="size"]').click()
+        cy.wait(2000)
+
+        // Verify we're in the search by size tab (this will wait for the popup content to be visible)
+        cy.get('#by-size-popup-home > :nth-child(2) > .heading > .active').should('be.visible')
+
+        // Click width button to open dropdown and select "225"
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(1) > .form-group > .form-control-popup > #tire-width-value-read-tires').click()
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(1) > .form-group > .form-control-popup > .card-width-select-popup > :nth-child(1) > [data-value="225"] > .red_h').click()
+
+        // Verify width selection is reflected
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(1) > .form-group > .form-control-popup > #tire-width-value-read-tires').should('contain', '225')
+
+        // Click ratio button to open dropdown and select "35"
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(2) > .form-group > .form-control-popup > #tire-ratio-value-read-tires').click()
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(2) > .form-group > .form-control-popup > .card-ratio-select-popup > :nth-child(1) > [data-value="35"] > .red_h').click()
+
+        // Verify ratio selection is reflected
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(2) > .form-group > .form-control-popup > #tire-ratio-value-read-tires').should('contain', '35')
+
+        // Click diameter button to open dropdown and select "20"
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(3) > .form-group > .form-control-popup > #tire-diameter-value-read-tires').click()
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(3) > .form-group > .form-control-popup > .card-diameter-select-popup > :nth-child(1) > [data-value="20"] > .red_h').click()
+
+        // Verify diameter selection is reflected
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(3) > .form-group > .form-control-popup > #tire-diameter-value-read-tires').should('contain', '20')
+
+        // Click "Search Tires" button
+        cy.get('#top-search-by-size-btn').click()
+
+        // Wait for results to load
+        cy.wait(3000)
+
+        // Verify results are displayed (search results page loaded)
+        cy.get('.rec-size-con').should('be.visible')
+
+        // Verify search results contain tire products
+        cy.get('body').should('contain', 'tire')
+
+        // Navigate back to home page
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        // Navigate to "Search by Size" section again
+        cy.get('[data-id="size"]').click()
+        cy.wait(2000)
+
+        // Click search by brand tab
+        cy.get('#by-size-popup-home > :nth-child(2) > .heading > .active').click()
+
+        // Verify we're in the search by brand tab (this will wait for the popup content to be visible)
+        cy.get('#by-size-popup-home > :nth-child(2) > .heading > .active').should('be.visible')
+
+        // Brands are visible and click a brand - Continental
+        cy.get('#brand-container-mobile-popup > :nth-child(3) > :nth-child(1) > a > img').click()
+
+        // Wait for Continental brand products page to load
+        cy.wait(3000)
+
+        // Verify navigation to Continental brand page
+        cy.url().should('include', '/t/b/continental')
+
+        // Verify Continental brand products are displayed
+        cy.get('body').should('contain', 'Continental')
+
+        // Navigate back to home page
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+    })
+
 
     it('TC_GALUMA_SERVICEICONS_MOBILE_005 - Verify service icons navigate to correct details pages', () => {
         // Test Tires icon

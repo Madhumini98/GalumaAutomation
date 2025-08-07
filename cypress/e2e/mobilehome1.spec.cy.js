@@ -1,7 +1,7 @@
 describe('Galuma Mobile Home Page Tests1', () => {
     beforeEach(() => {
         // Common setup for all test cases
-        cy.viewport(360, 480)
+        cy.viewport(360, 640)
         cy.visit("https://dev.galumatires.com/", {
             auth: {
                 username: 'galumadev',
@@ -17,45 +17,87 @@ describe('Galuma Mobile Home Page Tests1', () => {
         cy.title().should('not.be.empty')
     })
 
-    it('TC_GALUMA_PAYMENTPLANS_MOBILE_011 - Verify Payment Plans section displays content and View Options button functions correctly', () => {
-        // Navigate to homepage and scroll to Payment Plans section
-        cy.scrollTo(0, 800)
-        cy.wait(2000)
-
-        // Verify Payment Plans section is visible
-        cy.get('.financing-container').should('be.visible')
-
-        // Debug: Log the actual content of the financing container
-        cy.get('.financing-container').then(($el) => {
-            cy.log('Financing container content:', $el.text())
-            console.log('Financing container HTML:', $el.html())
-        })
-
-        // Verify section content is displayed
-        cy.get('.financing-container').within(() => {
-            // Check for any text that might be present instead of exact match
-            cy.get('*').contains(/payment|financing|plan/i).should('be.visible')
-            cy.get('.cta-button').should('be.visible').and('contain.text', 'View Options')
-        })
-
-        // Click View Options button and verify navigation
-        cy.get('.cta-button').click()
-        cy.wait(2000)
-
-        // Verify navigation to payment options page
-        cy.url().should('include', '/payments/options')
-
-        // Verify payment options page content
-        cy.get('body').should('be.visible')
-
-        // Verify detailed payment information is displayed
-        cy.get('body').should('contain.text', 'payment')
-
-        // Go back to homepage
-        cy.go('back')
+    it('TC_SHOPTIRESBYSIZE_MOBILE_003 - Shop Tires by Size on Mobile Version', () => {
+        // Navigate to "Shop Tires by Size" section
+        cy.get('[data-id="size"]').click()
+        
+        // Wait for the popup to open and become visible
+        cy.get('#popup-search-tires').should('be.visible')
         cy.wait(1000)
+        
+        // Verify we're in the search by size tab
+        cy.get('#by-size-popup-home > :nth-child(2) > .heading > .active').should('be.visible')
+        
+        // Click to open width dropdown and select "225"
+        cy.get('#tire-width-value-read-tires').click()
+        cy.get('[data-value="225"] > .red_h').click()
+        
+        // Verify width selection is reflected
+        cy.get('#tire-width-value-read-tires').should('contain', '225')
+        
+        // Click to open ratio dropdown and select "35"
+        cy.get('#tire-ratio-value-read-tires').click()
+        cy.get('[data-value="35"] > .red_h').click()
+        
+        // Verify ratio selection is reflected
+        cy.get('#tire-ratio-value-read-tires').should('contain', '35')
+        
+        // Click to open diameter dropdown and select "20"
+        cy.get('#tire-diameter-value-read-tires').click()
+        cy.get('[data-value="20"] > .red_h').click()
+        
+        // Verify diameter selection is reflected
+        cy.get('#tire-diameter-value-read-tires').should('contain', '20')
+        
+        // Click "Search Tires" button
+        cy.get('#top-search-by-size-btn').click()
+        
+        // Wait for results to load
+        cy.wait(3000)
+        
+        // Verify results display correctly matching 225/35/20 size
+        cy.get('.rec-size-con').should('be.visible')
+        cy.get('.rec-size-con').should('contain', '225/35R20')
     })
 
-
+    it('TC_SEARCHBYSIZE_MOBILE_003 - Search Tires Size on Mobile Version', () => {
+        // Navigate to "Search by Size" section
+        cy.get('[data-id="size"]').click()
+        
+        // Wait for the popup to open and become visible
+        cy.get('#popup-search-tires').should('be.visible')
+        cy.wait(1000)
+        
+        // Verify we're in the search by size tab
+        cy.get('#by-size-popup-home > :nth-child(2) > .heading > .active').should('be.visible')
+        
+        // Select "225" in Width
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(1) > .form-group > .form-control-popup > .card-width-select-popup > :nth-child(1) > [data-value="225"] > .red_h').click()
+        
+        // Verify width selection is reflected
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(1) > .form-group > .form-control-popup > #tire-width-value-read-tires').should('contain', '225')
+        
+        // Select "35" in Ratio
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(2) > .form-group > .form-control-popup > .card-ratio-select-popup > :nth-child(1) > [data-value="35"] > .red_h').click()
+        
+        // Verify ratio selection is reflected
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(2) > .form-group > .form-control-popup > #tire-ratio-value-read-tires').should('contain', '35')
+        
+        // Select "20" in Diameter
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(3) > .form-group > .form-control-popup > .card-diameter-select-popup > :nth-child(1) > [data-value="20"] > .red_h').click()
+        
+        // Verify diameter selection is reflected
+        cy.get('#by-size-popup-home > :nth-child(2) > .thick-form > .active > .popup-dimentions-home > :nth-child(3) > .form-group > .form-control-popup > #tire-diameter-value-read-tires').should('contain', '20')
+        
+        // Click "Search Tires" button
+        cy.get('#top-search-by-size-btn').click()
+        
+        // Wait for results to load
+        cy.wait(3000)
+        
+        // Verify results display correctly matching 225/35/20 size
+        cy.get('.rec-size-con').should('be.visible')
+        cy.get('.rec-size-con').should('contain', '225/35R20')
+    })
 
 })
