@@ -441,40 +441,40 @@ describe('Galuma Mobile Home Page Tests', () => {
         // Scroll to the "Pick Up your order & save!" section
         cy.get('.pick_order_mobile').scrollIntoView()
         cy.wait(2000)
-        
+
         // Verify the Pick Up your order section is visible
         cy.get('.pick_order_mobile').should('be.visible')
-        
+
         // Verify the section contains meaningful content
         cy.get('.pick_order_mobile').within(() => {
             // Check for pickup related text
             cy.get('*').should('contain.text', 'Pick')
         })
-        
+
         // Scroll to the "How it works?" section
         cy.get('.pick_order_mobile > .flex-column').scrollIntoView()
         cy.wait(1000)
-        
+
         // Verify the "How it works?" section is visible
         cy.get('.pick_order_mobile > .flex-column').should('be.visible')
-        
+
         // Verify the section displays clear steps (check for step indicators or content)
         cy.get('.pick_order_mobile > .flex-column').within(() => {
             // Look for step-related content or structure
             cy.get('*').should('be.visible')
         })
-        
+
         // Tap the "Find More" button
         cy.get('.pick_order_mobile > .find_more_btn > #findMore-btn').should('be.visible').click()
         cy.wait(2000)
-        
+
         // Confirm navigation to the "Pick Up your tires" page
         cy.url().should('include', '/pick-up')
-        
+
         // Verify the page content is visible and contains pickup information
         cy.get('body').should('be.visible')
         cy.get('body').should('contain.text', 'pick')
-        
+
         // Go back to homepage
         cy.go('back')
     })
@@ -483,53 +483,53 @@ describe('Galuma Mobile Home Page Tests', () => {
         // Locate the "Help & advice" section
         cy.get('.help_desk.mobile').scrollIntoView()
         cy.wait(2000)
-        
+
         // Verify the Help & advice section is visible
         cy.get('.help_desk.mobile').should('be.visible')
-        
+
         // Verify the section contains required elements
         cy.get('.help_desk.mobile').within(() => {
             // Verify advisor image is present
             cy.get('img').should('be.visible')
-            
+
             // Verify the section contains contact-related information
             cy.get('*').should('be.visible')
-            
+
             // Verify "Click to Contact" button is visible
             cy.get('.content-mobile > .btn').should('be.visible').and('contain.text', 'Click to contact')
         })
-        
+
         // Tap the "Click to Contact" button
         cy.get('.content-mobile > .btn').click()
         cy.wait(2000)
-        
+
         // Confirm navigation to the "How to contact us" page
         cy.url().should('include', '/contact-us')
-        
+
         // Verify the contact page content is visible
         cy.get('body').should('be.visible')
         cy.get('body').should('contain.text', 'contact')
-        
+
         // Go back to homepage
         cy.go('back')
     })
 
-    it.only('TC_GALUMA_FOOTER_LINKS_MOBILE_017 - Ensure all footer links redirect to correct respective pages', () => {
+    it('TC_GALUMA_FOOTER_LINKS_MOBILE_017 - Ensure all footer links redirect to correct respective pages', () => {
         // Scroll to the bottom of the page
         cy.get('.bottom-section').scrollIntoView()
         cy.wait(2000)
-        
+
         // Verify the bottom section is visible
         cy.get('.bottom-section').should('be.visible')
-        
+
         // Test "My Account" link
         cy.get('.pre_foot_container > :nth-child(1) > a').should('be.visible').click()
         cy.wait(2000)
-        
+
         // Verify it redirects to the account page
         cy.url().should('include', '/sign-in')
         cy.get('body').should('be.visible')
-        
+
         // Go back to homepage
         cy.visit("https://dev.galumatires.com/", {
             auth: {
@@ -538,16 +538,16 @@ describe('Galuma Mobile Home Page Tests', () => {
             }
         })
         cy.wait(2000)
-        
+
         // Scroll to footer again and test "Track my order" link
         cy.get('.bottom-section').scrollIntoView()
         cy.get('.pre_foot_container > :nth-child(3) > a').should('be.visible').click()
         cy.wait(2000)
-        
+
         // Verify the tracking page loads
         cy.url().should('include', '/track-my-order')
         cy.get('body').should('be.visible')
-        
+
         // Go back to homepage
         cy.visit("https://dev.galumatires.com/", {
             auth: {
@@ -556,16 +556,16 @@ describe('Galuma Mobile Home Page Tests', () => {
             }
         })
         cy.wait(2000)
-        
+
         // Scroll to footer again and test "Contact Us" link
         cy.get('.bottom-section').scrollIntoView()
         cy.get('.pre_foot_container > :nth-child(5) > a').should('be.visible').click()
         cy.wait(2000)
-        
+
         // Verify the Contact page loads
         cy.url().should('include', '/contact-us')
         cy.get('body').should('be.visible')
-        
+
         // Go back to homepage
         cy.visit("https://dev.galumatires.com/", {
             auth: {
@@ -574,16 +574,80 @@ describe('Galuma Mobile Home Page Tests', () => {
             }
         })
         cy.wait(2000)
-        
+
         // Scroll to footer again and test "Help Center" link
         cy.get('.bottom-section').scrollIntoView()
         cy.get('.pre_foot_container > :nth-child(7) > a').should('be.visible').click()
         cy.wait(2000)
-        
+
         // Verify the Help Center page loads
         cy.url().should('include', '/help-n-advice')
         cy.get('body').should('be.visible')
+
+        // Go back to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(1000)
+    })
+
+    it.only('TC_GALUMA_FOOTER_LINKS_MOBILE_018 - Ensure all footer policy links redirect to correct respective pages', () => {
+        // Scroll to footer section
+        cy.get('.bottom-section').scrollIntoView()
+        cy.wait(2000)
+
+        // Verify the bottom section is visible
+        cy.get('.bottom-section').should('be.visible')
+
+        // Test "Terms & Conditions" button
+        cy.get('.bottom_section > :nth-child(1) > a').should('be.visible').click()
+        cy.wait(2000)
+
+        // Verify it redirects to the Terms & Conditions page
+        cy.url().should('include', '/sales-terms-and-condition')
+        cy.get('body').should('be.visible')
+
+        // Go back to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        /*
+        // Scroll to footer again and test "Cookie Policy" button
+        cy.get('.bottom-section').scrollIntoView()
+        cy.get('.bottom_section > :nth-child(2) > a').should('be.visible').click()
+        cy.wait(2000)
         
+        // Verify it redirects to homepage (as specified)
+        cy.url().should('include', 'galumatires.com')
+        cy.get('body').should('be.visible')
+        
+        // Navigate back to homepage if needed
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+        */
+
+        // Scroll to footer again and test "Privacy Policy" button
+        cy.get('.bottom-section').scrollIntoView()
+        cy.get('.bottom_section > :nth-child(3) > a').should('be.visible').click()
+        cy.wait(2000)
+
+        // Verify it redirects to the Privacy Policy page
+        cy.url().should('include', '/privacy-policy')
+        cy.get('body').should('be.visible')
+
         // Go back to homepage
         cy.visit("https://dev.galumatires.com/", {
             auth: {
