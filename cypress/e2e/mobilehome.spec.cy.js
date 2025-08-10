@@ -594,7 +594,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(1000)
     })
 
-    it.only('TC_GALUMA_FOOTER_LINKS_MOBILE_018 - Ensure all footer policy links redirect to correct respective pages', () => {
+    it('TC_GALUMA_FOOTER_LINKS_MOBILE_018 - Ensure all footer policy links redirect to correct respective pages', () => {
         // Scroll to footer section
         cy.get('.bottom-section').scrollIntoView()
         cy.wait(2000)
@@ -657,5 +657,103 @@ describe('Galuma Mobile Home Page Tests', () => {
         })
         cy.wait(1000)
     })
+
+    /*
+    it('TC_GALUMA_SOCIAL_LINKS_MOBILE_019 - Ensure all social media icons open respective Galuma social media pages in new tabs', () => {
+        // Scroll to the bottom of the page
+        cy.get('.bottom-section').scrollIntoView()
+        cy.wait(2000)
+
+        // Verify the bottom section is visible
+        cy.get('.bottom-section').should('be.visible')
+
+        // Test Facebook icon - get href and visit directly
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(1) > a > .img-fluid').should('be.visible')
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(1) > a').should('have.attr', 'href').then((href) => {
+            // Visit Facebook page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
+
+            // Verify we're on Facebook
+            cy.url().should('include', 'facebook.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(2000)
+        })
+
+        // Test Instagram icon - get href and visit directly
+        cy.get('.bottom-section').scrollIntoView()
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(2) > a > .img-fluid').should('be.visible')
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(2) > a').should('have.attr', 'href').then((href) => {
+            // Visit Instagram page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
+
+            // Verify we're on Instagram
+            cy.url().should('include', 'instagram.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(2000)
+        })
+
+        // Test YouTube icon - get href and visit directly
+        cy.get('.bottom-section').scrollIntoView()
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(3) > a > .img-fluid').should('be.visible')
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(3) > a').should('have.attr', 'href').then((href) => {
+            // Visit YouTube page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
+
+            // Verify we're on YouTube
+            cy.url().should('include', 'youtube.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(2000)
+        })
+
+        // Test TikTok icon - get href and visit directly
+        cy.get('.bottom-section').scrollIntoView()
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(4) > a > .img-fluid').should('be.visible')
+        cy.get('.mid_footer > :nth-child(2) > .social-icon > .list-unstyled > :nth-child(4) > a').should('have.attr', 'href').then((href) => {
+            // Visit TikTok page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
+
+            // Verify we're on TikTok
+            cy.url().should('include', 'tiktok.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(1000)
+        })
+    })
+    */
 
 })
