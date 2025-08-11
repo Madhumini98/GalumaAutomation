@@ -15,6 +15,9 @@ This is a **Cypress test automation project** for end-to-end testing of the Galu
 ## Common Commands
 
 ```bash
+# Install dependencies
+npm install
+
 # Open Cypress Test Runner (interactive GUI)
 npx cypress open
 
@@ -27,8 +30,11 @@ npx cypress run --spec "cypress/e2e/signin.spec.cy.js"
 # Run tests with specific browser
 npx cypress run --browser chrome
 
-# Install dependencies
-npm install
+# Run tests with custom viewport (desktop mode)
+npx cypress run --config viewportWidth=1475,viewportHeight=750
+
+# Run only tests marked with .only
+npx cypress run --spec "cypress/e2e/mobilehome1.spec.cy.js"
 ```
 
 ## Architecture and Structure
@@ -37,7 +43,10 @@ npm install
 - **Test files**: Located in `cypress/e2e/` with `.spec.cy.js` extension
 - **Test naming convention**: `TC_GALUMA_[FEATURE]_[MOBILE]_[NUMBER]` format
   - Examples: `TC_GALUMA_SIGNIN_002`, `TC_GALUMA_SEARCHHEADER_MOBILE_002`
-- **Mobile testing**: Tests use `cy.viewport(360, 640)` for mobile simulation
+- **Viewport settings**: 
+  - Mobile tests: `cy.viewport(360, 640)`
+  - Desktop tests: `cy.viewport(1475, 750)` (used in signin.spec.cy.js)
+- **Test focus**: Use `it.only()` to run single tests during development
 
 ### Configuration Details
 The `cypress.config.js` includes optimized timeouts for the Galuma application:
@@ -66,9 +75,14 @@ describe('Feature Tests', () => {
 ```
 
 ### Element Selection Strategy
-- Primary: CSS selectors targeting specific elements (`.navbar_line_1`, `[data-id="size"]`)
-- Secondary: Attribute selectors (`input[type="text"]:visible`)
-- Fallback: Text content matching (`cy.contains('text')`)
+- **Primary**: CSS selectors targeting specific elements (`.navbar_line_1`, `[data-id="size"]`)
+- **Secondary**: Attribute selectors (`input[type="text"]:visible`)
+- **Fallback**: Text content matching (`cy.contains('text')`)
+- **Complex selectors**: Multi-level CSS selectors for dropdown interactions:
+  ```javascript
+  // Example from searchbutton.spec.cy.js
+  cy.get('#brand-container-mobile-popup > :nth-child(3) > :nth-child(1) > a > img')
+  ```
 
 ## Current Test Coverage
 
@@ -85,7 +99,28 @@ describe('Feature Tests', () => {
 - **Mobile Responsiveness**: All tests designed for mobile viewport (360x640)
 
 ### Common Test Patterns
-- Authentication handled in `beforeEach()` with HTTP Basic Auth
-- Mobile viewport simulation for all tests
-- 3-second stabilization wait after page loads
-- URL validation and content verification after navigation actions
+- **Authentication**: Handled in `beforeEach()` with HTTP Basic Auth
+- **Viewport simulation**: Mobile (`360x640`) or Desktop (`1475x750`) depending on test suite
+- **Stabilization waits**: Standard 3-second wait after page loads (`cy.wait(3000)`)
+- **Navigation verification**: URL validation and content verification after actions
+- **Element interactions**: Comprehensive `.should('be.visible')` checks before clicking
+- **Dropdown handling**: Multi-step process with waits between opening and selecting options
+- **Error handling**: Tests include negative cases with invalid credentials and empty fields
+
+## Development Notes
+
+### Known Issues and Workarounds
+- Some elements require `{ force: true }` option for clicking due to overlays
+- Certain icons/links are commented out in tests due to functionality issues
+- Social media tests are commented out but preserved for future implementation
+
+### Test Data Management
+- Valid test credentials: `madhumini@longwapps.com` / `Test.123`
+- Invalid test scenarios use variations of the valid credentials
+- Brand testing uses comprehensive brand arrays with selectors and expected URLs
+
+### Test Execution Best Practices
+- Use `.only()` during development to focus on specific tests
+- Remove `.only()` before committing to ensure full test suite runs
+- Monitor browser console for JavaScript errors during test development
+- Screenshots are automatically captured in `cypress/screenshots/` for failed tests
