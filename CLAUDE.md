@@ -8,7 +8,7 @@ This is a **Cypress test automation project** for end-to-end testing of the Galu
 
 ## Technology Stack
 
-- **Testing Framework**: Cypress v14.5.3
+- **Testing Framework**: Cypress v14.5.4
 - **Target Application**: Galuma Tires web application
 - **Authentication**: HTTP Basic Auth required for dev environment (username: `galumadev`, password: `Test.123`)
 
@@ -18,51 +18,74 @@ This is a **Cypress test automation project** for end-to-end testing of the Galu
 # Open Cypress Test Runner (interactive GUI)
 npx cypress open
 
-# Run tests in headless mode
+# Run all tests in headless mode
 npx cypress run
 
-# Install Cypress
-npm install --save-dev cypress
+# Run a specific test file
+npx cypress run --spec "cypress/e2e/signin.spec.cy.js"
+
+# Run tests with specific browser
+npx cypress run --browser chrome
+
+# Install dependencies
+npm install
 ```
 
 ## Architecture and Structure
 
 ### Test Organization
 - **Test files**: Located in `cypress/e2e/` with `.spec.cy.js` extension
-- **Test naming**: Follow format `TC_GALUMA_[FEATURE]_[NUMBER]` (e.g. `TC_GALUMA_SIGNIN_002`)
-- **Element selection**: Use `data-cy` attributes for reliable element targeting
+- **Test naming convention**: `TC_GALUMA_[FEATURE]_[MOBILE]_[NUMBER]` format
+  - Examples: `TC_GALUMA_SIGNIN_002`, `TC_GALUMA_SEARCHHEADER_MOBILE_002`
+- **Mobile testing**: Tests use `cy.viewport(360, 640)` for mobile simulation
 
-### Key Files
-- `cypress/e2e/signin.spec.cy.js` - Sign-in functionality tests
-- `cypress/support/commands.js` - Custom Cypress commands (currently empty)
-- `cypress/fixtures/` - Test data files
+### Configuration Details
+The `cypress.config.js` includes optimized timeouts for the Galuma application:
+- Default command timeout: 15 seconds
+- Page load timeout: 60 seconds  
+- Retry configuration: 2 retries in run mode, 0 in open mode
 
-## Development Patterns
-
-### Test Structure
+### Test Structure Pattern
 ```javascript
 describe('Feature Tests', () => {
-  it('TC_GALUMA_[FEATURE]_[NUMBER] - Description', () => {
-    cy.visit('https://dev.galumatires.com/', { failOnStatusCode: false })
-    // Test steps...
-  })
+    beforeEach(() => {
+        cy.viewport(360, 640) // Mobile viewport for mobile tests
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000) // Standard wait for page stabilization
+    })
+    
+    it('TC_GALUMA_[FEATURE]_[NUMBER] - Description', () => {
+        // Test implementation
+    })
 })
 ```
 
-### Element Selection
-- Use `data-cy` attributes: `cy.get('[data-cy="element-name"]')`
-- Fallback to text content: `cy.contains('Login')`
-
-### Authentication Handling
-- The dev environment requires HTTP Basic Auth
-- Use `{ failOnStatusCode: false }` option with `cy.visit()` to handle 401 responses
-- Application login uses different credentials than HTTP auth
-
-## Test Data
-- HTTP Auth: `galumadev` / `Test.123`
-- Application credentials are specified per test case
-- Consider using fixtures for larger datasets
+### Element Selection Strategy
+- Primary: CSS selectors targeting specific elements (`.navbar_line_1`, `[data-id="size"]`)
+- Secondary: Attribute selectors (`input[type="text"]:visible`)
+- Fallback: Text content matching (`cy.contains('text')`)
 
 ## Current Test Coverage
-- Sign-in functionality (TC_GALUMA_SIGNIN_002)
-- Tests validate successful authentication with valid credentials
+
+### Test Files Overview
+- `signin.spec.cy.js` - User authentication flows
+- `mobilehome.spec.cy.js` - Mobile homepage functionality and navigation
+- `mobilehome1.spec.cy.js` - Additional mobile homepage tests
+- `searchbutton.spec.cy.js` - Search functionality testing
+
+### Key Test Scenarios
+- **Homepage Navigation**: Basic page load and visibility verification
+- **Search Functionality**: Search box interaction and result validation
+- **Tire Shopping**: Size-based tire search and brand selection
+- **Mobile Responsiveness**: All tests designed for mobile viewport (360x640)
+
+### Common Test Patterns
+- Authentication handled in `beforeEach()` with HTTP Basic Auth
+- Mobile viewport simulation for all tests
+- 3-second stabilization wait after page loads
+- URL validation and content verification after navigation actions
