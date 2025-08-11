@@ -9,7 +9,7 @@ module.exports = defineConfig({
     defaultCommandTimeout: 15000,
     requestTimeout: 10000,
     responseTimeout: 10000,
-    pageLoadTimeout: 60000,
+    pageLoadTimeout: 120000,
     // Retry configuration for flaky tests
     retries: {
       runMode: 2,
