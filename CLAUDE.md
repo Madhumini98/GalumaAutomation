@@ -35,7 +35,15 @@ npx cypress run --config viewportWidth=1475,viewportHeight=750
 
 # Run only tests marked with .only
 npx cypress run --spec "cypress/e2e/mobilehome1.spec.cy.js"
+
+# Clean up test artifacts (screenshots, videos)
+rm -rf cypress/screenshots cypress/videos
 ```
+
+### Important Notes
+- **No npm scripts defined**: All Cypress commands must use `npx cypress` directly
+- **Authentication required**: All tests require HTTP Basic Auth for dev environment
+- **Screenshots**: Failed tests automatically generate screenshots in `cypress/screenshots/`
 
 ## Architecture and Structure
 
@@ -51,7 +59,8 @@ npx cypress run --spec "cypress/e2e/mobilehome1.spec.cy.js"
 ### Configuration Details
 The `cypress.config.js` includes optimized timeouts for the Galuma application:
 - Default command timeout: 15 seconds
-- Page load timeout: 60 seconds  
+- Request/Response timeout: 10 seconds
+- Page load timeout: 120 seconds (2 minutes)
 - Retry configuration: 2 retries in run mode, 0 in open mode
 
 ### Test Structure Pattern
@@ -87,16 +96,22 @@ describe('Feature Tests', () => {
 ## Current Test Coverage
 
 ### Test Files Overview
-- `signin.spec.cy.js` - User authentication flows
-- `mobilehome.spec.cy.js` - Mobile homepage functionality and navigation
-- `mobilehome1.spec.cy.js` - Additional mobile homepage tests
-- `searchbutton.spec.cy.js` - Search functionality testing
+- `signin.spec.cy.js` - User authentication flows (17 test cases) - Desktop viewport (1475x750)
+- `mobilehome.spec.cy.js` - Mobile homepage functionality and navigation (19 test cases)
+- `mobilehome1.spec.cy.js` - Additional mobile homepage tests (3 test cases) - includes brand selection testing
+- `searchbutton.spec.cy.js` - Search functionality testing (14+ test cases) - includes comprehensive product ID search tests
 
 ### Key Test Scenarios
-- **Homepage Navigation**: Basic page load and visibility verification
-- **Search Functionality**: Search box interaction and result validation
-- **Tire Shopping**: Size-based tire search and brand selection
-- **Mobile Responsiveness**: All tests designed for mobile viewport (360x640)
+- **Authentication Flows**: Valid/invalid credentials, empty field validation, error message verification
+- **Homepage Navigation**: Page load verification, element visibility, responsive design validation
+- **Search Functionality**: Text search, size-based search, brand selection, product ID search
+- **Tire Shopping**: Multi-step dropdown interactions, brand-to-URL mapping, size filtering
+- **Mobile Responsiveness**: Most tests use mobile viewport (360x640), signin uses desktop (1475x750)
+
+### Recent Test Additions
+- **Product ID Search Tests**: TC_GALUMA_SEARCHBUTTON_MOBILE_011-014 covering comprehensive product search scenarios
+- **Brand and Model Search**: TC_GALUMA_SEARCHBUTTON_MOBILE_006 with enhanced brand-model dependency testing
+- **Form Field Dependencies**: TC_GALUMA_SEARCHBUTTON_MOBILE_004 for width selection clearing subsequent fields
 
 ### Common Test Patterns
 - **Authentication**: Handled in `beforeEach()` with HTTP Basic Auth
@@ -124,3 +139,22 @@ describe('Feature Tests', () => {
 - Remove `.only()` before committing to ensure full test suite runs
 - Monitor browser console for JavaScript errors during test development
 - Screenshots are automatically captured in `cypress/screenshots/` for failed tests
+
+### Dropdown Interaction Architecture
+Complex multi-step dropdown handling pattern used throughout tests:
+1. Click dropdown trigger element
+2. Wait for dropdown to open (`cy.wait(1000)`)
+3. Select option using specific hierarchical selector
+4. Verify selection reflected in UI element
+
+### Search Testing Strategy
+Four distinct search methods with different result validation approaches:
+- **Text search**: Direct navigation to brand pages, verify URL contains brand name
+- **Size search**: Results displayed in `.rec-size-con` container elements
+- **Brand search**: Navigation to specific product pages with URL path validation
+- **Product ID search**: Comprehensive testing of various product identifier formats and validation patterns
+
+### Current Development Status
+- **Active Development**: `mobilehome1.spec.cy.js` and `CLAUDE.md` have pending modifications
+- **Test Artifacts**: Screenshot directory may contain results from recent test runs
+- **Recent Focus**: Enhanced search functionality testing with comprehensive product ID validation
