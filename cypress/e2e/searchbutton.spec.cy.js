@@ -257,16 +257,16 @@ describe('Galuma Mobile Home Page Tests', () => {
         // Click 'Search Tires' button using the correct selector for Search by Brand
        cy.get('#inside-popup-search-by-brand').should('be.visible').click()
         
-        // Wait for search results to load
+        // Wait for navigation to product page
         cy.wait(3000)
         
-        // Verify search results are displayed
-        cy.get('.rec-size-con').should('be.visible')
+        // Verify navigation to the correct Continental ContiSportContact 6 Star page
+        cy.url().should('include', '/t/b/continental/contisportcontact-6-star')
         
-        // Verify results contain Continental brand
+        // Verify page contains Continental brand information
         cy.get('body').should('contain', 'Continental')
         
-        // Verify results contain the selected model
+        // Verify page contains the selected model information
         cy.get('body').should('contain', 'ContiSportContact 6')
     })
 
