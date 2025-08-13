@@ -51,7 +51,7 @@ rm -rf cypress/screenshots cypress/videos
 ## Architecture and Structure
 
 ### Test Organization
-- **Test files**: Located in `cypress/e2e/` with `.spec.cy.js` extension
+- **Test files**: Located in `cypress/e2e/` with `.cy.js` extension
 - **Test naming convention**: `TC_GALUMA_[FEATURE]_[MOBILE]_[NUMBER]` format
   - Examples: `TC_GALUMA_SIGNIN_002`, `TC_GALUMA_SEARCHHEADER_MOBILE_002`
 - **Viewport settings**: 
