@@ -34,7 +34,10 @@ npx cypress run --browser chrome
 npx cypress run --config viewportWidth=1475,viewportHeight=750
 
 # Run only tests marked with .only
-npx cypress run --spec "cypress/e2e/mobilehome1.spec.cy.js"
+npx cypress run --spec "cypress/e2e/mobilehome.spec.cy.js"
+
+# Run tests with browser console logging (for debugging)
+npx cypress open --browser chrome --config chromeWebSecurity=false
 
 # Clean up test artifacts (screenshots, videos)
 rm -rf cypress/screenshots cypress/videos
@@ -98,7 +101,6 @@ describe('Feature Tests', () => {
 ### Test Files Overview
 - `signin.spec.cy.js` - User authentication flows (17 test cases) - Desktop viewport (1475x750)
 - `mobilehome.spec.cy.js` - Mobile homepage functionality and navigation (19 test cases)
-- `mobilehome1.spec.cy.js` - Additional mobile homepage tests (3 test cases) - includes brand selection testing
 - `searchbutton.spec.cy.js` - Search functionality testing (14+ test cases) - includes comprehensive product ID search tests
 
 ### Key Test Scenarios
@@ -155,6 +157,6 @@ Four distinct search methods with different result validation approaches:
 - **Product ID search**: Comprehensive testing of various product identifier formats and validation patterns
 
 ### Current Development Status
-- **Active Development**: `mobilehome1.spec.cy.js` and `CLAUDE.md` have pending modifications
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
 - **Recent Focus**: Enhanced search functionality testing with comprehensive product ID validation
+- **Active Files**: Currently working with 3 main test specification files covering authentication, mobile homepage, and search functionality

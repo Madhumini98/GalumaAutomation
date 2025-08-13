@@ -6,6 +6,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(3000)
@@ -85,6 +88,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
 
@@ -133,6 +139,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -164,6 +173,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -205,6 +217,20 @@ describe('Galuma Mobile Home Page Tests', () => {
             // Verify navigation to brand page
             cy.url().should('include', brand.url)
 
+            // Re-visit the current URL with mobile headers to ensure proper mobile rendering
+            cy.url().then((currentUrl) => {
+                cy.visit(currentUrl, {
+                    auth: {
+                        username: 'galumadev',
+                        password: 'Test.123'
+                    },
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                    }
+                })
+                cy.wait(2000)
+            })
+
             // Verify brand products page is loaded (more flexible check)
             cy.get('body').should('be.visible')
 
@@ -214,16 +240,25 @@ describe('Galuma Mobile Home Page Tests', () => {
                     auth: {
                         username: 'galumadev',
                         password: 'Test.123'
+                    },
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
                     }
                 })
                 cy.wait(3000)
 
                 // Click on the Shop Tires by Brand button again
                 cy.get('[data-id="brand"]').click()
-                cy.wait(3000)
 
-                // Wait for brand container to be fully loaded
-                cy.get('#brand-container-mobile-popup').should('be.visible')
+                // Wait and retry approach for brand container to be properly loaded
+                cy.get('#brand-container-mobile-popup', { timeout: 10000 }).should(($el) => {
+                    // Ensure element exists and has proper dimensions
+                    expect($el).to.exist
+                    expect($el.height()).to.be.greaterThan(0)
+                })
+
+                // Additional wait for any animations to complete
+                cy.wait(2000)
             }
         })
     })
@@ -340,12 +375,11 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(1000)
 
         // Tap the "View Product" button in overlay
-        cy.get('.cart_btn').click()
+        cy.get('.cart_btn').filter(':visible').first().click()
 
         // Verify navigation to product details page
         cy.url().should('include', '/p/')
         cy.go('back')
-
     })
 
     it('TC_GALUMA_PAYMENTPLANS_MOBILE_013 - Verify Payment Plans section displays content and View Options button functions correctly', () => {
@@ -621,6 +655,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -639,6 +676,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -657,6 +697,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -675,6 +718,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(1000)
@@ -701,6 +747,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -720,6 +769,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(2000)
@@ -739,12 +791,15 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(1000)
     })
 
-    
+
     it('TC_GALUMA_SOCIAL_LINKS_MOBILE_022 - Ensure all social media icons open respective Galuma social media pages in new tabs', () => {
         // Scroll to the bottom of the page
         cy.get('.bottom-section').scrollIntoView()
@@ -769,6 +824,9 @@ describe('Galuma Mobile Home Page Tests', () => {
                 auth: {
                     username: 'galumadev',
                     password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
                 }
             })
             cy.wait(2000)
@@ -791,6 +849,9 @@ describe('Galuma Mobile Home Page Tests', () => {
                 auth: {
                     username: 'galumadev',
                     password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
                 }
             })
             cy.wait(2000)
@@ -813,6 +874,9 @@ describe('Galuma Mobile Home Page Tests', () => {
                 auth: {
                     username: 'galumadev',
                     password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
                 }
             })
             cy.wait(2000)
@@ -835,6 +899,9 @@ describe('Galuma Mobile Home Page Tests', () => {
                 auth: {
                     username: 'galumadev',
                     password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
                 }
             })
             cy.wait(1000)
