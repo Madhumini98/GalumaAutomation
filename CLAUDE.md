@@ -25,7 +25,7 @@ npx cypress open
 npx cypress run
 
 # Run a specific test file
-npx cypress run --spec "cypress/e2e/signin.spec.cy.js"
+npx cypress run --spec "cypress/e2e/signIn.cy.js"
 
 # Run tests with specific browser
 npx cypress run --browser chrome
@@ -34,7 +34,7 @@ npx cypress run --browser chrome
 npx cypress run --config viewportWidth=1475,viewportHeight=750
 
 # Run only tests marked with .only
-npx cypress run --spec "cypress/e2e/mobilehome.spec.cy.js"
+npx cypress run --spec "cypress/e2e/mobileHome.cy.js"
 
 # Run tests with browser console logging (for debugging)
 npx cypress open --browser chrome --config chromeWebSecurity=false
@@ -92,23 +92,25 @@ describe('Feature Tests', () => {
 - **Fallback**: Text content matching (`cy.contains('text')`)
 - **Complex selectors**: Multi-level CSS selectors for dropdown interactions:
   ```javascript
-  // Example from searchbutton.spec.cy.js
+  // Example from mobile search tests
   cy.get('#brand-container-mobile-popup > :nth-child(3) > :nth-child(1) > a > img')
   ```
 
 ## Current Test Coverage
 
 ### Test Files Overview
-- `signin.spec.cy.js` - User authentication flows (17 test cases) - Desktop viewport (1475x750)
-- `mobilehome.spec.cy.js` - Mobile homepage functionality and navigation (19 test cases)
-- `searchbutton.spec.cy.js` - Search functionality testing (14+ test cases) - includes comprehensive product ID search tests
+- `signIn.cy.js` - User authentication flows - Desktop viewport (1475x750)
+- `mobileHome.cy.js` - Mobile homepage functionality and navigation
+- `mobileSearch.cy.js` - Search functionality testing 
+- `mobileTiresBySize.cy.js` - Tire size-based search and filtering
 
 ### Key Test Scenarios
 - **Authentication Flows**: Valid/invalid credentials, empty field validation, error message verification
 - **Homepage Navigation**: Page load verification, element visibility, responsive design validation
 - **Search Functionality**: Text search, size-based search, brand selection, product ID search
 - **Tire Shopping**: Multi-step dropdown interactions, brand-to-URL mapping, size filtering
-- **Mobile Responsiveness**: Most tests use mobile viewport (360x640), signin uses desktop (1475x750)
+- **Tire Size Search**: Comprehensive size-based search functionality with filtering options
+- **Mobile Responsiveness**: Most tests use mobile viewport (360x640), signIn uses desktop (1475x750)
 
 ### Recent Test Additions
 - **Product ID Search Tests**: TC_GALUMA_SEARCHBUTTON_MOBILE_011-014 covering comprehensive product search scenarios
@@ -158,5 +160,5 @@ Four distinct search methods with different result validation approaches:
 
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
-- **Recent Focus**: Enhanced search functionality testing with comprehensive product ID validation
-- **Active Files**: Currently working with 3 main test specification files covering authentication, mobile homepage, and search functionality
+- **Recent Focus**: Enhanced search functionality testing with comprehensive tire size search validation
+- **Active Files**: Currently working with 4 main test specification files covering authentication, mobile homepage, search functionality, and tire size filtering

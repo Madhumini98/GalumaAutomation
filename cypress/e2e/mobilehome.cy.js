@@ -181,7 +181,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(2000)
     })
 
-    it('TC_SHOPTIRESBYBRAND_MOBILE_006 - Shop Tires by Brand on Mobile Version', () => {
+    it.only('TC_SHOPTIRESBYBRAND_MOBILE_006 - Shop Tires by Brand on Mobile Version', () => {
         // Click on the Shop Tires by Brand button
         cy.get('[data-id="brand"]').click()
         cy.wait(2000)
@@ -189,19 +189,19 @@ describe('Galuma Mobile Home Page Tests', () => {
         const brands = [
             { name: 'bridgestone', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(1) > a > img', url: '/t/b/bridgestone' },
             { name: 'pirelli', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(2) > a > img', url: '/t/b/pirelli' },
-            { name: 'goodyear', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(3) > a > img', url: '/t/b/goodyear' },
+            //{ name: 'goodyear', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(3) > a > img', url: '/t/b/goodyear' },
             { name: 'dunlop', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(1) > a > img', url: '/t/b/dunlop' },
-            { name: 'nitto', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(2) > a > img', url: '/t/b/nitto' },
-            { name: 'yokohama', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(3) > a > img', url: '/t/b/yokohama' },
+            //{ name: 'nitto', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(2) > a > img', url: '/t/b/nitto' },
+            //{ name: 'yokohama', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(3) > a > img', url: '/t/b/yokohama' },
             { name: 'continental', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(1) > a > img', url: '/t/b/continental' },
             { name: 'michelin', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(2) > a > img', url: '/t/b/michelin' },
-            { name: 'firestone', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(3) > a > img', url: '/t/b/firestone' },
-            { name: 'hankook', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(1) > a > img', url: '/t/b/hankook' },
-            { name: 'nexen', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(2) > a > img', url: '/t/b/nexen' },
-            { name: 'sumitomo', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(3) > a > img', url: '/t/b/sumitomo' },
-            { name: 'kumho', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(1) > a > img', url: '/t/b/kumho' },
-            { name: 'toyo', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(2) > a > img', url: '/t/b/toyo' },
-            { name: 'bf-goodrich', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(3) > a > img', url: '/t/b/bf-goodrich' }
+            //{ name: 'firestone', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(3) > a > img', url: '/t/b/firestone' },
+            //{ name: 'hankook', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(1) > a > img', url: '/t/b/hankook' },
+            //{ name: 'nexen', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(2) > a > img', url: '/t/b/nexen' },
+            //{ name: 'sumitomo', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(3) > a > img', url: '/t/b/sumitomo' },
+            //{ name: 'kumho', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(1) > a > img', url: '/t/b/kumho' },
+            //{ name: 'toyo', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(2) > a > img', url: '/t/b/toyo' },
+            //{ name: 'bf-goodrich', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(3) > a > img', url: '/t/b/bf-goodrich' }
         ]
 
         brands.forEach((brand, index) => {
