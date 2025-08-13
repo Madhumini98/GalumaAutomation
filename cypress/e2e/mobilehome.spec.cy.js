@@ -17,15 +17,43 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.title().should('not.be.empty')
     })
 
-    it('TC_GALUMA_SEARCHHEADER_MOBILE_002 - Ensure search box displays appropriate results for valid queries', () => {
-        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > .search_icon_mobile').should('be.visible').click()
-        cy.get('input[type="text"]:visible').first().should('be.visible').type('Pirelli')
-        cy.get('[href="https://dev.galumatires.com/t/b/pirelli"] > :nth-child(1) > b').should('be.visible').click()
-        cy.url().should('include', 'pirelli')
-        cy.get('body').should('contain', 'Pirelli')
+    it('TC_GALUMA_CART_MOBILE_003 - Verify cart icon opens cart popup and close icon returns to homepage', () => {
+        // Click on the cart icon to open cart popup
+        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > .open-cart-popup-mobile > .cart_mobile').should('be.visible').click()
+
+        // Wait for cart popup to load
+        cy.wait(2000)
+
+        // Verify cart popup content is visible
+        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > #cart-popup-mobile > .cart_content > .continue_btn').should('be.visible')
+
+        // Click on the close icon (cross) to close cart popup
+        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > #cart-popup-mobile > .cart_content > #close-cart-popup-mobile > strong').should('be.visible').click()
+
+        // Wait for popup to close
+        cy.wait(1000)
+
+        // Verify we're back to the homepage
+        cy.url().should('include', 'galumatires.com')
+        cy.get('body').should('be.visible')
     })
 
-    it('TC_SHOPTIRESBYSIZE_MOBILE_003 - Shop Tires by Size on Mobile Version', () => {
+    it('TC_GALUMA_PROFILE_MOBILE_004 - Verify profile icon navigates to sign-in page', () => {
+        // Click on the profile icon
+        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > .profile_icon_section > .profile_icon_sign_in_mobile').should('be.visible').click()
+
+        // Wait for navigation to sign-in page
+        cy.wait(2000)
+
+        // Verify navigation to sign-in page
+        cy.url().should('include', '/sign-in')
+        cy.url().should('eq', 'https://dev.galumatires.com/sign-in')
+
+        // Verify sign-in page content is visible
+        cy.get('body').should('be.visible')
+    })
+
+    it('TC_SHOPTIRESBYSIZE_MOBILE_005 - Shop Tires by Size on Mobile Version', () => {
         // Test How to read your tire size functionality
         // Navigate to "Search by Size" section again
         cy.get('[data-id="size"]').click()
@@ -141,7 +169,95 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(2000)
     })
 
-    it('TC_GALUMA_SERVICEICONS_MOBILE_005 - Verify service icons navigate to correct details pages', () => {
+    it('TC_SHOPTIRESBYBRAND_MOBILE_006 - Shop Tires by Brand on Mobile Version', () => {
+        // Click on the Shop Tires by Brand button
+        cy.get('[data-id="brand"]').click()
+        cy.wait(2000)
+
+        const brands = [
+            { name: 'bridgestone', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(1) > a > img', url: '/t/b/bridgestone' },
+            { name: 'pirelli', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(2) > a > img', url: '/t/b/pirelli' },
+            { name: 'goodyear', selector: '#brand-container-mobile-popup > :nth-child(1) > :nth-child(3) > a > img', url: '/t/b/goodyear' },
+            { name: 'dunlop', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(1) > a > img', url: '/t/b/dunlop' },
+            { name: 'nitto', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(2) > a > img', url: '/t/b/nitto' },
+            { name: 'yokohama', selector: '#brand-container-mobile-popup > :nth-child(2) > :nth-child(3) > a > img', url: '/t/b/yokohama' },
+            { name: 'continental', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(1) > a > img', url: '/t/b/continental' },
+            { name: 'michelin', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(2) > a > img', url: '/t/b/michelin' },
+            { name: 'firestone', selector: '#brand-container-mobile-popup > :nth-child(3) > :nth-child(3) > a > img', url: '/t/b/firestone' },
+            { name: 'hankook', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(1) > a > img', url: '/t/b/hankook' },
+            { name: 'nexen', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(2) > a > img', url: '/t/b/nexen' },
+            { name: 'sumitomo', selector: '#brand-container-mobile-popup > :nth-child(4) > :nth-child(3) > a > img', url: '/t/b/sumitomo' },
+            { name: 'kumho', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(1) > a > img', url: '/t/b/kumho' },
+            { name: 'toyo', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(2) > a > img', url: '/t/b/toyo' },
+            { name: 'bf-goodrich', selector: '#brand-container-mobile-popup > :nth-child(5) > :nth-child(3) > a > img', url: '/t/b/bf-goodrich' }
+        ]
+
+        brands.forEach((brand, index) => {
+            // Ensure brand container is visible before clicking
+            cy.get('#brand-container-mobile-popup').should('be.visible')
+
+            // Click on brand
+            cy.get(brand.selector).click()
+
+            // Wait for brand products page to load
+            cy.wait(3000)
+
+            // Verify navigation to brand page
+            cy.url().should('include', brand.url)
+
+            // Verify brand products page is loaded (more flexible check)
+            cy.get('body').should('be.visible')
+
+            // Navigate back to home page for next brand (except for the last one)
+            if (index < brands.length - 1) {
+                cy.visit("https://dev.galumatires.com/", {
+                    auth: {
+                        username: 'galumadev',
+                        password: 'Test.123'
+                    }
+                })
+                cy.wait(3000)
+
+                // Click on the Shop Tires by Brand button again
+                cy.get('[data-id="brand"]').click()
+                cy.wait(3000)
+
+                // Wait for brand container to be fully loaded
+                cy.get('#brand-container-mobile-popup').should('be.visible')
+            }
+        })
+    })
+
+    it('TC_CHECKOUT_STEPS_MOBILE_007 - Verify checkout steps are visible on homepage', () => {
+        // Scroll down to load content
+        cy.scrollTo(0, 1000)
+        cy.wait(2000)
+
+        // Simply verify the checkout steps section exists and is visible
+        cy.get('.delivery_warranty_contact').should('be.visible')
+    })
+
+    it('TC_GALUMA_FAQ_CONTACT_MOBILE_008 - Verify FAQ and contact section quick links on mobile homepage', () => {
+        // Scroll to FAQ section
+        cy.scrollTo('bottom')
+        cy.wait(2000)
+
+        // Test "Find out Here" button navigates to tire reading page
+        cy.get('#findOutHere').click()
+        cy.url().should('include', '/read-my-tires')
+
+        // Go back and test "Learn more" button navigates to pickup page
+        cy.go('back')
+        cy.get('#learnMore').click()
+        cy.url().should('include', '/pick-up')
+
+        // Go back and test "Call" button
+        cy.go('back')
+        cy.get('#call').click()
+        cy.go('back')
+    })
+
+    it('TC_GALUMA_SERVICEICONS_MOBILE_009 - Verify service icons navigate to correct details pages', () => {
         // Test Tires icon
         cy.get('#zoomableImg1').should('be.visible').click()
         cy.url().should('include', '/t')
@@ -188,37 +304,7 @@ describe('Galuma Mobile Home Page Tests', () => {
     })
 
 
-    it('TC_Checkout_Steps_Visibility_006 - Verify checkout steps are visible on homepage', () => {
-        // Scroll down to load content
-        cy.scrollTo(0, 1000)
-        cy.wait(2000)
-
-        // Simply verify the checkout steps section exists and is visible
-        cy.get('.delivery_warranty_contact').should('be.visible')
-    })
-
-    it('TC_GALUMA_FAQ_CONTACT_MOBILE_007 - Verify FAQ and contact section quick links on mobile homepage', () => {
-        // Scroll to FAQ section
-        cy.scrollTo('bottom')
-        cy.wait(2000)
-
-        // Test "Find out Here" button navigates to tire reading page
-        cy.get('#findOutHere').click()
-        cy.url().should('include', '/read-my-tires')
-
-        // Go back and test "Learn more" button navigates to pickup page
-        cy.go('back')
-        cy.get('#learnMore').click()
-        cy.url().should('include', '/pick-up')
-
-        // Go back and test "Call" button
-        cy.go('back')
-        cy.get('#call').click()
-        cy.go('back')
-    })
-
-
-    it('TC_GALUMA_VIDEO_MOBILE_008 - Verify promotional video in tire promotions section is visible and plays', () => {
+    it('TC_GALUMA_VIDEO_MOBILE_010 - Verify promotional video in tire promotions section is visible and plays', () => {
         // Scroll to tire promotions section
         cy.scrollTo(0, 800)
         cy.wait(2000)
@@ -231,7 +317,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(1000)
     })
 
-    it('TC_GALUMA_PRODUCTOVERLAY_MOBILE_009 - Verify product card overlay displays correct details', () => {
+    it('TC_GALUMA_PRODUCTOVERLAY_MOBILE_011 - Verify product card overlay displays correct details', () => {
         // Scroll to sample products section
         cy.scrollTo(0, 600)
         cy.wait(2000)
@@ -244,7 +330,7 @@ describe('Galuma Mobile Home Page Tests', () => {
     })
 
 
-    it('TC_GALUMA_VIEWPRODUCT_MOBILE_010 - Verify View Product button navigates to product details page', () => {
+    it('TC_GALUMA_VIEWPRODUCT_MOBILE_012 - Verify View Product button navigates to product details page', () => {
         // Scroll to sample products section
         cy.scrollTo(0, 600)
         cy.wait(2000)
@@ -262,7 +348,7 @@ describe('Galuma Mobile Home Page Tests', () => {
 
     })
 
-    it('TC_GALUMA_PAYMENTPLANS_MOBILE_011 - Verify Payment Plans section displays content and View Options button functions correctly', () => {
+    it('TC_GALUMA_PAYMENTPLANS_MOBILE_013 - Verify Payment Plans section displays content and View Options button functions correctly', () => {
         // Navigate to homepage and scroll to Payment Plans section
         cy.scrollTo(0, 800)
         cy.wait(2000)
@@ -296,7 +382,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(1000)
     })
 
-    it('TC_GALUMA_PAYMENTICONS_MOBILE_012 - Ensure payment option icons navigate to respective payment pages', () => {
+    it('TC_GALUMA_PAYMENTICONS_MOBILE_014 - Ensure payment option icons navigate to respective payment pages', () => {
 
         /*
         // Test Stripe icon navigation - Not working properly
@@ -362,7 +448,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         */
     })
 
-    it('TC_GALUMA_SERVICES_ALL_MOBILE_013 - Verify service tiles in "All services in our shop" section navigate to correct pages', () => {
+    it('TC_GALUMA_SERVICES_ALL_MOBILE_015 - Verify service tiles in "All services in our shop" section navigate to correct pages', () => {
         // Scroll to "All services in our shop" section
         cy.scrollTo('bottom')
         cy.wait(3000)
@@ -406,7 +492,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.go('back')
     })
 
-    it('TC_GALUMA_SHIPPINGSECTION_MOBILE_014 - Verify "Our shipping" section displays content and Read More button works', () => {
+    it('TC_GALUMA_SHIPPINGSECTION_MOBILE_016 - Verify "Our shipping" section displays content and Read More button works', () => {
         // Navigate directly to the shipping section
         cy.get('.d-flex > .content').scrollIntoView()
         cy.wait(2000)
@@ -437,7 +523,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.go('back')
     })
 
-    it('TC_GALUMA_PICKUPORDER_MOBILE_015 - Ensure Pick Up your order section displays clear steps and Find More button works', () => {
+    it('TC_GALUMA_PICKUPORDER_MOBILE_017 - Ensure Pick Up your order section displays clear steps and Find More button works', () => {
         // Scroll to the "Pick Up your order & save!" section
         cy.get('.pick_order_mobile').scrollIntoView()
         cy.wait(2000)
@@ -479,7 +565,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.go('back')
     })
 
-    it('TC_GALUMA_HELPADVICE_MOBILE_016 - Ensure Help & advice section displays correct content and Click to Contact button works', () => {
+    it('TC_GALUMA_HELPADVICE_MOBILE_018 - Ensure Help & advice section displays correct content and Click to Contact button works', () => {
         // Locate the "Help & advice" section
         cy.get('.help_desk.mobile').scrollIntoView()
         cy.wait(2000)
@@ -514,7 +600,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.go('back')
     })
 
-    it('TC_GALUMA_FOOTER_LINKS_MOBILE_017 - Ensure all footer links redirect to correct respective pages', () => {
+    it('TC_GALUMA_FOOTER_LINKS_MOBILE_020 - Ensure all footer links redirect to correct respective pages', () => {
         // Scroll to the bottom of the page
         cy.get('.bottom-section').scrollIntoView()
         cy.wait(2000)
@@ -594,7 +680,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(1000)
     })
 
-    it('TC_GALUMA_FOOTER_LINKS_MOBILE_018 - Ensure all footer policy links redirect to correct respective pages', () => {
+    it('TC_GALUMA_FOOTER_LINKS_MOBILE_021 - Ensure all footer policy links redirect to correct respective pages', () => {
         // Scroll to footer section
         cy.get('.bottom-section').scrollIntoView()
         cy.wait(2000)
@@ -658,8 +744,8 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(1000)
     })
 
-    /*
-    it('TC_GALUMA_SOCIAL_LINKS_MOBILE_019 - Ensure all social media icons open respective Galuma social media pages in new tabs', () => {
+    
+    it('TC_GALUMA_SOCIAL_LINKS_MOBILE_022 - Ensure all social media icons open respective Galuma social media pages in new tabs', () => {
         // Scroll to the bottom of the page
         cy.get('.bottom-section').scrollIntoView()
         cy.wait(2000)
@@ -754,6 +840,80 @@ describe('Galuma Mobile Home Page Tests', () => {
             cy.wait(1000)
         })
     })
-    */
 
+    it('TC_GALUMA_NAVIGATION_MOBILE_023 - Verify down and up navigation buttons scroll through sections properly', () => {
+        // Get initial scroll position
+        cy.window().then((win) => {
+            const initialScrollY = win.scrollY
+
+            // Click down button to scroll down
+            cy.get('.down').should('be.visible').click()
+            cy.wait(1000)
+
+            // Verify page has scrolled down
+            cy.window().should((win) => {
+                expect(win.scrollY).to.be.greaterThan(initialScrollY)
+            })
+
+            // Store the scrolled position
+            cy.window().then((win) => {
+                const scrolledDownY = win.scrollY
+
+                // Click up button to scroll up
+                cy.get('.up').should('be.visible').click()
+                cy.wait(1000)
+
+                // Verify page has scrolled back up
+                cy.window().should((win) => {
+                    expect(win.scrollY).to.be.lessThan(scrolledDownY)
+                })
+            })
+        })
+
+        // Test multiple down clicks to navigate through sections
+        for (let i = 0; i < 3; i++) {
+            cy.get('.down').should('be.visible').click()
+            cy.wait(800)
+        }
+
+        // Verify we've scrolled significantly down
+        cy.window().should((win) => {
+            expect(win.scrollY).to.be.greaterThan(500)
+        })
+
+        // Test multiple up clicks to navigate back up
+        for (let i = 0; i < 3; i++) {
+            cy.get('.up').should('be.visible').click()
+            cy.wait(800)
+        }
+
+        // Verify we've scrolled back up
+        cy.window().should((win) => {
+            expect(win.scrollY).to.be.lessThan(300)
+        })
+    })
+
+    it('TC_GALUMA_LIVECHAT_MOBILE_024 - Verify live chat functionality with section interactions and close capability', () => {
+        // Click on the live chat icon to open chat container
+        cy.get('.live-chat-icon').should('be.visible').click()
+
+        // Wait for chat container to load
+        cy.wait(2000)
+
+        // Verify chat container is visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // Click on the close icon to close the chat container
+        cy.get('.chat-close-icon').should('be.visible').click()
+
+        // Wait for container to close
+        cy.wait(1000)
+
+        // Verify chat container is no longer visible or has been closed
+        cy.get('.chat-home-container').should('not.be.visible')
+
+        // Verify we're back to the main page
+        cy.get('body').should('be.visible')
+        cy.url().should('include', 'galumatires.com')
+    })
 })

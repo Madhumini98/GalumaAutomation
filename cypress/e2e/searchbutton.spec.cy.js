@@ -6,6 +6,9 @@ describe('Galuma Mobile Home Page Tests', () => {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
         cy.wait(3000)
@@ -17,6 +20,18 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.get('[href="https://dev.galumatires.com/t/b/pirelli"] > :nth-child(1) > b').should('be.visible').click()
         cy.url().should('include', 'pirelli')
         cy.get('body').should('contain', 'Pirelli')
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
     })
 
     it('TC_GALUMA_SEARCHHEADER_MOBILE_002 - Verify user can search for products and navigate to specific product', () => {
@@ -268,6 +283,19 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // Verify page contains the selected model information
         cy.get('body').should('contain', 'ContiSportContact 6')
+
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
     })
 
     it('TC_GALUMA_SEARCHBUTTON_MOBILE_007 - Verify model selection clears when brand changes and user can search with new brand-model combination', () => {
@@ -340,6 +368,19 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // Verify page contains Bridgestone brand information
         cy.get('body').should('contain', 'Bridgestone')
+
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
     })
 
     it('TC_GALUMA_SEARCHBUTTON_MOBILE_008 - Verify user can search for specific product and navigate to product page', () => {
