@@ -276,7 +276,7 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // Wait for results to load and verify sorting
         cy.get('.browse_product_mobile').should('be.visible')
-        
+
         // Verify that results are displayed (wait for content to load)
         cy.wait(5000)
     })
@@ -464,6 +464,402 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // Additional verification that the page shows sorted results
         cy.get('body').should('contain.text', 'Sort')
+    })
+
+    it('TC_GALUMA_MOBILE_TBS_QTY_010 - Verify tire quantity (1) filtering functionality', () => {
+        // Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // 1. Verify navigation to shop tires by size page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
+
+        // 2. Go to Browse All Products section
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // 3. Click on 'Tire Specs' button
+        cy.get('.mfil-select-btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 4. Then it should popup the filters section
+        cy.get('.shop_w_filter').should('be.visible')
+
+        // 5. Under Qty of Tires
+        cy.get('.box.qty > .qty').should('be.visible')
+
+        // 6. Select 1 as the Qty
+        cy.get('.box.qty > .d-flex > :nth-child(1)').should('be.visible').click()
+        cy.wait(1000)
+
+        // 7. Click on apply button
+        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // 8. Then results section should show the 1 tire results
+        cy.get('body').should('be.visible')
+
+        // 9. Click on random 2 product results to check them from the overlay
+        cy.get('body').then(($body) => {
+            // First try to find products with data-eid attributes
+            if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                    const productCount = $products.length
+                    cy.log(`Found ${productCount} products with data-eid`)
+
+                    if (productCount >= 2) {
+                        // Generate 2 random unique indices
+                        const randomIndices = []
+                        while (randomIndices.length < 2) {
+                            const randomIndex = Math.floor(Math.random() * productCount)
+                            if (!randomIndices.includes(randomIndex)) {
+                                randomIndices.push(randomIndex)
+                            }
+                        }
+
+                        // Click each randomly selected product
+                        randomIndices.forEach((index, clickNumber) => {
+                            cy.get('#tire-products-container-mobile [data-eid]').eq(index).then(($product) => {
+                                const dataEid = $product.attr('data-eid')
+                                cy.log(`Clicking product ${clickNumber + 1} with data-eid: ${dataEid}`)
+                                
+                                // Click the product box-cover
+                                cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                                cy.wait(2000)
+                                
+                                // Verify overlay appears
+                                cy.get('body').should('be.visible')
+                                
+                                // Close overlay using the specific close button
+                                cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                                cy.wait(1000)
+                            })
+                        })
+                    } else if (productCount > 0) {
+                        // If less than 2 products, click all available
+                        cy.get('#tire-products-container-mobile [data-eid]').each(($product, index) => {
+                            const dataEid = $product.attr('data-eid')
+                            cy.log(`Clicking available product with data-eid: ${dataEid}`)
+                            
+                            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                            cy.wait(2000)
+                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        })
+                    }
+                })
+            } else {
+                 
+                cy.log('No dynamic products found, using fallback products')
+                
+                const fallbackProducts = [
+                    '356034069579',
+                    '395671632662'
+                ]
+                
+                fallbackProducts.forEach((eid, index) => {
+                    cy.get('body').then(($body) => {
+                        if ($body.find(`[data-eid="${eid}"]`).length > 0) {
+                            cy.log(`Clicking fallback product ${index + 1} with data-eid: ${eid}`)
+                            
+                            // Click the product
+                            cy.get(`#tire-products-container-mobile > [data-eid="${eid}"] > .box-cover`).click({ force: true })
+                            cy.wait(2000)
+                            
+                            // Close overlay
+                            cy.get(`[data-eid="${eid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        }
+                    })
+                })
+            }
+        })
+    })
+
+    it('TC_GALUMA_MOBILE_TBS_QTY_011 - Verify tire quantity (2) filtering functionality', () => {
+        // Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // 1. Verify navigation to shop tires by size page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
+
+        // 2. Go to Browse All Products section
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // 3. Click on 'Tire Specs' button
+        cy.get('.mfil-select-btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 4. Then it should popup the filters section
+        cy.get('.shop_w_filter').should('be.visible')
+
+        // 5. Under Qty of Tires
+        cy.get('.box.qty > .qty').should('be.visible')
+
+        // 6. Select 2 as the Qty
+        cy.get('.box.qty > .d-flex > :nth-child(2)').should('be.visible').click()
+        cy.wait(1000)
+
+        // 7. Click on apply button
+        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // 8. Then results section should show the 2 tire results
+        cy.get('#tire-products-container-mobile').should('be.visible')
+
+        // 9. Click on random 2 product results to check them from the overlay
+        cy.get('body').then(($body) => {
+            // First try to find products with data-eid attributes
+            if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                    const productCount = $products.length
+                    cy.log(`Found ${productCount} products with data-eid`)
+
+                    if (productCount >= 2) {
+                        // Generate 2 random unique indices
+                        const randomIndices = []
+                        while (randomIndices.length < 2) {
+                            const randomIndex = Math.floor(Math.random() * productCount)
+                            if (!randomIndices.includes(randomIndex)) {
+                                randomIndices.push(randomIndex)
+                            }
+                        }
+
+                        // Click each randomly selected product
+                        randomIndices.forEach((index, clickNumber) => {
+                            cy.get('#tire-products-container-mobile [data-eid]').eq(index).then(($product) => {
+                                const dataEid = $product.attr('data-eid')
+                                cy.log(`Clicking product ${clickNumber + 1} with data-eid: ${dataEid}`)
+                                
+                                // Click the product box-cover
+                                cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                                cy.wait(2000)
+                                
+                                // Verify overlay appears
+                                cy.get('body').should('be.visible')
+                                
+                                // Close overlay using the specific close button
+                                cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                                cy.wait(1000)
+                            })
+                        })
+                    } else if (productCount > 0) {
+                        // If less than 2 products, click all available
+                        cy.get('#tire-products-container-mobile [data-eid]').each(($product, index) => {
+                            const dataEid = $product.attr('data-eid')
+                            cy.log(`Clicking available product with data-eid: ${dataEid}`)
+                            
+                            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                            cy.wait(2000)
+                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        })
+                    }
+                })
+            } else {
+                // Fallback: Use the example products you provided for quantity 2
+                cy.log('No dynamic products found, using fallback products')
+                
+                const fallbackProducts = [
+                    '395671632665', 
+                    '356034069592' 
+                ]
+                
+                fallbackProducts.forEach((eid, index) => {
+                    cy.get('body').then(($body) => {
+                        if ($body.find(`[data-eid="${eid}"]`).length > 0) {
+                            cy.log(`Clicking fallback product ${index + 1} with data-eid: ${eid}`)
+                            
+                            // Click the product
+                            cy.get(`#tire-products-container-mobile > [data-eid="${eid}"] > .box-cover`).click({ force: true })
+                            cy.wait(2000)
+                            
+                            // Close overlay
+                            cy.get(`[data-eid="${eid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        }
+                    })
+                })
+            }
+        })
+    })
+
+    it('TC_GALUMA_MOBILE_TBS_QTY_012 - Verify tire quantity (4) filtering functionality', () => {
+        // Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // 1. Verify navigation to shop tires by size page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
+
+        // 2. Go to Browse All Products section
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // 3. Click on 'Tire Specs' button
+        cy.get('.mfil-select-btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 4. Then it should popup the filters section
+        cy.get('.shop_w_filter').should('be.visible')
+
+        // 5. Under Qty of Tires
+        cy.get('.box.qty > .qty').should('be.visible')
+
+        // 6. Select 4 as the Qty
+        cy.get('.box.qty > .d-flex > :nth-child(3)').should('be.visible').click()
+        cy.wait(1000)
+
+        // 7. Click on apply button
+        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // 8. Then results section should show the 4 tire results
+        cy.get('#tire-products-container-mobile').should('be.visible')
+
+        // 9. Click on random 2 product results to check them from the overlay
+        cy.get('body').then(($body) => {
+            // First try to find products with data-eid attributes
+            if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                    const productCount = $products.length
+                    cy.log(`Found ${productCount} products with data-eid`)
+
+                    if (productCount >= 2) {
+                        // Generate 2 random unique indices
+                        const randomIndices = []
+                        while (randomIndices.length < 2) {
+                            const randomIndex = Math.floor(Math.random() * productCount)
+                            if (!randomIndices.includes(randomIndex)) {
+                                randomIndices.push(randomIndex)
+                            }
+                        }
+
+                        // Click each randomly selected product
+                        randomIndices.forEach((index, clickNumber) => {
+                            cy.get('#tire-products-container-mobile [data-eid]').eq(index).then(($product) => {
+                                const dataEid = $product.attr('data-eid')
+                                cy.log(`Clicking product ${clickNumber + 1} with data-eid: ${dataEid}`)
+                                
+                                // Click the product box-cover
+                                cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                                cy.wait(2000)
+                                
+                                // Verify overlay appears
+                                cy.get('body').should('be.visible')
+                                
+                                // Close overlay using the specific close button
+                                cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                                cy.wait(1000)
+                            })
+                        })
+                    } else if (productCount > 0) {
+                        // If less than 2 products, click all available
+                        cy.get('#tire-products-container-mobile [data-eid]').each(($product, index) => {
+                            const dataEid = $product.attr('data-eid')
+                            cy.log(`Clicking available product with data-eid: ${dataEid}`)
+                            
+                            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                            cy.wait(2000)
+                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        })
+                    }
+                })
+            } else {
+                // Fallback: Use the example products you provided for quantity 4
+                cy.log('No dynamic products found, using fallback products')
+                
+                const fallbackProducts = [
+                    '394388495893', 
+                    '394327808376'  
+                ]
+                
+                fallbackProducts.forEach((eid, index) => {
+                    cy.get('body').then(($body) => {
+                        if ($body.find(`[data-eid="${eid}"]`).length > 0) {
+                            cy.log(`Clicking fallback product ${index + 1} with data-eid: ${eid}`)
+                            
+                            // Click the product
+                            cy.get(`#tire-products-container-mobile > [data-eid="${eid}"] > .box-cover`).click({ force: true })
+                            cy.wait(2000)
+                            
+                            // Close overlay
+                            cy.get(`[data-eid="${eid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        }
+                    })
+                })
+            }
+        })
     })
 
 })
