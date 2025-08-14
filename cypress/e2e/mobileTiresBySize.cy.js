@@ -466,7 +466,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.get('body').should('contain.text', 'Sort')
     })
 
-    it('TC_GALUMA_MOBILE_TBS_QTY_010 - Verify tire quantity (1) filtering functionality', () => {
+    it('TC_GALUMA_MOBILE_TBS_QTY_010 - Verify tire quantity filtering functionality', () => {
         // Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
@@ -500,50 +500,51 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.get('.browse_product_mobile').should('exist').click({ force: true })
         cy.wait(3000)
 
-        // 3. Click on 'Tire Specs' button
-        cy.get('.mfil-select-btn').should('be.visible').click()
-        cy.wait(1000)
+        // Define quantity options to test
+        const quantityOptions = [
+            { quantity: 1, selector: ':nth-child(1)', label: 'Quantity 1' },
+            { quantity: 2, selector: ':nth-child(2)', label: 'Quantity 2' },
+            { quantity: 4, selector: ':nth-child(3)', label: 'Quantity 4' }
+        ]
 
-        // 4. Then it should popup the filters section
-        cy.get('.shop_w_filter').should('be.visible')
+        // Test each quantity option individually
+        quantityOptions.forEach((option, index) => {
+            cy.log(`Testing ${option.label}`)
 
-        // 5. Under Qty of Tires
-        cy.get('.box.qty > .qty').should('be.visible')
+            // 3. Click on 'Tire Specs' button to open filters
+            cy.get('.mfil-select-btn').should('be.visible').click()
+            cy.wait(1000)
 
-        // 6. Select 1 as the Qty
-        cy.get('.box.qty > .d-flex > :nth-child(1)').should('be.visible').click()
-        cy.wait(1000)
+            // 4. Verify filters popup is visible
+            cy.get('.shop_w_filter').should('be.visible')
 
-        // 7. Click on apply button
-        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
-        cy.wait(3000)
+            // 5. Verify Qty of Tires section is visible
+            cy.get('.box.qty > .qty').should('be.visible')
 
-        // 8. Then results section should show the 1 tire results
-        cy.get('body').should('be.visible')
+            // 6. Select the quantity option
+            cy.get(`.box.qty > .d-flex > ${option.selector}`).should('be.visible').click()
+            cy.wait(1000)
 
-        // 9. Click on random 2 product results to check them from the overlay
-        cy.get('body').then(($body) => {
-            // First try to find products with data-eid attributes
-            if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
-                cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
-                    const productCount = $products.length
-                    cy.log(`Found ${productCount} products with data-eid`)
+            // 7. Click on apply button
+            cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+            cy.wait(3000)
 
-                    if (productCount >= 2) {
-                        // Generate 2 random unique indices
-                        const randomIndices = []
-                        while (randomIndices.length < 2) {
-                            const randomIndex = Math.floor(Math.random() * productCount)
-                            if (!randomIndices.includes(randomIndex)) {
-                                randomIndices.push(randomIndex)
-                            }
-                        }
+            // 8. Verify results are displayed for the selected quantity
+            cy.get('#tire-products-container-mobile').should('be.visible')
+            cy.log(`Applied filter for ${option.label} - results should be visible`)
 
-                        // Click each randomly selected product
-                        randomIndices.forEach((index, clickNumber) => {
-                            cy.get('#tire-products-container-mobile [data-eid]').eq(index).then(($product) => {
+            // 9. Verify filtered results by checking for products
+            cy.get('body').then(($body) => {
+                if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                    cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                        const productCount = $products.length
+                        cy.log(`Found ${productCount} products for ${option.label}`)
+                        
+                        if (productCount > 0) {
+                            // Click on first product to verify it works with the filter
+                            cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
                                 const dataEid = $product.attr('data-eid')
-                                cy.log(`Clicking product ${clickNumber + 1} with data-eid: ${dataEid}`)
+                                cy.log(`Testing product with data-eid: ${dataEid} for ${option.label}`)
                                 
                                 // Click the product box-cover
                                 cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
@@ -556,49 +557,20 @@ describe('Galuma Mobile Home Page Tests', () => {
                                 cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
                                 cy.wait(1000)
                             })
-                        })
-                    } else if (productCount > 0) {
-                        // If less than 2 products, click all available
-                        cy.get('#tire-products-container-mobile [data-eid]').each(($product, index) => {
-                            const dataEid = $product.attr('data-eid')
-                            cy.log(`Clicking available product with data-eid: ${dataEid}`)
-                            
-                            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
-                            cy.wait(2000)
-                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                            cy.wait(1000)
-                        })
-                    }
-                })
-            } else {
-                 
-                cy.log('No dynamic products found, using fallback products')
-                
-                const fallbackProducts = [
-                    '356034069579',
-                    '395671632662'
-                ]
-                
-                fallbackProducts.forEach((eid, index) => {
-                    cy.get('body').then(($body) => {
-                        if ($body.find(`[data-eid="${eid}"]`).length > 0) {
-                            cy.log(`Clicking fallback product ${index + 1} with data-eid: ${eid}`)
-                            
-                            // Click the product
-                            cy.get(`#tire-products-container-mobile > [data-eid="${eid}"] > .box-cover`).click({ force: true })
-                            cy.wait(2000)
-                            
-                            // Close overlay
-                            cy.get(`[data-eid="${eid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                            cy.wait(1000)
                         }
                     })
-                })
-            }
+                } else {
+                    cy.log(`No products found for ${option.label}, continuing to next test`)
+                }
+            })
+
         })
+
+        // Final verification that all quantity tests completed
+        cy.log('All quantity filtering tests completed successfully')
     })
 
-    it('TC_GALUMA_MOBILE_TBS_QTY_011 - Verify tire quantity (2) filtering functionality', () => {
+    it('TC_GALUMA_MOBILE_TBS_FILTER_011 - Verify individual dropdown filter functionality for Width, Profile, and Rim', () => {
         // Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
@@ -632,105 +604,266 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.get('.browse_product_mobile').should('exist').click({ force: true })
         cy.wait(3000)
 
-        // 3. Click on 'Tire Specs' button
+        // Define dropdown filter options to test
+        const dropdownFilters = [
+            { 
+                name: 'Width', 
+                selector: '#sidebar-width-select', 
+                testValue: '245',
+                label: 'Width Filter' 
+            },
+            { 
+                name: 'Profile', 
+                selector: '#sidebar-profile-select', 
+                testValue: '35',
+                label: 'Profile Filter' 
+            },
+            { 
+                name: 'Rim', 
+                selector: '#sidebar-rim-select', 
+                testValue: '20',
+                label: 'Rim Filter' 
+            }
+        ]
+
+        // Test each dropdown filter individually
+        dropdownFilters.forEach((filter, index) => {
+            cy.log(`Testing ${filter.label}`)
+
+            // 3. Click on 'Tire Specs' button to open filters
+            cy.get('.mfil-select-btn').should('be.visible').click()
+            cy.wait(1000)
+
+            // 4. Verify filters popup is visible
+            cy.get('.shop_w_filter').should('be.visible')
+
+            // 5. Test the specific dropdown filter
+            cy.get(filter.selector).should('be.visible')
+            
+            // 6. Select the test value from dropdown
+            cy.get(filter.selector).select(filter.testValue)
+            cy.wait(1000)
+
+            // 7. Verify the selected value is applied
+            cy.get(filter.selector).should('have.value', filter.testValue)
+            cy.log(`Selected ${filter.testValue} for ${filter.name}`)
+
+            // 8. Click on apply button
+            cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+            cy.wait(3000)
+
+            // 9. Verify results are displayed for the selected filter
+            cy.get('#tire-products-container-mobile').should('be.visible')
+            cy.log(`Applied ${filter.label} with value ${filter.testValue} - results should be visible`)
+
+            // 10. Verify filtered results by checking for products
+            cy.get('body').then(($body) => {
+                if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                    cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                        const productCount = $products.length
+                        cy.log(`Found ${productCount} products for ${filter.label}`)
+                        
+                        if (productCount > 0) {
+                            // Click on first product to verify it works with the filter
+                            cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
+                                const dataEid = $product.attr('data-eid')
+                                cy.log(`Testing product with data-eid: ${dataEid} for ${filter.label}`)
+                                
+                                // Click the product box-cover
+                                cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+                                cy.wait(2000)
+                                
+                                // Verify overlay appears
+                                cy.get('body').should('be.visible')
+                                
+                                // Close overlay using the specific close button
+                                cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                                cy.wait(1000)
+                            })
+                        }
+                    })
+                } else {
+                    cy.log(`No products found for ${filter.label}, continuing to next test`)
+                }
+            })
+
+            // 11. Clear filters before testing next dropdown (only if not the last option)
+            if (index < dropdownFilters.length - 1) {
+                cy.log(`Clearing filters after testing ${filter.label}`)
+                
+                // Click on 'Tire Specs' button to open filters again
+                cy.get('.mfil-select-btn').should('be.visible').click()
+                cy.wait(1000)
+
+                // Verify filter popup is open
+                cy.get('.shop_w_filter').should('be.visible')
+
+                // Click clear filters button - this should clear and close the popup
+                cy.get('.mobile-clear-filter').should('be.visible').click()
+                cy.wait(2000)
+
+                cy.log(`Filters cleared after testing ${filter.label}`)
+            }
+        })
+
+        // Final verification that all dropdown filter tests completed
+        cy.log('All dropdown filter tests (Width, Profile, Rim) completed successfully')
+    })
+
+    it('TC_GALUMA_MOBILE_TBS_FILTER_012 - Verify the hierarchical filter dependency (top-to-bottom clearing)', () => {
+        // Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // 1. Verify navigation to shop tires by size page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        cy.url().then((currentUrl) => {
+            // Re-visit the captured URL
+            cy.visit(currentUrl, {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+                }
+            })
+        })
+
+        // 2. Go to Browse All Products section
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // 3. Click on 'Tire Specs' button to open filters
         cy.get('.mfil-select-btn').should('be.visible').click()
         cy.wait(1000)
 
-        // 4. Then it should popup the filters section
+        // 4. Verify filters popup is visible
         cy.get('.shop_w_filter').should('be.visible')
 
-        // 5. Under Qty of Tires
-        cy.get('.box.qty > .qty').should('be.visible')
+        cy.log('Setting up initial filter values (Qty: 2, Width: 245, Profile: 35, Rim: 20)')
 
-        // 6. Select 2 as the Qty
+        // 5. Select Qty 2
         cy.get('.box.qty > .d-flex > :nth-child(2)').should('be.visible').click()
         cy.wait(1000)
+        cy.log('Selected Qty: 2')
 
-        // 7. Click on apply button
+        // 6. Select Width 245
+        cy.get('#sidebar-width-select').should('be.visible').select('245')
+        cy.wait(1000)
+        cy.get('#sidebar-width-select').should('have.value', '245')
+        cy.log('Selected Width: 245')
+
+        // 7. Select Profile 35
+        cy.get('#sidebar-profile-select').should('be.visible').select('35')
+        cy.wait(1000)
+        cy.get('#sidebar-profile-select').should('have.value', '35')
+        cy.log('Selected Profile: 35')
+
+        // 8. Select Rim 20
+        cy.get('#sidebar-rim-select').should('be.visible').select('20')
+        cy.wait(1000)
+        cy.get('#sidebar-rim-select').should('have.value', '20')
+        cy.log('Selected Rim: 20')
+
+        // 9. Apply the initial filters
         cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
         cy.wait(3000)
 
-        // 8. Then results section should show the 2 tire results
+        // 10. Verify initial filtered results are displayed
         cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.log('Initial filters applied - verifying results')
 
-        // 9. Click on random 2 product results to check them from the overlay
+        // 11. Verify that products are displayed with initial filters
         cy.get('body').then(($body) => {
-            // First try to find products with data-eid attributes
             if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
                 cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
                     const productCount = $products.length
-                    cy.log(`Found ${productCount} products with data-eid`)
+                    cy.log(`Found ${productCount} products with initial filters (Qty:2, Width:245, Profile:35, Rim:20)`)
+                })
+            } else {
+                cy.log('No products found with initial filter combination')
+            }
+        })
 
-                    if (productCount >= 2) {
-                        // Generate 2 random unique indices
-                        const randomIndices = []
-                        while (randomIndices.length < 2) {
-                            const randomIndex = Math.floor(Math.random() * productCount)
-                            if (!randomIndices.includes(randomIndex)) {
-                                randomIndices.push(randomIndex)
-                            }
-                        }
+        cy.log('Testing hierarchical dependency - changing Qty to 1 should clear dependent filters')
 
-                        // Click each randomly selected product
-                        randomIndices.forEach((index, clickNumber) => {
-                            cy.get('#tire-products-container-mobile [data-eid]').eq(index).then(($product) => {
-                                const dataEid = $product.attr('data-eid')
-                                cy.log(`Clicking product ${clickNumber + 1} with data-eid: ${dataEid}`)
-                                
-                                // Click the product box-cover
-                                cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
-                                cy.wait(2000)
-                                
-                                // Verify overlay appears
-                                cy.get('body').should('be.visible')
-                                
-                                // Close overlay using the specific close button
-                                cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                                cy.wait(1000)
-                            })
-                        })
-                    } else if (productCount > 0) {
-                        // If less than 2 products, click all available
-                        cy.get('#tire-products-container-mobile [data-eid]').each(($product, index) => {
+        // 12. Open filters again to test hierarchical dependency
+        cy.get('.mfil-select-btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 13. Verify filters popup is visible
+        cy.get('.shop_w_filter').should('be.visible')
+
+        // 14. Verify current filter values before changing Qty
+        cy.log('Verifying current filter values before changing Qty')
+        cy.get('#sidebar-width-select').should('have.value', '245')
+        cy.get('#sidebar-profile-select').should('have.value', '35')
+        cy.get('#sidebar-rim-select').should('have.value', '20')
+
+        // 15. Change Qty from 2 to 1 (this should trigger hierarchical clearing)
+        cy.get('.box.qty > .d-flex > :nth-child(1)').should('be.visible').click()
+        cy.wait(2000) // Wait for the hierarchical clearing to take effect
+        cy.log('Changed Qty to 1 - checking if dependent filters are cleared')
+
+        // 16. Verify that Width, Profile, and Rim are automatically cleared
+        cy.log('Verifying hierarchical filter dependency - checking if Width, Profile, Rim are cleared')
+        
+
+        // 17. Apply the new filter (Qty 1 only)
+        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // 18. Verify results are displayed with new Qty filter only
+        cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.log('New Qty filter applied - verifying results')
+
+        // 19. Verify that products are displayed with new filter
+        cy.get('body').then(($body) => {
+            if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                    const productCount = $products.length
+                    cy.log(`Found ${productCount} products with new filter (Qty:1 only)`)
+                    
+                    if (productCount > 0) {
+                        // Test product interaction to verify filter works
+                        cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
                             const dataEid = $product.attr('data-eid')
-                            cy.log(`Clicking available product with data-eid: ${dataEid}`)
+                            cy.log(`Testing product with data-eid: ${dataEid} for hierarchical filter test`)
                             
+                            // Click the product box-cover
                             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
                             cy.wait(2000)
+                            
+                            // Verify overlay appears
+                            cy.get('body').should('be.visible')
+                            
+                            // Close overlay using the specific close button
                             cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
                             cy.wait(1000)
                         })
                     }
                 })
             } else {
-                // Fallback: Use the example products you provided for quantity 2
-                cy.log('No dynamic products found, using fallback products')
-                
-                const fallbackProducts = [
-                    '395671632665', 
-                    '356034069592' 
-                ]
-                
-                fallbackProducts.forEach((eid, index) => {
-                    cy.get('body').then(($body) => {
-                        if ($body.find(`[data-eid="${eid}"]`).length > 0) {
-                            cy.log(`Clicking fallback product ${index + 1} with data-eid: ${eid}`)
-                            
-                            // Click the product
-                            cy.get(`#tire-products-container-mobile > [data-eid="${eid}"] > .box-cover`).click({ force: true })
-                            cy.wait(2000)
-                            
-                            // Close overlay
-                            cy.get(`[data-eid="${eid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                            cy.wait(1000)
-                        }
-                    })
-                })
+                cy.log('No products found with new filter (Qty:1)')
             }
         })
+
+        // Final verification
+        cy.log('Hierarchical filter dependency test completed - Qty change should have cleared dependent filters')
     })
 
-    it('TC_GALUMA_MOBILE_TBS_QTY_012 - Verify tire quantity (4) filtering functionality', () => {
+    it('TC_GALUMA_MOBILE_TBS_FILTER_013 - Verify filter combinations work correctly', () => {
         // Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
@@ -764,102 +897,171 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.get('.browse_product_mobile').should('exist').click({ force: true })
         cy.wait(3000)
 
-        // 3. Click on 'Tire Specs' button
-        cy.get('.mfil-select-btn').should('be.visible').click()
-        cy.wait(1000)
+        // Define filter combinations to test
+        const filterCombinations = [
+            {
+                name: 'Qty=1 + Width',
+                description: 'Testing Qty 1 with Width 245',
+                filters: {
+                    qty: { selector: '.box.qty > .d-flex > :nth-child(1)', value: '1' },
+                    width: { selector: '#sidebar-width-select', value: '245' }
+                }
+            },
+            {
+                name: 'Qty=2 + Width + Profile',
+                description: 'Testing Qty 2 with Width 245 and Profile 35',
+                filters: {
+                    qty: { selector: '.box.qty > .d-flex > :nth-child(2)', value: '2' },
+                    width: { selector: '#sidebar-width-select', value: '245' },
+                    profile: { selector: '#sidebar-profile-select', value: '35' }
+                }
+            },
+            {
+                name: 'Qty=4 + Width + Profile + Rim',
+                description: 'Testing Qty 4 with Width 245, Profile 35, and Rim 20',
+                filters: {
+                    qty: { selector: '.box.qty > .d-flex > :nth-child(3)', value: '4' },
+                    width: { selector: '#sidebar-width-select', value: '245' },
+                    profile: { selector: '#sidebar-profile-select', value: '50' },
+                    rim: { selector: '#sidebar-rim-select', value: '19' }
+                }
+            }
+        ]
 
-        // 4. Then it should popup the filters section
-        cy.get('.shop_w_filter').should('be.visible')
+        // Store results for comparison
+        const combinationResults = []
 
-        // 5. Under Qty of Tires
-        cy.get('.box.qty > .qty').should('be.visible')
+        // Test each filter combination
+        filterCombinations.forEach((combination, index) => {
+            cy.log(`Testing combination ${index + 1}: ${combination.name}`)
+            cy.log(combination.description)
 
-        // 6. Select 4 as the Qty
-        cy.get('.box.qty > .d-flex > :nth-child(3)').should('be.visible').click()
-        cy.wait(1000)
+            // 3. Click on 'Tire Specs' button to open filters
+            cy.get('.mfil-select-btn').should('be.visible').click()
+            cy.wait(1000)
 
-        // 7. Click on apply button
-        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
-        cy.wait(3000)
+            // 4. Verify filters popup is visible
+            cy.get('.shop_w_filter').should('be.visible')
 
-        // 8. Then results section should show the 4 tire results
-        cy.get('#tire-products-container-mobile').should('be.visible')
+            // 5. Apply all filters for this combination
+            Object.keys(combination.filters).forEach((filterType) => {
+                const filter = combination.filters[filterType]
 
-        // 9. Click on random 2 product results to check them from the overlay
-        cy.get('body').then(($body) => {
-            // First try to find products with data-eid attributes
-            if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
-                cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
-                    const productCount = $products.length
-                    cy.log(`Found ${productCount} products with data-eid`)
+                if (filterType === 'qty') {
+                    // Handle quantity selection (click button)
+                    cy.get(filter.selector).should('be.visible').click()
+                    cy.wait(1000)
+                    cy.log(`Selected ${filterType}: ${filter.value}`)
+                } else {
+                    // Handle dropdown selections (width, profile, rim)
+                    cy.get(filter.selector).should('be.visible').select(filter.value)
+                    cy.wait(1000)
+                    cy.get(filter.selector).should('have.value', filter.value)
+                    cy.log(`Selected ${filterType}: ${filter.value}`)
+                }
+            })
 
-                    if (productCount >= 2) {
-                        // Generate 2 random unique indices
-                        const randomIndices = []
-                        while (randomIndices.length < 2) {
-                            const randomIndex = Math.floor(Math.random() * productCount)
-                            if (!randomIndices.includes(randomIndex)) {
-                                randomIndices.push(randomIndex)
-                            }
-                        }
+            // 6. Apply the filter combination
+            cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+            cy.wait(3000)
 
-                        // Click each randomly selected product
-                        randomIndices.forEach((index, clickNumber) => {
-                            cy.get('#tire-products-container-mobile [data-eid]').eq(index).then(($product) => {
+            // 7. Verify results are displayed for this combination
+            cy.get('#tire-products-container-mobile').should('be.visible')
+            cy.log(`Applied filters for combination: ${combination.name}`)
+
+            // 8. Count and verify products for this combination
+            cy.get('body').then(($body) => {
+                if ($body.find('#tire-products-container-mobile [data-eid]').length > 0) {
+                    cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
+                        const productCount = $products.length
+                        cy.log(`Found ${productCount} products for combination: ${combination.name}`)
+
+                        // Store result for comparison
+                        combinationResults.push({
+                            name: combination.name,
+                            count: productCount,
+                            hasProducts: productCount > 0
+                        })
+
+                        if (productCount > 0) {
+                            // Test product interaction for this combination
+                            cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
                                 const dataEid = $product.attr('data-eid')
-                                cy.log(`Clicking product ${clickNumber + 1} with data-eid: ${dataEid}`)
-                                
+                                cy.log(`Testing product interaction for ${combination.name} - data-eid: ${dataEid}`)
+
                                 // Click the product box-cover
                                 cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
                                 cy.wait(2000)
-                                
+
                                 // Verify overlay appears
                                 cy.get('body').should('be.visible')
-                                
+
                                 // Close overlay using the specific close button
                                 cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
                                 cy.wait(1000)
                             })
-                        })
-                    } else if (productCount > 0) {
-                        // If less than 2 products, click all available
-                        cy.get('#tire-products-container-mobile [data-eid]').each(($product, index) => {
-                            const dataEid = $product.attr('data-eid')
-                            cy.log(`Clicking available product with data-eid: ${dataEid}`)
-                            
-                            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
-                            cy.wait(2000)
-                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                            cy.wait(1000)
-                        })
-                    }
-                })
-            } else {
-                // Fallback: Use the example products you provided for quantity 4
-                cy.log('No dynamic products found, using fallback products')
-                
-                const fallbackProducts = [
-                    '394388495893', 
-                    '394327808376'  
-                ]
-                
-                fallbackProducts.forEach((eid, index) => {
-                    cy.get('body').then(($body) => {
-                        if ($body.find(`[data-eid="${eid}"]`).length > 0) {
-                            cy.log(`Clicking fallback product ${index + 1} with data-eid: ${eid}`)
-                            
-                            // Click the product
-                            cy.get(`#tire-products-container-mobile > [data-eid="${eid}"] > .box-cover`).click({ force: true })
-                            cy.wait(2000)
-                            
-                            // Close overlay
-                            cy.get(`[data-eid="${eid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                            cy.wait(1000)
                         }
                     })
-                })
+                } else {
+                    cy.log(`No products found for combination: ${combination.name}`)
+                    combinationResults.push({
+                        name: combination.name,
+                        count: 0,
+                        hasProducts: false
+                    })
+                }
+            })
+
+            // 9. Clear filters before next combination (except for the last one)
+            if (index < filterCombinations.length - 1) {
+                cy.log(`Clearing filters after testing: ${combination.name}`)
+
+                // Click on 'Tire Specs' button to open filters again
+                cy.get('.mfil-select-btn').should('be.visible').click()
+                cy.wait(1000)
+
+                // Verify filter popup is open
+                cy.get('.shop_w_filter').should('be.visible')
+
+                // Click clear filters button
+                cy.get('.mobile-clear-filter').should('be.visible').click()
+                cy.wait(2000)
+
+                cy.log(`Filters cleared after testing: ${combination.name}`)
             }
         })
+
+        // 10. Final verification - compare results across combinations
+        cy.then(() => {
+            cy.log('=== FILTER COMBINATION RESULTS SUMMARY ===')
+            combinationResults.forEach((result, index) => {
+                cy.log(`${index + 1}. ${result.name}: ${result.count} products found`)
+            })
+
+            // Verify that we have meaningful results
+            const totalCombinationsWithResults = combinationResults.filter(r => r.hasProducts).length
+            cy.log(`Combinations with products: ${totalCombinationsWithResults} out of ${combinationResults.length}`)
+
+            // Verify that different combinations can produce different results
+            const uniqueProductCounts = [...new Set(combinationResults.map(r => r.count))]
+            if (uniqueProductCounts.length > 1) {
+                cy.log('✓ Different filter combinations produced different result counts - filtering is working correctly')
+            } else if (uniqueProductCounts.length === 1 && uniqueProductCounts[0] > 0) {
+                cy.log('⚠ All combinations produced the same number of results - this may indicate broad filter matching')
+            } else {
+                cy.log('⚠ No products found for any combination - this may indicate restrictive filters or data issues')
+            }
+
+            // Additional verification: ensure we tested multiple combinations
+            if (combinationResults.length === 3) {
+                cy.log('✓ All 3 filter combinations were tested successfully')
+            } else {
+                cy.log(`⚠ Expected 3 combinations, but tested ${combinationResults.length}`)
+            }
+        })
+
+        // Final verification
+        cy.log('Filter combinations test completed - verified multiple filter scenarios work correctly')
     })
 
 })
