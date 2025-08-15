@@ -539,20 +539,20 @@ describe('Galuma Mobile Home Page Tests', () => {
                     cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
                         const productCount = $products.length
                         cy.log(`Found ${productCount} products for ${option.label}`)
-                        
+
                         if (productCount > 0) {
                             // Click on first product to verify it works with the filter
                             cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
                                 const dataEid = $product.attr('data-eid')
                                 cy.log(`Testing product with data-eid: ${dataEid} for ${option.label}`)
-                                
+
                                 // Click the product box-cover
                                 cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
                                 cy.wait(2000)
-                                
+
                                 // Verify overlay appears
                                 cy.get('body').should('be.visible')
-                                
+
                                 // Close overlay using the specific close button
                                 cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
                                 cy.wait(1000)
@@ -606,23 +606,23 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // Define dropdown filter options to test
         const dropdownFilters = [
-            { 
-                name: 'Width', 
-                selector: '#sidebar-width-select', 
+            {
+                name: 'Width',
+                selector: '#sidebar-width-select',
                 testValue: '245',
-                label: 'Width Filter' 
+                label: 'Width Filter'
             },
-            { 
-                name: 'Profile', 
-                selector: '#sidebar-profile-select', 
+            {
+                name: 'Profile',
+                selector: '#sidebar-profile-select',
                 testValue: '35',
-                label: 'Profile Filter' 
+                label: 'Profile Filter'
             },
-            { 
-                name: 'Rim', 
-                selector: '#sidebar-rim-select', 
+            {
+                name: 'Rim',
+                selector: '#sidebar-rim-select',
                 testValue: '20',
-                label: 'Rim Filter' 
+                label: 'Rim Filter'
             }
         ]
 
@@ -639,7 +639,7 @@ describe('Galuma Mobile Home Page Tests', () => {
 
             // 5. Test the specific dropdown filter
             cy.get(filter.selector).should('be.visible')
-            
+
             // 6. Select the test value from dropdown
             cy.get(filter.selector).select(filter.testValue)
             cy.wait(1000)
@@ -662,20 +662,20 @@ describe('Galuma Mobile Home Page Tests', () => {
                     cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
                         const productCount = $products.length
                         cy.log(`Found ${productCount} products for ${filter.label}`)
-                        
+
                         if (productCount > 0) {
                             // Click on first product to verify it works with the filter
                             cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
                                 const dataEid = $product.attr('data-eid')
                                 cy.log(`Testing product with data-eid: ${dataEid} for ${filter.label}`)
-                                
+
                                 // Click the product box-cover
                                 cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
                                 cy.wait(2000)
-                                
+
                                 // Verify overlay appears
                                 cy.get('body').should('be.visible')
-                                
+
                                 // Close overlay using the specific close button
                                 cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
                                 cy.wait(1000)
@@ -690,7 +690,7 @@ describe('Galuma Mobile Home Page Tests', () => {
             // 11. Clear filters before testing next dropdown (only if not the last option)
             if (index < dropdownFilters.length - 1) {
                 cy.log(`Clearing filters after testing ${filter.label}`)
-                
+
                 // Click on 'Tire Specs' button to open filters again
                 cy.get('.mfil-select-btn').scrollIntoView().click({ force: true })
                 cy.wait(1000)
@@ -818,7 +818,7 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // 16. Verify that Width, Profile, and Rim are automatically cleared
         cy.log('Verifying hierarchical filter dependency - checking if Width, Profile, Rim are cleared')
-        
+
 
         // 17. Apply the new filter (Qty 1 only)
         cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
@@ -834,20 +834,20 @@ describe('Galuma Mobile Home Page Tests', () => {
                 cy.get('#tire-products-container-mobile [data-eid]').then(($products) => {
                     const productCount = $products.length
                     cy.log(`Found ${productCount} products with new filter (Qty:1 only)`)
-                    
+
                     if (productCount > 0) {
                         // Test product interaction to verify filter works
                         cy.get('#tire-products-container-mobile [data-eid]').eq(0).then(($product) => {
                             const dataEid = $product.attr('data-eid')
                             cy.log(`Testing product with data-eid: ${dataEid} for hierarchical filter test`)
-                            
+
                             // Click the product box-cover
                             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
                             cy.wait(2000)
-                            
+
                             // Verify overlay appears
                             cy.get('body').should('be.visible')
-                            
+
                             // Close overlay using the specific close button
                             cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
                             cy.wait(1000)
@@ -1163,7 +1163,7 @@ describe('Galuma Mobile Home Page Tests', () => {
                 cy.get(category.headerSelector).scrollIntoView().click({ force: true })
                 cy.wait(2000) // Increased wait time for accordion to fully expand
                 cy.log(`Clicked header button for ${category.name} section`)
-                
+
                 // Check if the collapse section is now visible
                 cy.get('body').then(($body) => {
                     const collapseElements = $body.find('.collapse.show')
@@ -1174,7 +1174,7 @@ describe('Galuma Mobile Home Page Tests', () => {
                 cy.get('body').then(($body) => {
                     if ($body.find(filter.selector).length > 0) {
                         cy.log(`Found checkbox ${filter.name}, attempting to interact with it`)
-                        
+
                         // Check if checkbox is already checked, if so uncheck it first
                         cy.get(filter.selector).then(($checkbox) => {
                             if ($checkbox.is(':checked')) {
@@ -1350,7 +1350,7 @@ describe('Galuma Mobile Home Page Tests', () => {
                 cy.get(category.headerSelector).scrollIntoView().click({ force: true })
                 cy.wait(2000) // Increased wait time for accordion to fully expand
                 cy.log(`Clicked header button for ${category.name} section`)
-                
+
                 // Check if the collapse section is now visible
                 cy.get('body').then(($body) => {
                     const collapseElements = $body.find('.collapse.show')
@@ -1361,7 +1361,7 @@ describe('Galuma Mobile Home Page Tests', () => {
                 cy.get('body').then(($body) => {
                     if ($body.find(filter.selector).length > 0) {
                         cy.log(`Found checkbox ${filter.name}, attempting to interact with it`)
-                        
+
                         // Check if checkbox is already checked, if so uncheck it first
                         cy.get(filter.selector).then(($checkbox) => {
                             if ($checkbox.is(':checked')) {
@@ -1445,29 +1445,29 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // 13. Test the Clear filters button functionality separately
         cy.log('Testing Clear filters button functionality')
-        
+
         // Open filters one more time
         cy.get('.mfil-select-btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
-        
+
         // Navigate to additional filters
         cy.get('.add-filters').scrollIntoView().click({ force: true })
         cy.wait(1000)
-        
+
         // Expand first category and select a checkbox
         cy.get('#headingFive > .mb-0 > .btn').scrollIntoView().click({ force: true })
         cy.wait(2000)
-        
+
         // Select a checkbox to test clear functionality
         cy.get('body').then(($body) => {
             if ($body.find('#collapseExample4 > .card > .box > ul > .list > :nth-child(1) > .form-check-input').length > 0) {
                 cy.get('#collapseExample4 > .card > .box > ul > .list > :nth-child(1) > .form-check-input').check({ force: true })
                 cy.wait(1000)
                 cy.log('Selected a checkbox to test clear functionality')
-                
+
                 // Verify checkbox is checked
                 cy.get('#collapseExample4 > .card > .box > ul > .list > :nth-child(1) > .form-check-input').should('be.checked')
-                
+
                 // Click clear filters button
                 cy.get('.mobile-clear-filter').should('be.visible').click()
                 cy.wait(2000)
@@ -1547,7 +1547,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         // Select Load Index (103)
         cy.get('#headingThree > .mb-0 > .btn').scrollIntoView().click({ force: true })
         cy.wait(2000)
-        cy.get('#load-103').scrollIntoView().check({ force: true }) 
+        cy.get('#load-103').scrollIntoView().check({ force: true })
         cy.wait(1000)
         cy.get('#load-103').should('be.checked')
         cy.log('✓ Selected Load Index: 103')
@@ -1575,13 +1575,13 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // 9. Test hierarchical dependency - Change Brand and verify dependent filters are cleared
         cy.log('Testing hierarchical dependency: Changing Brand should clear all filters below')
-        
+
         // Reopen filters
         cy.get('.mfil-select-btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
         cy.get('.add-filters').scrollIntoView().click({ force: true })
         cy.wait(1000)
-        
+
         // Select a different Brand (Bridgestone) 
         cy.get('#headingOne > .mb-0 > .btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
@@ -1593,7 +1593,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.log('Verifying that filters below Brand are automatically cleared')
         cy.get('#bridgestone-45').should('be.checked')
         cy.log('✓ New Brand (Bridgestone) is selected')
- 
+
         // 11. Apply filters after Brand change and verify results
         cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
         cy.wait(3000)
@@ -1602,7 +1602,7 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // 12. Verify and show that previous selections in Model, Load Index and Speed Rating are cleared
         cy.log('Verifying hierarchical clearing - checking previous selections are cleared')
-        
+
         // Reopen filters to check the cleared state
         cy.get('.mfil-select-btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
@@ -1637,7 +1637,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.log('=== HIERARCHICAL CLEARING SUMMARY ===')
         cy.log('✓ Brand changed from Continental to Bridgestone')
         cy.log('✓ Model "ContiProContact (N1)" automatically cleared')
-        cy.log('✓ Load Index "103" automatically cleared') 
+        cy.log('✓ Load Index "103" automatically cleared')
         cy.log('✓ Speed Rating "V" automatically cleared')
         cy.log('✓ Hierarchical dependency working correctly')
 
@@ -1694,13 +1694,13 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // 16. Test second hierarchical dependency - Change Speed Rating
         cy.log('Testing second hierarchical dependency: Changing Speed Rating should clear Tire Type and Run Flat')
-        
+
         // Reopen filters
         cy.get('.mfil-select-btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
         cy.get('.add-filters').scrollIntoView().click({ force: true })
         cy.wait(1000)
-        
+
         // Select a different Speed Rating (V)
         cy.get('#headingFour > .mb-0 > .btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
@@ -1735,7 +1735,7 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // 18. Verify and show that previous selections in Tire Type and Run Flat are cleared
         cy.log('Verifying hierarchical clearing - checking previous selections are cleared')
-        
+
         // Reopen filters to check the cleared state
         cy.get('.mfil-select-btn').scrollIntoView().click({ force: true })
         cy.wait(1000)
@@ -1769,8 +1769,8 @@ describe('Galuma Mobile Home Page Tests', () => {
 
         // Final verification
         cy.log('Hierarchical filter dependency test completed - verified top-to-bottom clearing for additional filters with tick mark removal validation')
-        
-        })
+
+    })
 
     it('TC_GALUMA_MOBILE_TBS_ADDITIONAL_FILTERS_017 - Verify additional filter combinations work correctly', () => {
         // Navigate to the shop by tires page
@@ -1812,14 +1812,14 @@ describe('Galuma Mobile Home Page Tests', () => {
                 name: 'Brand + Model Combination (Continental + Cross Contact LX Sport)',
                 description: 'Testing Brand (Continental) with Model (Cross Contact LX Sport)',
                 filters: [
-                    { 
-                        section: 'Brand', 
+                    {
+                        section: 'Brand',
                         headerSelector: '#headingOne > .mb-0 > .btn',
                         selector: '#continental-54',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Model', 
+                    {
+                        section: 'Model',
                         headerSelector: '#headingTwo > .mb-0 > .btn',
                         selector: '#cross-contact-lx-sport-342',
                         type: 'checkbox'
@@ -1830,20 +1830,20 @@ describe('Galuma Mobile Home Page Tests', () => {
                 name: 'Brand + Load Index + Speed Rating (Bridgestone + 90 + Y)',
                 description: 'Testing Brand (Bridgestone) with Load Index (90) and Speed Rating (Y)',
                 filters: [
-                    { 
-                        section: 'Brand', 
+                    {
+                        section: 'Brand',
                         headerSelector: '#headingOne > .mb-0 > .btn',
                         selector: '#bridgestone-45',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Load Index', 
+                    {
+                        section: 'Load Index',
                         headerSelector: '#headingThree > .mb-0 > .btn',
                         selector: '#load-90',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Speed Rating', 
+                    {
+                        section: 'Speed Rating',
                         headerSelector: '#headingFour > .mb-0 > .btn',
                         selector: '.speed-accordian-list > .list > [style=""] > .form-check-input',
                         type: 'checkbox'
@@ -1854,14 +1854,14 @@ describe('Galuma Mobile Home Page Tests', () => {
                 name: 'Tire Type + Run Flat (Summer + Yes)',
                 description: 'Testing Tire Type (Summer) with Run Flat (Yes)',
                 filters: [
-                    { 
-                        section: 'Tire Type', 
+                    {
+                        section: 'Tire Type',
                         headerSelector: '#headingFive > .mb-0 > .btn',
                         selector: '#collapseExample4 > .card > .box > ul > .list > :nth-child(2) > .form-check-input',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Run Flat', 
+                    {
+                        section: 'Run Flat',
                         headerSelector: '#headingSix > .mb-0 > .btn',
                         selector: '#collapseExample5 > .card > .box > ul > :nth-child(1) > .form-check > .form-check-input',
                         type: 'checkbox'
@@ -1872,20 +1872,20 @@ describe('Galuma Mobile Home Page Tests', () => {
                 name: 'Brand + Speed Rating + Condition (Continental + H + Like New)',
                 description: 'Testing Condition (Like New) with Brand (Continental) and Speed Rating (H)',
                 filters: [
-                    { 
-                        section: 'Brand', 
+                    {
+                        section: 'Brand',
                         headerSelector: '#headingOne > .mb-0 > .btn',
                         selector: '#continental-54',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Speed Rating', 
+                    {
+                        section: 'Speed Rating',
                         headerSelector: '#headingFour > .mb-0 > .btn',
                         selector: '.speed-accordian-list > .list > :nth-child(1) > .form-check-input',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Condition', 
+                    {
+                        section: 'Condition',
                         headerSelector: '#headingSeven > .mb-0 > .btn',
                         selector: '#collapseExample6 > .card > .box > ul > .list > :nth-child(2) > .form-check-input',
                         type: 'checkbox'
@@ -1896,14 +1896,14 @@ describe('Galuma Mobile Home Page Tests', () => {
                 name: 'Multiple Brands Selection (Bridgestone + Continental)',
                 description: 'Testing multiple brands selected within same category',
                 filters: [
-                    { 
-                        section: 'Brand', 
+                    {
+                        section: 'Brand',
                         headerSelector: '#headingOne > .mb-0 > .btn',
                         selector: '#bridgestone-45',
                         type: 'checkbox'
                     },
-                    { 
-                        section: 'Brand', 
+                    {
+                        section: 'Brand',
                         headerSelector: '#headingOne > .mb-0 > .btn',
                         selector: '#continental-54',
                         type: 'checkbox'
@@ -1935,16 +1935,16 @@ describe('Galuma Mobile Home Page Tests', () => {
             // 6. Apply all filters for this combination
             combination.filters.forEach((filter, filterIndex) => {
                 cy.log(`Applying filter: ${filter.section}`)
-                
+
                 // Expand the section by clicking the header button
                 cy.get(filter.headerSelector).first().scrollIntoView().click({ force: true })
                 cy.wait(2000)
-                
+
                 // Check if the specific filter checkbox exists and select it
                 cy.get('body').then(($body) => {
                     if ($body.find(filter.selector).length > 0) {
                         cy.log(`Found filter ${filter.section}, applying selection`)
-                        
+
                         // Check if checkbox is already checked, if so uncheck it first
                         cy.get(filter.selector).first().then(($checkbox) => {
                             if ($checkbox.is(':checked')) {
@@ -2100,6 +2100,80 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.log('Additional filter combinations test completed - verified multiple complex filter scenarios work correctly with proper result differentiation')
     })
 
-    
+    it('TC_GALUMA_MOBILE_ADDITIONAL_FILTERS_018 - Verify comprehensive additional filter integration and edge cases', () => {
+        // Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
 
+        // Verify navigation
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Go to Browse All Products
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // Open filters popup
+        cy.get('.mfil-select-btn').first().click({ force: true })
+        cy.wait(1000)
+        cy.get('.shop_w_filter').should('be.visible')
+
+        // Set basic filters
+        cy.get('.box.qty > .d-flex > :nth-child(2)').should('be.visible').click()
+        cy.get('#sidebar-width-select').should('be.visible').select('245')
+        cy.wait(1000)
+
+        // Navigate to additional filters and add Brand selection
+        cy.get('.add-filters').should('be.visible').click()
+        cy.wait(1000)
+        cy.get('#headingOne > .mb-0 > .btn').first().click({ force: true })
+        cy.wait(1000)
+        cy.get('#bridgestone-45').first().check({ force: true })
+        cy.wait(1000)
+
+        // Apply filters
+        cy.get('.mobile-buttons-container > :nth-child(2) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // Verify results are displayed
+        cy.get('#tire-products-container-mobile').should('be.visible')
+
+        // Click on first product
+        cy.get('#tire-products-container-mobile').within(() => {
+            cy.get('a, [onclick]').first().click({ force: true })
+            cy.wait(2000)
+        })
+
+        // Handle overlay or navigation
+        cy.get('body').then(($body) => {
+            if ($body.find('.modal, .overlay, .popup').length > 0) {
+                // Close overlay if it opened
+                cy.get('.modal, .overlay, .popup').first().then(($modal) => {
+                    if ($modal.find('.close, .btn-close').length > 0) {
+                        cy.get('.close, .btn-close').first().click()
+                    } else {
+                        cy.get('body').type('{esc}')
+                    }
+                })
+                cy.wait(1000)
+            } else {
+                // If navigated to product page, go back
+                cy.url().then((url) => {
+                    if (url.includes('/tire/') || url.includes('/product/')) {
+                        cy.go('back')
+                        cy.wait(2000)
+                    }
+                })
+            }
+        })
+    })
+    
 })
