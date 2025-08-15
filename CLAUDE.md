@@ -101,7 +101,7 @@ describe('Feature Tests', () => {
 ### Test Files Overview
 - `signIn.cy.js` - User authentication flows - Desktop viewport (1475x750)
 - `mobileHome.cy.js` - Mobile homepage functionality and navigation
-- `mobilesearch.cy.js` - Search functionality testing (Note: filename is lowercase)
+- `mobileSearch.cy.js` - Search functionality testing
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
 
 ### Key Test Scenarios
