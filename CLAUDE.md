@@ -101,7 +101,7 @@ describe('Feature Tests', () => {
 ### Test Files Overview
 - `signIn.cy.js` - User authentication flows - Desktop viewport (1475x750)
 - `mobileHome.cy.js` - Mobile homepage functionality and navigation
-- `mobileSearch.cy.js` - Search functionality testing 
+- `mobilesearch.cy.js` - Search functionality testing (Note: filename is lowercase)
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
 
 ### Key Test Scenarios
@@ -112,10 +112,11 @@ describe('Feature Tests', () => {
 - **Tire Size Search**: Comprehensive size-based search functionality with filtering options
 - **Mobile Responsiveness**: Most tests use mobile viewport (360x640), signIn uses desktop (1475x750)
 
-### Recent Test Additions
-- **Product ID Search Tests**: TC_GALUMA_SEARCHBUTTON_MOBILE_011-014 covering comprehensive product search scenarios
-- **Brand and Model Search**: TC_GALUMA_SEARCHBUTTON_MOBILE_006 with enhanced brand-model dependency testing
-- **Form Field Dependencies**: TC_GALUMA_SEARCHBUTTON_MOBILE_004 for width selection clearing subsequent fields
+### Recent Test Additions (Last Updated: August 2025)
+- **Filter Combinations Testing**: Enhanced test scenarios for filter combinations
+- **Quantity Checking**: Updated test scenarios with quantity validation
+- **Search Button Automation**: Updated with newly added features including comprehensive search functionality
+- **Tire Size Search**: Mobile Shop Tires By Size page automation with filtering capabilities
 
 ### Common Test Patterns
 - **Authentication**: Handled in `beforeEach()` with HTTP Basic Auth
@@ -132,6 +133,8 @@ describe('Feature Tests', () => {
 - Some elements require `{ force: true }` option for clicking due to overlays
 - Certain icons/links are commented out in tests due to functionality issues
 - Social media tests are commented out but preserved for future implementation
+- **Error Handling**: Tests include `Cypress.on('uncaught:exception')` handlers for application errors like 'customer is not defined'
+- **Mobile User-Agent**: Tests use specific Android mobile user-agent strings for accurate mobile testing
 
 ### Test Data Management
 - Valid test credentials: `madhumini@longwapps.com` / `Test.123`
@@ -160,5 +163,13 @@ Four distinct search methods with different result validation approaches:
 
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
-- **Recent Focus**: Enhanced search functionality testing with comprehensive tire size search validation
+- **Recent Focus**: Enhanced search functionality testing with comprehensive tire size search validation and filter combinations
 - **Active Files**: Currently working with 4 main test specification files covering authentication, mobile homepage, search functionality, and tire size filtering
+- **Git Status**: Working on `mobilesearch.cy.js` modifications (currently staged for commit)
+
+### Quick Start for New Developers
+1. Clone repository and run `npm install`
+2. Use `npx cypress open` to start interactive testing
+3. Focus on single tests with `it.only()` during development
+4. All tests require HTTP Basic Auth - credentials are in test files
+5. Mobile tests use 360x640 viewport, desktop tests use 1475x750
