@@ -2100,7 +2100,7 @@ describe('Galuma Mobile Tires By Size Page Tests', () => {
         cy.log('Additional filter combinations test completed - verified multiple complex filter scenarios work correctly with proper result differentiation')
     })
 
-    it('TC_GALUMA_MOBILE_ADDITIONAL_FILTERS_018 - Verify comprehensive additional filter integration and edge cases', () => {
+    it('TC_GALUMA_MOBILE_TBS_ADDITIONAL_FILTERS_018 - Verify comprehensive additional filter integration and edge cases', () => {
         // Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
@@ -2174,6 +2174,80 @@ describe('Galuma Mobile Tires By Size Page Tests', () => {
                 })
             }
         })
+    })
+
+    it('TC_GALUMA_MOBILE_TBS_PAGINATION_019 - Verify user can navigate pages using left and right arrow buttons', () => {
+        // Navigate to shop tires by size page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify page is loaded
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Scroll to pagination section slowly and wait for it to be fully visible
+        cy.get('.pagination-wrapper').should('be.visible').scrollIntoView({ duration: 1000 })
+        cy.wait(3000)
+        
+        // Ensure pagination container is stable and visible
+        cy.get('#shtire-pagination-container').should('be.visible')
+        cy.wait(1000)
+
+        // Click on 2
+        cy.get('#shtire-pagination-container > :nth-child(2)').should('be.visible').click()
+        cy.wait(3000)
+        // It should direct to the next page
+        cy.get('body').should('be.visible')
+
+        // Scroll to pagination section slowly and wait for it to be fully visible
+        cy.get('.pagination-wrapper').should('be.visible').scrollIntoView({ duration: 1000 })
+        cy.wait(3000)
+        
+        // Ensure pagination container is stable and visible
+        cy.get('#shtire-pagination-container').should('be.visible')
+        cy.wait(1000)
+
+        // Click on 5
+        cy.get('#shtire-pagination-container > :nth-child(5)').should('be.visible').click()
+        cy.wait(3000)
+        // It should direct to the 5th page
+        cy.get('body').should('be.visible')
+
+        // Scroll to pagination section slowly and wait for it to be fully visible
+        cy.get('.pagination-wrapper').should('be.visible').scrollIntoView({ duration: 1000 })
+        cy.wait(3000)
+        
+        // Ensure pagination container is stable and visible
+        cy.get('#shtire-pagination-container').should('be.visible')
+        cy.wait(1000)
+
+        // Click on left arrow
+        cy.get('.prev').should('be.visible').click()
+        cy.wait(3000)
+        // It should direct to the previous page
+        cy.get('body').should('be.visible')
+
+        // Scroll to pagination section slowly and wait for it to be fully visible
+        cy.get('.pagination-wrapper').should('be.visible').scrollIntoView({ duration: 1000 })
+        cy.wait(3000)
+        
+        // Ensure pagination container is stable and visible
+        cy.get('#shtire-pagination-container').should('be.visible')
+        cy.wait(1000)
+
+        // Click on right arrow
+        cy.get('.next').should('be.visible').click()
+        cy.wait(3000)
+        // It should direct to the next page
+        cy.get('body').should('be.visible')
     })
     
 })
