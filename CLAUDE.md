@@ -103,6 +103,7 @@ describe('Feature Tests', () => {
 - `mobileHome.cy.js` - Mobile homepage functionality and navigation
 - `mobileSearch.cy.js` - Search functionality testing
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
+- `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
 
 ### Key Test Scenarios
 - **Authentication Flows**: Valid/invalid credentials, empty field validation, error message verification
@@ -164,7 +165,7 @@ Four distinct search methods with different result validation approaches:
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
 - **Recent Focus**: Enhanced search functionality testing with comprehensive tire size search validation and filter combinations
-- **Active Files**: Currently working with 4 main test specification files covering authentication, mobile homepage, search functionality, and tire size filtering
+- **Active Files**: Currently working with 5 main test specification files covering authentication, mobile homepage, search functionality, tire size filtering, and tire brand filtering
 - **Git Status**: Working on `mobilesearch.cy.js` modifications (currently staged for commit)
 
 ### Quick Start for New Developers

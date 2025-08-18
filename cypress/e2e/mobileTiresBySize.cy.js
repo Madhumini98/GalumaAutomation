@@ -1,4 +1,4 @@
-describe('Galuma Mobile Home Page Tests', () => {
+describe('Galuma Mobile Tires By Size Page Tests', () => {
     beforeEach(() => {
         // Common setup for all test cases
         cy.viewport(360, 640)
@@ -13,7 +13,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         })
         cy.wait(3000)
     })
-
+ 
     it('TC_GALUMA_MOBILE_TBS_NAV_001 - Verify successful navigation to the shop tires by size page', () => {
         // Verify home page is loaded
         cy.url().should('include', 'galumatires.com')

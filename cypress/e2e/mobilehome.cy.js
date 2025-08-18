@@ -181,7 +181,7 @@ describe('Galuma Mobile Home Page Tests', () => {
         cy.wait(2000)
     })
 
-    it.only('TC_SHOPTIRESBYBRAND_MOBILE_006 - Shop Tires by Brand on Mobile Version', () => {
+    it('TC_SHOPTIRESBYBRAND_MOBILE_006 - Shop Tires by Brand on Mobile Version', () => {
         // Click on the Shop Tires by Brand button
         cy.get('[data-id="brand"]').click()
         cy.wait(2000)
