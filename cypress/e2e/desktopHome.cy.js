@@ -11,7 +11,7 @@ describe('Galuma Home Tests', () => {
         cy.wait(3000)
     })
 
-    it.only('TC_GALUMA_HOME_001 - Verify successful navigation to the homepage', () => {
+    it('TC_GALUMA_HOME_001 - Verify successful navigation to the homepage', () => {
         cy.url().should('include', 'galumatires.com')
         cy.get('body').should('be.visible')
         cy.title().should('not.be.empty')
@@ -84,7 +84,7 @@ describe('Galuma Home Tests', () => {
         cy.go('back')
     })
 
-    it.only('TC_GALUMA_SERVICEICONS_009 - Verify service icons navigate to correct details pages', () => {
+    it('TC_GALUMA_SERVICEICONS_009 - Verify service icons navigate to correct details pages', () => {
         // Test Tires icon
         cy.get(':nth-child(1) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('include', '/t')
@@ -92,7 +92,7 @@ describe('Galuma Home Tests', () => {
 
         /* Test Wheels icon
         // This Wheel icon is not working properly, so skipping this test for now
-        cy.get('#:nth-child(2) > .zoomable > .timage').should('be.visible').click()
+        cy.get(':nth-child(2) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('not.equal', 'https://dev.galumatires.com/')
         cy.go('back')
         */
@@ -108,37 +108,39 @@ describe('Galuma Home Tests', () => {
         cy.go('back')
 
         // Test Inground Alignment icon
-        cy.get('#:nth-child(5) > .zoomable > .timage').should('be.visible').click()
+        cy.get(':nth-child(5) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('include', 'inground')
         cy.go('back')
 
         /* Test Center Lock icon
-        // This TMPS icon is not working properly, so skipping this test for now
-        cy.get('#:nth-child(6) > .zoomable > .timage').should('be.visible').click()
+        // This Center Lock icon is not working properly, so skipping this test for now
+        cy.get(':nth-child(6) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('not.equal', 'https://dev.galumatires.com/')
         cy.go('back')
 
         // Test TMPS icon
         // This TMPS icon is not working properly, so skipping this test for now
-        cy.get('#:nth-child(7) > .zoomable > .timage').should('be.visible').click()
+        cy.get(':nth-child(7) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('not.equal', 'https://dev.galumatires.com/')
         cy.go('back')
         */
 
         // Test Tire Rotation icon
-        cy.get('##:nth-child(8) > .zoomable > .timage').should('be.visible').click()
+        cy.get(':nth-child(8) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('include', 'rotation')
         cy.go('back')
 
         // Test Puncture Repair icon
-        cy.get('##:nth-child(9) > .zoomable > .timage').should('be.visible').click()
+        cy.get(':nth-child(9) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('include', 'puncture-repair')
         cy.go('back')
 
         // Test Inspections icon
-        cy.get('##:nth-child(10) > .zoomable > .timage').should('be.visible').click()
+        cy.get(':nth-child(10) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('include', 'tire-inspections')
         cy.go('back')
     })
+
     
+
 })
