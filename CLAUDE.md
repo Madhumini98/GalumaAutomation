@@ -115,10 +115,12 @@ describe('Feature Tests', () => {
 - **Mobile Responsiveness**: Most tests use mobile viewport (360x640), signIn uses desktop (1475x750)
 
 ### Recent Test Additions (Last Updated: August 2025)
-- **Filter Combinations Testing**: Enhanced test scenarios for filter combinations
-- **Quantity Checking**: Updated test scenarios with quantity validation
-- **Search Button Automation**: Updated with newly added features including comprehensive search functionality
-- **Tire Size Search**: Mobile Shop Tires By Size page automation with filtering capabilities
+- **Desktop Home Automation**: Enhanced desktop homepage testing functionality
+- **Cart Management**: Product cart addition and removal testing (TC_GALUMA_MOBILE_TBS_CART_020)
+- **Pagination Testing**: Navigation using arrow buttons in tire browsing (TC_GALUMA_MOBILE_TBS_PAGINATION_019)
+- **Filter Combinations Testing**: Enhanced test scenarios for filter combinations and hierarchical dependencies
+- **Tire Brand Page**: Comprehensive mobile tires by brands page automation with sorting
+- **Additional Filters**: Testing for hierarchical filter dependency and combinations
 
 ### Common Test Patterns
 - **Authentication**: Handled in `beforeEach()` with HTTP Basic Auth
@@ -165,9 +167,9 @@ Four distinct search methods with different result validation approaches:
 
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
-- **Recent Focus**: Enhanced search functionality testing with comprehensive tire size search validation and filter combinations
+- **Recent Focus**: Enhanced desktop home automation, cart management, and pagination testing with comprehensive filter combinations
 - **Active Files**: Currently working with 6 main test specification files covering desktop/mobile authentication, desktop/mobile homepage, search functionality, tire size filtering, and tire brand filtering
-- **Git Status**: Working on `mobileTiresBySize.cy.js` modifications (currently staged for commit)
+- **Git Status**: Working on `desktopHome.cy.js` modifications (currently modified)
 
 ### Quick Start for New Developers
 1. Clone repository and run `npm install`
