@@ -25,7 +25,7 @@ npx cypress open
 npx cypress run
 
 # Run a specific test file
-npx cypress run --spec "cypress/e2e/signIn.cy.js"
+npx cypress run --spec "cypress/e2e/desktopSignIn.cy.js"
 
 # Run tests with specific browser
 npx cypress run --browser chrome
@@ -56,7 +56,7 @@ rm -rf cypress/screenshots cypress/videos
   - Examples: `TC_GALUMA_SIGNIN_002`, `TC_GALUMA_SEARCHHEADER_MOBILE_002`
 - **Viewport settings**: 
   - Mobile tests: `cy.viewport(360, 640)`
-  - Desktop tests: `cy.viewport(1475, 750)` (used in signin.spec.cy.js)
+  - Desktop tests: `cy.viewport(1475, 750)` (used in desktopSignIn.cy.js and desktopHome.cy.js)
 - **Test focus**: Use `it.only()` to run single tests during development
 
 ### Configuration Details
@@ -99,7 +99,8 @@ describe('Feature Tests', () => {
 ## Current Test Coverage
 
 ### Test Files Overview
-- `signIn.cy.js` - User authentication flows - Desktop viewport (1475x750)
+- `desktopSignIn.cy.js` - User authentication flows - Desktop viewport (1475x750)
+- `desktopHome.cy.js` - Desktop homepage functionality and navigation
 - `mobileHome.cy.js` - Mobile homepage functionality and navigation
 - `mobileSearch.cy.js` - Search functionality testing
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
@@ -165,8 +166,8 @@ Four distinct search methods with different result validation approaches:
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
 - **Recent Focus**: Enhanced search functionality testing with comprehensive tire size search validation and filter combinations
-- **Active Files**: Currently working with 5 main test specification files covering authentication, mobile homepage, search functionality, tire size filtering, and tire brand filtering
-- **Git Status**: Working on `mobilesearch.cy.js` modifications (currently staged for commit)
+- **Active Files**: Currently working with 6 main test specification files covering desktop/mobile authentication, desktop/mobile homepage, search functionality, tire size filtering, and tire brand filtering
+- **Git Status**: Working on `mobileTiresBySize.cy.js` modifications (currently staged for commit)
 
 ### Quick Start for New Developers
 1. Clone repository and run `npm install`

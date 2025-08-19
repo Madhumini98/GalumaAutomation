@@ -11,7 +11,7 @@ describe('Galuma Mobile Home Page Tests', () => {
                 'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
             }
         })
-        cy.wait(3000)
+        cy.wait(3000) 
     })
 
     it('TC_GALUMA_MOBILE_HOME_001 - Verify successful navigation to the homepage', () => {
