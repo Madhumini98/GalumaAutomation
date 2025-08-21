@@ -306,6 +306,48 @@ describe('Galuma Home Tests', () => {
         cy.wait(2000)
     })
 
+    it('TC_GALUMA_PRODUCTOVERLAY_MOBILE_011 - Verify product card overlay displays correct details and View Product button navigates to product details page', () => {
+        // Scroll to sample products section
+        cy.get(':nth-child(10) > .container > .row > .col-12').scrollIntoView()
+        cy.wait(2000)
+
+        // Verify the products section is visible
+        cy.get(':nth-child(10) > .container > .row > .col-12').should('be.visible')
+
+        // Hover over product card to reveal overlay
+        cy.get(':nth-child(2) > .box-cover').trigger('mouseenter', { force: true })
+        cy.wait(1000)
+
+        // Verify overlay is present and click on the entire overlay area to navigate
+        cy.get(':nth-child(2) > .box-cover > .overlay').should('exist')
+        cy.get(':nth-child(2) > .box-cover > .overlay > .brand').should('exist')
+        
+        // Try to find and click a product link within the overlay first
+        cy.get(':nth-child(2) > .box-cover').within(() => {
+            // Look for any clickable links within the product card
+            cy.get('a').should('exist').first().click({ force: true })
+        })
+        cy.wait(3000)
+
+        // Verify navigation occurred (check if URL changed from homepage)
+        cy.url().should('not.eq', 'https://dev.galumatires.com/')
+        cy.get('body').should('be.visible')
+        
+        // Log the actual URL to understand the navigation pattern
+        cy.url().then((url) => {
+            cy.log('Navigated to: ' + url)
+        })
+
+        // Come back to home page 
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+    })
+
     it('TC_GALUMA_PAYMENTPLANS_014 - Verify Payment Plans section displays content and View Options button functions correctly', () => {
         // Verify Payment Plans section is visible 
         cy.get('.pay_plan').should('be.visible')

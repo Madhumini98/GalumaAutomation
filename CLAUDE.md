@@ -146,10 +146,11 @@ describe('Feature Tests', () => {
 - Brand testing uses comprehensive brand arrays with selectors and expected URLs
 
 ### Test Execution Best Practices
-- Use `.only()` during development to focus on specific tests
-- Remove `.only()` before committing to ensure full test suite runs
+- Use `.only()` during development to focus on specific tests (currently active in desktopHome.cy.js)
+- **IMPORTANT**: Remove `.only()` before committing to ensure full test suite runs
 - Monitor browser console for JavaScript errors during test development
 - Screenshots are automatically captured in `cypress/screenshots/` for failed tests
+- Check for existing `.only()` modifiers when troubleshooting why only specific tests are running
 
 ### Dropdown Interaction Architecture
 Complex multi-step dropdown handling pattern used throughout tests:
