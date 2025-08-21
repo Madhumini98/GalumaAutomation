@@ -64,6 +64,33 @@ describe('Galuma Home Tests', () => {
     })
 
     it('TC_SHOPTIRESBYSIZE_005 - Verify that the "Find Tires" button re-enables and functions correctly after correcting required fields on the "Search by Size" tab', () => {
+        // Additional scenario: Test "Find out here!" popup functionality
+        // Verify "Find out here!" popup visibility
+        cy.get('.open-popup')
+
+        // Click on "Find out here!" button
+        cy.get('.open-popup > span').click()
+
+        // Verify the popup tab appears
+        cy.get('#findout-tire-modal > .popup-content > :nth-child(2) > em').should('be.visible')
+
+        // Click on "click here to learn more" text
+        cy.get('#findout-tire-modal > .popup-content > #learn_more').click()
+
+        // Wait for navigation to read-my-tires page
+        cy.wait(2000)
+
+        // Verify navigation to read-my-tires page
+        cy.url().should('include', '/read-my-tires')
+
+        // Navigate back to home page
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        
         // Navigate to the tire search section
         cy.get('.content_form').should('be.visible')
 
@@ -106,25 +133,50 @@ describe('Galuma Home Tests', () => {
             }
         })
         cy.wait(2000)
+    })
 
-        // Additional scenario: Test "Find out here!" popup functionality
-        // Verify "Find out here!" popup visibility
-        cy.get('.open-popup')
+    it('TC_SHOPTIRESBYBRAND_006 - Shop Tires by Brand', () => {
+        // 1. Navigate to the tire search section
+        cy.get('.content_form').should('be.visible')
 
-        // Click on "Find out here!" button
-        cy.get('.open-popup > span').click()
+        // 2. Click on "Search by Brand" tab to make it active
+        cy.get('[data-id="by-brand"]').click({ force: true })
+        cy.wait(1000) // Wait for tab to activate and form to become visible
 
-        // Verify the popup tab appears
-        cy.get('#findout-tire-modal > .popup-content > :nth-child(2) > em').should('be.visible')
+        // 3. Fill brands section
+        cy.get('#filter-select-brand').select('Continental', { force: true })
+        cy.wait(1000) // Wait for brand selection to process
 
-        // Click on "click here to learn more" text
-        cy.get('#findout-tire-modal > .popup-content > #learn_more').click()
+        // Fill models section
+        cy.get('#filter-select-model').select('ContiProContact (N1)', { force: true })
+        cy.wait(1000) // Wait for model selection to process
 
-        // Wait for navigation to read-my-tires page
-        cy.wait(2000)
+        // 4. Click "Find Tires" button
+        cy.get('#search-by-brands').should('be.visible').click()
+        cy.wait(3000)
 
-        // Verify navigation to read-my-tires page
-        cy.url().should('include', '/read-my-tires')
+        // Verify that search results are displayed (brand-specific URL)
+        cy.url().should('include', '/t/b/continental/contiprocontact-n1')
+
+        // Click a filtered product randomly and go back to home
+        cy.get('body').then(($body) => {
+            if ($body.find('[data-eid]').length > 0) {
+                // Get random product from the available products
+                cy.get('[data-eid]').then(($products) => {
+                    const randomIndex = Math.floor(Math.random() * $products.length)
+                    const randomProduct = $products.eq(randomIndex)
+                    const dataEid = randomProduct.attr('data-eid')
+                    
+                    // Click on the random product
+                    cy.get(`[data-eid="${dataEid}"]`).first().click({ force: true })
+                    cy.wait(2000)
+                    
+                    // Go back to previous page (search results)
+                    cy.go('back')
+                    cy.wait(1000)
+                })
+            }
+        })
 
         // Navigate back to home page
         cy.visit("https://dev.galumatires.com/", {
@@ -133,6 +185,7 @@ describe('Galuma Home Tests', () => {
                 password: 'Test.123'
             }
         })
+        cy.wait(2000)
     })
 
     it('TC_CHECKOUT_STEPS_007 - Verify checkout steps are visible on homepage', () => {
@@ -220,6 +273,37 @@ describe('Galuma Home Tests', () => {
         cy.get(':nth-child(10) > .zoomable > .timage').should('be.visible').click()
         cy.url().should('include', 'tire-inspections')
         cy.go('back')
+    })
+
+    it('TC_GALUMA_VIDEO_010 - Verify left-side promotional video is visible and plays as intended', () => {
+        // 1. Navigate to the webpage (already done in beforeEach)
+        cy.get('body').should('be.visible')
+
+        // 2. Scroll to the tire promotions section
+        cy.get('.side_img > #promo-video-preview').scrollIntoView()
+        cy.wait(1000)
+
+        // 3. Verify the left-side video is visible
+        cy.get('.side_img > #promo-video-preview').should('be.visible')
+
+        // Additional verification: Check iframe element properties
+        cy.get('.side_img > #promo-video-preview').should('have.prop', 'tagName', 'IFRAME')
+
+        // Verify iframe has src attribute (embedded video)
+        cy.get('.side_img > #promo-video-preview').should('have.attr', 'src')
+
+        // Optional: Test iframe interaction (click if clickable)
+        cy.get('.side_img > #promo-video-preview').click({ force: true })
+        cy.wait(1000)
+
+        // Navigate back to home page
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
     })
 
     it('TC_GALUMA_PAYMENTPLANS_014 - Verify Payment Plans section displays content and View Options button functions correctly', () => {
