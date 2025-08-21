@@ -752,64 +752,117 @@ describe('Galuma Home Tests', () => {
 
         // Verify social media icons section is visible
         cy.get('.col-md-4 > .social-icon > .list-unstyled').should('be.visible')
-
-        // Test Facebook icon - remove target="_blank" and navigate directly
+    
+        // Test Facebook icon - get href and visit directly
         cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(1) > a > .img-fluid').should('be.visible')
-        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(1) > a').invoke('removeAttr', 'target').click()
-        cy.wait(2000)
-        cy.url().should('include', 'facebook.com')
-        cy.get('body').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(1) > a').should('have.attr', 'href').then((href) => {
+            // Visit Facebook page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
 
-        // Go back to homepage for next test
-        cy.visit("https://dev.galumatires.com/", {
-            auth: {
-                username: 'galumadev',
-                password: 'Test.123'
-            }
+            // Verify we're on Facebook
+            cy.url().should('include', 'facebook.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(2000)
         })
-        cy.wait(2000)
 
-        // Test YouTube icon
+        // Test YouTube icon - get href and visit directly
         cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
         cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(2) > a > .img-fluid').should('be.visible')
-        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(2) > a').invoke('removeAttr', 'target').click()
-        cy.wait(2000)
-        cy.url().should('include', 'youtube.com')
-        cy.get('body').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(2) > a').should('have.attr', 'href').then((href) => {
+            // Visit YouTube page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
 
-        // Go back to homepage for next test
-        cy.visit("https://dev.galumatires.com/", {
-            auth: {
-                username: 'galumadev',
-                password: 'Test.123'
-            }
+            // Verify we're on YouTube
+            cy.url().should('include', 'youtube.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(2000)
         })
-        cy.wait(2000)
 
-        // Test Instagram icon
+        // Test Instagram icon - get href and visit directly
         cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
         cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(3) > a > .img-fluid').should('be.visible')
-        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(3) > a').invoke('removeAttr', 'target').click()
-        cy.wait(2000)
-        cy.url().should('include', 'instagram.com')
-        cy.get('body').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(3) > a').should('have.attr', 'href').then((href) => {
+            // Visit Instagram page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
 
-        // Go back to homepage for next test
-        cy.visit("https://dev.galumatires.com/", {
-            auth: {
-                username: 'galumadev',
-                password: 'Test.123'
-            }
+            // Verify we're on Instagram
+            cy.url().should('include', 'instagram.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(2000)
         })
-        cy.wait(2000)
 
-        // Test TikTok icon
+        // Test TikTok icon - get href and visit directly
         cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
         cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(4) > a > .img-fluid').should('be.visible')
-        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(4) > a').invoke('removeAttr', 'target').click()
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(4) > a').should('have.attr', 'href').then((href) => {
+            // Visit TikTok page directly
+            cy.visit(href.toString())
+            cy.wait(3000)
+
+            // Verify we're on TikTok
+            cy.url().should('include', 'tiktok.com')
+            cy.get('body').should('be.visible')
+
+            // Go back to Galuma homepage
+            cy.visit("https://dev.galumatires.com/", {
+                auth: {
+                    username: 'galumadev',
+                    password: 'Test.123'
+                }
+            })
+            cy.wait(1000)
+        })
+    })
+
+    it('TC_GALUMA_LIVECHAT_023 - Verify live chat functionality with section interactions and close capability', () => {
+        // Click on the live chat icon to open chat container
+        cy.get('.live-chat-icon').should('be.visible').click()
+
+        // Wait for chat container to load
         cy.wait(2000)
-        cy.url().should('include', 'tiktok.com')
+
+        // Verify chat container is visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // Click on the close icon to close the chat container
+        cy.get('.chat-minimize-arrow').should('be.visible').click()
+
+        // Wait for container to close
+        cy.wait(1000)
+
+        // Verify chat container is no longer visible or has been closed
+        cy.get('.chat-home-container').should('not.be.visible')
+
+        // Verify we're back to the main page
         cy.get('body').should('be.visible')
+        cy.url().should('include', 'galumatires.com')
     })
 
 })
