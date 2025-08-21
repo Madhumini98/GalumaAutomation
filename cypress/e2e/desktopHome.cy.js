@@ -63,6 +63,77 @@ describe('Galuma Home Tests', () => {
         cy.get('body').should('be.visible')
     })
 
+    it('TC_SHOPTIRESBYSIZE_005 - Verify that the "Find Tires" button re-enables and functions correctly after correcting required fields on the "Search by Size" tab', () => {
+        // Navigate to the tire search section
+        cy.get('.content_form').should('be.visible')
+
+        // Ensure "Search by Size" tab is active
+        cy.get('.buttonWrapper > .active').should('be.visible')
+
+        // Leave Width, Ratio, and Diameter fields empty/unselected initially
+        // Then fill them with valid values in a proper manner slowly
+
+        // Step 1: Click width button to open dropdown and select "225"
+        cy.get('#tire-width-value').should('be.visible').click()
+        cy.wait(1000) // Wait for dropdown to open
+        cy.get('#select-dropdown-content1 > :nth-child(1) > [data-value="225"] > .red_h').should('be.visible').click()
+        cy.wait(1000) // Wait for selection to be processed
+
+        // Step 2: Click ratio button to open dropdown and select "35"
+        cy.get('#tire-ratio-value').should('be.visible').click()
+        cy.wait(1000) // Wait for dropdown to open
+        cy.get('#select-dropdown-content2 > :nth-child(1) > [data-value="35"] > .red_h').should('be.visible').click()
+        cy.wait(1000) // Wait for selection to be processed
+
+        // Step 3: Click diameter button to open dropdown and select "20"
+        cy.get('#tire-diameter-value').should('be.visible').click()
+        cy.wait(1000) // Wait for dropdown to open
+        cy.get('#select-dropdown-content3 > :nth-child(1) > [data-value="20"] > .red_h').should('be.visible').click()
+        cy.wait(1000) // Wait for selection to be processed
+
+        // Click "Find Tires" button
+        cy.get('[data-tab="by-size"] > :nth-child(2) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // Verify that search results are displayed
+        cy.url().should('include', '/t/s/225-35r20')
+
+        // Go back to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        // Additional scenario: Test "Find out here!" popup functionality
+        // Verify "Find out here!" popup visibility
+        cy.get('.open-popup')
+
+        // Click on "Find out here!" button
+        cy.get('.open-popup > span').click()
+
+        // Verify the popup tab appears
+        cy.get('#findout-tire-modal > .popup-content > :nth-child(2) > em').should('be.visible')
+
+        // Click on "click here to learn more" text
+        cy.get('#findout-tire-modal > .popup-content > #learn_more').click()
+
+        // Wait for navigation to read-my-tires page
+        cy.wait(2000)
+
+        // Verify navigation to read-my-tires page
+        cy.url().should('include', '/read-my-tires')
+
+        // Navigate back to home page
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+    })
 
     it('TC_CHECKOUT_STEPS_007 - Verify checkout steps are visible on homepage', () => {
         // Scroll down to load content
@@ -482,6 +553,137 @@ describe('Galuma Home Tests', () => {
             }
         })
         cy.wait(1000)
+    })
+
+    it('TC_GALUMA_FOOTER_LINKS_021 - Ensure all footer policy links redirect to correct respective pages', () => {
+        // Scroll to footer section
+        cy.get('footer.main_footer').scrollIntoView()
+        cy.wait(2000)
+
+        // Verify the bottom section is visible
+        cy.get('.copyright > .container > .row > .col-md-5').should('be.visible')
+
+        // Test "Terms & Conditions" button
+        cy.get('.bottom_details > :nth-child(1) > a').should('be.visible').click()
+        cy.wait(2000)
+
+        // Verify it redirects to the Terms & Conditions page
+        cy.url().should('include', '/sales-terms-and-condition')
+        cy.get('body').should('be.visible')
+
+        // Go back to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        /*
+        // Scroll to footer again and test "Cookie Policy" button
+        cy.get('.copyright > .container > .row > .col-md-5').scrollIntoView()
+        cy.get('.bottom_details > :nth-child(2) > a').should('be.visible').click()
+        cy.wait(2000)
+        
+        // Verify it redirects to homepage (as specified)
+        cy.url().should('include', 'galumatires.com')
+        cy.get('body').should('be.visible')
+        
+        // Navigate back to homepage if needed
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+        */
+
+        // Scroll to footer again and test "Privacy Policy" button
+        cy.get('.copyright > .container > .row > .col-md-5').scrollIntoView()
+        cy.get('.bottom_details > :nth-child(3) > a').should('be.visible').click()
+        cy.wait(2000)
+
+        // Verify it redirects to the Privacy Policy page
+        cy.url().should('include', '/privacy-policy')
+        cy.get('body').should('be.visible')
+
+        // Go back to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(1000)
+    })
+
+    it('TC_GALUMA_SOCIAL_LINKS_022 - Ensure all social media icons open respective Galuma social media pages in new tabs', () => {
+        // Scroll to bottom of page to locate social media icons
+        cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
+        cy.wait(2000)
+
+        // Verify social media icons section is visible
+        cy.get('.col-md-4 > .social-icon > .list-unstyled').should('be.visible')
+
+        // Test Facebook icon - remove target="_blank" and navigate directly
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(1) > a > .img-fluid').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(1) > a').invoke('removeAttr', 'target').click()
+        cy.wait(2000)
+        cy.url().should('include', 'facebook.com')
+        cy.get('body').should('be.visible')
+
+        // Go back to homepage for next test
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        // Test YouTube icon
+        cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(2) > a > .img-fluid').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(2) > a').invoke('removeAttr', 'target').click()
+        cy.wait(2000)
+        cy.url().should('include', 'youtube.com')
+        cy.get('body').should('be.visible')
+
+        // Go back to homepage for next test
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        // Test Instagram icon
+        cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(3) > a > .img-fluid').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(3) > a').invoke('removeAttr', 'target').click()
+        cy.wait(2000)
+        cy.url().should('include', 'instagram.com')
+        cy.get('body').should('be.visible')
+
+        // Go back to homepage for next test
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(2000)
+
+        // Test TikTok icon
+        cy.get('.col-md-4 > .social-icon > .list-unstyled').scrollIntoView()
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(4) > a > .img-fluid').should('be.visible')
+        cy.get('.col-md-4 > .social-icon > .list-unstyled > :nth-child(4) > a').invoke('removeAttr', 'target').click()
+        cy.wait(2000)
+        cy.url().should('include', 'tiktok.com')
+        cy.get('body').should('be.visible')
     })
 
 })

@@ -168,8 +168,13 @@ Four distinct search methods with different result validation approaches:
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
 - **Recent Focus**: Enhanced desktop home automation, cart management, and pagination testing with comprehensive filter combinations
-- **Active Files**: Currently working with 6 main test specification files covering desktop/mobile authentication, desktop/mobile homepage, search functionality, tire size filtering, and tire brand filtering
-- **Git Status**: Working on `desktopHome.cy.js` modifications (currently modified)
+- **Active Files**: Currently working with 6 main test specification files:
+  - `desktopSignIn.cy.js` - Desktop authentication flows
+  - `desktopHome.cy.js` - Desktop homepage functionality
+  - `mobileHome.cy.js` - Mobile homepage functionality  
+  - `mobileSearch.cy.js` - Search functionality testing
+  - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
+  - `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
 
 ### Quick Start for New Developers
 1. Clone repository and run `npm install`
