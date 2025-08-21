@@ -1,4 +1,4 @@
-describe('Galuma Search Icon Functionality Tests', () => {
+describe('Galuma Mobile Search Icon Functionality Tests', () => {
     beforeEach(() => {
         // Common setup for all test cases
         cy.viewport(360, 640)
