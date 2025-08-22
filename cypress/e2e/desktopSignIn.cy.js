@@ -1,4 +1,4 @@
-describe('Galuma Sign-in Tests', () => {
+describe('Galuma Sign-In Tests', () => {
   beforeEach(() => {
     // Common setup for all test cases
     cy.viewport(1475, 750)
