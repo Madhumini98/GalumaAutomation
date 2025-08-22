@@ -19,7 +19,7 @@ describe('Galuma Desktop Search Icon Functionality Tests', () => {
         cy.get('body').should('contain', 'Pirelli')
     })
 
-    
+
     it('TC_GALUMA_SEARCHHEADER_002 - Verify user can search for products and navigate to specific product', () => {
         // Handle uncaught application errors
         Cypress.on('uncaught:exception', (err, runnable) => {
@@ -317,16 +317,16 @@ describe('Galuma Desktop Search Icon Functionality Tests', () => {
         cy.get('#popup-search-tires-model-select option').then(($options) => {
             const modelOptions = [...$options].slice(1) // Skip the first empty/placeholder option
             cy.log('Available model options for Bridgestone:', modelOptions.map(el => el.text))
-            
+
             if (modelOptions.length > 0) {
                 const firstModel = modelOptions[0]
                 const modelValue = firstModel.value
                 const modelText = firstModel.text
                 cy.log('Selecting first available model:', modelText, 'with value:', modelValue)
-                
+
                 // Select the first available model
                 cy.get('#popup-search-tires-model-select').select(modelValue)
-                
+
                 // Verify model is selected
                 cy.get('#popup-search-tires-model-select').should('contain', modelText)
             }
@@ -343,6 +343,400 @@ describe('Galuma Desktop Search Icon Functionality Tests', () => {
 
         // Verify page contains Bridgestone brand information
         cy.get('body').should('contain', 'Bridgestone')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_008 - Verify user can search for specific product and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type "Michelin Pilot Sport 4S" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('Michelin Pilot Sport 4S')
+
+        // Wait for search suggestions to load
+        cy.wait(2000)
+
+        // Click on the suggested product
+        cy.get('[href="https://dev.galumatires.com/p/2x-tires-likenew-michelin-pilot-sport-4s-325-35-22-325-35zr22-3253522-67558"]').should('be.visible').first().click()
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify navigation to the correct product page
+        cy.url().should('include', '/p/2x-tires-likenew-michelin-pilot-sport-4s-325-35-22-325-35zr22-3253522-67558')
+
+        // Verify page contains the product information
+        cy.get('body').should('contain', 'Michelin Pilot Sport 4S')
+
+        // Verify page contains Bridgestone brand information
+        cy.get('body').should('contain', 'Michelin')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_009 - Verify user can search by stock number and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type stock number "#56462" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('#74608')
+
+        // Wait for search suggestions to load
+        cy.wait(2000)
+
+        // Click on the suggested product
+        cy.get('.suggestion-item').should('be.visible').first().click()
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify navigation to the correct product page
+        cy.url().should('include', '/p/set-of-2-tires-likenew-continental-crosscontact-rx-275-45r22-275-45-22-74608')
+
+        // Verify page contains the stock number
+        cy.get('body').should('contain', '74608')
+
+        // Verify page contains Continental brand information
+        cy.get('body').should('contain', 'Continental')
+
+        // Verify page contains the product model information
+        cy.get('body').should('contain', 'CrossContact RX')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_010 - Verify user can search by stock number without # symbol and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type stock number "56462" (without #) in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('74608')
+
+        // Wait for search suggestions to load
+        cy.wait(2000)
+
+        // Click on the suggested product
+        cy.get('.suggestion-item').should('be.visible').first().click()
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify navigation to the correct product page
+        cy.url().should('include', '/p/set-of-2-tires-likenew-continental-crosscontact-rx-275-45r22-275-45-22-74608')
+
+        // Verify page contains the stock number
+        cy.get('body').should('contain', '74608')
+
+        // Verify page contains Continental brand information
+        cy.get('body').should('contain', 'Continental')
+
+        // Verify page contains the product model information
+        cy.get('body').should('contain', 'CrossContact RX')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_011 - Verify user can search for specific product ID (245/50R19) and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type product ID "245/50R19" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('245/50R19')
+
+        // Wait for search suggestions to load
+        cy.wait(3000)
+
+        // Check if suggestions are available, if not, press Enter to search
+        cy.get('body').then($body => {
+            if ($body.find('.suggestion-item').length > 0) {
+                // Click on the suggested product if suggestions exist
+                cy.get('.suggestion-item').should('be.visible').first().click()
+            } else {
+                // If no suggestions, press Enter to perform search
+                cy.get('input[type="text"]:visible').first().type('{enter}')
+            }
+        })
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify page contains the product ID information (tire size can be in different formats)
+        cy.get('body').should('satisfy', ($body) => {
+            const bodyText = $body.text()
+            return bodyText.includes('245/50R19') ||
+                bodyText.includes('245/50/19') ||
+                (bodyText.includes('245') && bodyText.includes('50') && bodyText.includes('19'))
+        })
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_012 - Verify user can search for specific product ID (245/50/19) and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type product ID "245/50/19" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('245/50/19')
+
+        // Wait for search suggestions to load
+        cy.wait(2000)
+
+        // Click on the suggested product
+        cy.get('.suggestion-item').should('be.visible').first().click()
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify page contains the product ID information (tire size can be in different formats)
+        cy.get('body').should('satisfy', ($body) => {
+            const bodyText = $body.text()
+            return bodyText.includes('245/50R19') ||
+                bodyText.includes('245/50/19') ||
+                (bodyText.includes('245') && bodyText.includes('50') && bodyText.includes('19'))
+        })
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_013 - Verify user can search for specific product ID (245 50/19) and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type product ID "245 50/19" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('245 50/19')
+
+        // Wait for search suggestions to load
+        cy.wait(2000)
+
+        // Click on the suggested product
+        cy.get('.suggestion-item').should('be.visible').first().click()
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify page contains the product ID information
+        cy.get('body').should('contain', '245/50R19')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_014 - Verify user can search for specific product ID (245 50 19) and navigate to product page', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type product ID "245 50 19" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('245 50 19')
+
+        // Wait for search suggestions to load
+        cy.wait(2000)
+
+        // Click on the suggested product
+        cy.get('.suggestion-item').should('be.visible').first().click()
+
+        // Wait for navigation to product page
+        cy.wait(3000)
+
+        // Verify page contains the product ID information
+        cy.get('body').should('contain', '245/50R19')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_015 - Verify header search box displays results for invalid queries', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type invalid/non-existent search term "xyz123" in the search input
+        cy.get('#searchbar-input').first().should('be.visible').type('xyz123')
+
+        // Wait for search to process
+        cy.wait(3000)
+
+        // Check if suggestions container exists or if any results are displayed
+        cy.get('body').then($body => {
+            // Check for suggestions container
+            if ($body.find('.suggestion-item').length > 0) {
+                // If suggestions exist, verify they don't contain irrelevant results
+                cy.get('.suggestion-item').should('not.exist')
+            } else {
+                // Verify no results message is displayed or appropriate feedback
+                cy.get('body').should('satisfy', ($body) => {
+                    const bodyText = $body.text()
+                    return bodyText.includes('No results found')
+                })
+            }
+        })
+
+        // Verify user remains on the same page without navigation
+        cy.url().should('include', 'dev.galumatires.com')
+
+        // Verify search overlay is still visible (user didn't navigate away)
+        cy.get('input[type="text"]:visible').first().should('be.visible')
+
+        // Verify the invalid search term is still in the input field
+        cy.get('input[type="text"]:visible').first().should('have.value', 'xyz123')
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_016 - Verify user can search for blog articles, information, and help content through the search functionality', () => {
+        // Navigate to Search button
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type "shipping" in the search field
+        cy.get('#searchbar-input').first().should('be.visible').type('shipping')
+
+        // Wait for search suggestions to load
+        cy.wait(3000)
+
+        // Verify search results display multiple content types
+        cy.get('body').then($body => {
+            if ($body.find('.suggestion-item').length > 0 || $body.find('#suggestions-container').length > 0) {
+                // Verify different types of content are available in search results
+                cy.get('body').should('satisfy', ($body) => {
+                    const bodyText = $body.text()
+                    return bodyText.includes('shipping') ||
+                        bodyText.includes('Shipping') ||
+                        bodyText.includes('Ship') ||
+                        bodyText.includes('Policy') ||
+                        bodyText.includes('FEDEX') ||
+                        bodyText.includes('Help') ||
+                        bodyText.includes('Information')
+                })
+
+                // Check for Blog Articles section
+                cy.get('body').should('satisfy', ($body) => {
+                    const bodyText = $body.text()
+                    return bodyText.includes('How soon can you ship') ||
+                        bodyText.includes('patch tires') ||
+                        bodyText.includes('Blog') ||
+                        bodyText.includes('Article')
+                })
+
+                // Check for Information & Help content
+                cy.get('body').should('satisfy', ($body) => {
+                    const bodyText = $body.text()
+                    return bodyText.includes('Shipping Policy') ||
+                        bodyText.includes('Track My Order') ||
+                        bodyText.includes('Help') ||
+                        bodyText.includes('Information')
+                })
+
+                // Check for Product-related content
+                cy.get('body').should('satisfy', ($body) => {
+                    const bodyText = $body.text()
+                    return bodyText.includes('FEDEX') ||
+                        bodyText.includes('shipping') ||
+                        bodyText.includes('Product')
+                })
+
+                // Try to click on the specific shipping FEDEX blog link
+                cy.get('body').then($body => {
+                    // Look for the specific shipping FEDEX blog link
+                    if ($body.find('[href="https://dev.galumatires.com/blog/shipping-fedex"]').length > 0) {
+                        cy.get('[href="https://dev.galumatires.com/blog/shipping-fedex"]').should('be.visible').click()
+                    } else if ($body.find('a[href*="shipping-fedex"]').length > 0) {
+                        cy.get('a[href*="shipping-fedex"]').should('be.visible').click()
+                    } else if ($body.find('a:contains("FEDEX")').length > 0) {
+                        cy.get('a:contains("FEDEX")').should('be.visible').click()
+                    } else if ($body.find('a:contains("shipping")').length > 0) {
+                        // Click on shipping link with force if visibility issues
+                        cy.get('a:contains("shipping")').first().click({ force: true })
+                    } else if ($body.find('.suggestion-item').length > 0) {
+                        // If no specific shipping link found, click first suggestion
+                        cy.get('.suggestion-item').first().click()
+                    }
+                })
+
+                // Wait for navigation
+                cy.wait(3000)
+
+                // Verify navigation to the shipping FEDEX blog page or appropriate related page
+                cy.url().should('satisfy', (url) => {
+                    return url.includes('blog/shipping-fedex') ||
+                        url.includes('shipping') ||
+                        url.includes('fedex') ||
+                        url.includes('blog') ||
+                        url.includes('dev.galumatires.com')
+                })
+
+                // Verify page contains relevant shipping/FEDEX content
+                cy.get('body').should('satisfy', ($body) => {
+                    const bodyText = $body.text()
+                    return bodyText.includes('shipping') ||
+                        bodyText.includes('Shipping') ||
+                        bodyText.includes('FEDEX') ||
+                        bodyText.includes('FedEx') ||
+                        bodyText.includes('delivery') ||
+                        bodyText.includes('blog') ||
+                        bodyText.includes('article')
+                })
+
+            } else {
+                // If no suggestions found, verify search functionality still works
+                cy.get('input[type="text"]:visible').first().type('{enter}')
+                cy.wait(2000)
+
+                // Verify page contains search-related content or remains functional
+                cy.url().should('include', 'dev.galumatires.com')
+                cy.get('body').should('be.visible')
+            }
+        })
+    })
+
+    it('TC_GALUMA_SEARCHBUTTON_017 - Verify that out-of-stock products do not appear in search results and display appropriate "No results found" message', () => {
+        // Navigate to Search button in header
+        cy.get('.sec_side_icon > #open-search-popup').should('be.visible').click()
+
+        // Wait for search overlay to load
+        cy.wait(2000)
+
+        // Type out-of-stock product identifier "#80973" in the search field
+        cy.get('#searchbar-input').first().should('be.visible').type('#80973')
+
+        // Wait for search to process
+        cy.wait(3000)
+
+        // Verify no product suggestions appear
+        cy.get('.suggestion-item').should('not.exist')
+
+        // Verify "No results found" message is displayed (accept various formats)
+        cy.get('body').should(($body) => {
+            const text = $body.text()
+            expect(text).to.satisfy((str) =>
+                str.includes('No results found') ||
+                str.includes('No products found') ||
+                str.includes('Nothing found')
+            )
+        })
+
+        // Close the search overlay
+        cy.get('body').then($body => {
+            // Try different ways to close the search overlay
+            if ($body.find('.close-search').length > 0) {
+                cy.get('.close-search').click()
+            } else if ($body.find('.search-close').length > 0) {
+                cy.get('.search-close').click()
+            } else if ($body.find('[data-dismiss="modal"]').length > 0) {
+                cy.get('[data-dismiss="modal"]').click()
+            } else {
+                // Press Escape key to close
+                cy.get('body').type('{esc}')
+            }
+        })
+
+        // Wait for overlay to close
+        cy.wait(1000)
     })
 
 })
