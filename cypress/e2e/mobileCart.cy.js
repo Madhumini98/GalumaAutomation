@@ -38,10 +38,10 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         // Wait for products to load and get the first product
         cy.get('#tire-products-container-mobile').should('be.visible')
         cy.wait(2000)
-        
+
         cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
             const dataEid = $product.attr('data-eid')
-            
+
             // Click on one product
             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
             cy.wait(2000)
@@ -58,7 +58,7 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             cy.get('#cart-popup-mobile').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
-            
+
             // Verify item is visible in cart
             cy.get('#cart-popup-mobile .cart_content').find('.cart_item, .product_item, [class*="item"]').should('be.visible')
             cy.wait(2000)
@@ -92,10 +92,10 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         // Wait for products to load and get a different product (second product)
         cy.get('#tire-products-container-mobile').should('be.visible')
         cy.wait(2000)
-        
+
         cy.get('#tire-products-container-mobile [data-eid]').eq(1).then(($product) => {
             const dataEid = $product.attr('data-eid')
-            
+
             // Click on one product
             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
             cy.wait(2000)
@@ -120,7 +120,7 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             // Select 'Pickup and Save!' option 
             cy.get('.pickup-opt-list > :nth-child(1)').scrollIntoView().click()
             cy.wait(1000)
-            
+
             // Ensure pickup checkbox is selected to show container
             cy.get('#pickup-select-checkbox-mobile').should('be.visible').click()
             cy.wait(2000)
@@ -149,11 +149,11 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             cy.get('#cart-popup-mobile').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
-            
+
             // Verify item is visible in cart with pickup option
             cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Pickup')
             cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('exist')
-            
+
             // Wait some time to view the cart with selected pickup option
             cy.wait(5000)
 
@@ -186,10 +186,10 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         // Wait for products to load and get a different product (third product)
         cy.get('#tire-products-container-mobile').should('be.visible')
         cy.wait(2000)
-        
+
         cy.get('#tire-products-container-mobile [data-eid]').eq(2).then(($product) => {
             const dataEid = $product.attr('data-eid')
-            
+
             // Click on one product
             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
             cy.wait(2000)
@@ -224,13 +224,13 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             cy.get('#cart-popup-mobile').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
-            
+
             // Verify item is visible in cart with non-pickup option
             cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('exist')
-            
+
             // Verify the specific item in cart does not have pickup service (more specific check)
             cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').first().should('not.contain.text', 'Pickup and Save!')
-            
+
             // Wait some time to view the cart
             cy.wait(3000)
 
@@ -263,10 +263,10 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         // Wait for products to load and get the first product
         cy.get('#tire-products-container-mobile').should('be.visible')
         cy.wait(2000)
-        
+
         cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
             const dataEid = $product.attr('data-eid')
-            
+
             // Click on one product
             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
             cy.wait(2000)
@@ -283,7 +283,7 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             cy.get('#cart-popup-mobile').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
-            
+
             // Verify item is visible in cart
             cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('exist')
             cy.wait(2000)
@@ -295,7 +295,7 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             // Check the cart - should be empty or show empty cart message
             cy.get('#cart-popup-mobile').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('be.visible')
-            
+
             // Verify cart is empty after removal (check for common empty cart indicators)
             cy.get('#cart-popup-mobile .cart_content').then(($cartContent) => {
                 const cartText = $cartContent.text().toLowerCase()
@@ -334,10 +334,10 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         // Wait for products to load and get the first product
         cy.get('#tire-products-container-mobile').should('be.visible')
         cy.wait(2000)
-        
+
         cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
             const dataEid = $product.attr('data-eid')
-            
+
             // Click on one product
             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
             cy.wait(2000)
@@ -373,13 +373,13 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
                     // Click on first image if available
                     cy.get('#thumbnail-container-mobile img').first().should('be.visible').click()
                     cy.wait(1000)
-                    
+
                     // Click on second image if available
                     if ($images.length > 1) {
                         cy.get('#thumbnail-container-mobile img').eq(1).should('be.visible').click()
                         cy.wait(1000)
                     }
-                    
+
                     // Click on third image if available
                     if ($images.length > 2) {
                         cy.get('#thumbnail-container-mobile img').eq(2).should('be.visible').click()
@@ -419,10 +419,10 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         // Wait for products to load and get the first product
         cy.get('#tire-products-container-mobile').should('be.visible')
         cy.wait(2000)
-        
+
         cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
             const dataEid = $product.attr('data-eid')
-            
+
             // Click on one product
             cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
             cy.wait(2000)
@@ -480,7 +480,7 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
             // Check visibility of the discount amounts in cart
             cy.get('#cart-popup-mobile').should('be.visible')
             cy.get('#cart-popup-mobile .cart_content').should('be.visible')
-            
+
             // Verify discount is applied and visible
             cy.get('#cart-popup-mobile').then(($cart) => {
                 const cartText = $cart.text().toLowerCase()
@@ -492,6 +492,93 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
 
             // Close the cart
             cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > #cart-popup-mobile > .cart_content > #close-cart-popup-mobile > strong').should('be.visible').click()
+        })
+    })
+
+    it('TC_GALUMA_MOBILE_CART_007 - Verify error message for a invalid coupon', () => {
+        // Navigate to shop tires page: https://dev.galumatires.com/t/s
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop tires page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Browse products to display them
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // Wait for products to load and get the first product
+        cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.wait(2000)
+
+        cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
+            const dataEid = $product.attr('data-eid')
+
+            // Click on one product
+            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+            cy.wait(2000)
+
+            // Verify product overlay is shown
+            cy.get(`[data-eid="${dataEid}"] > .overlay`).should('be.visible')
+            cy.wait(1000)
+
+            // Click on 'Add to Cart' button
+            cy.get(`[data-eid="${dataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+            cy.wait(3000)
+
+            // Check product visibility on the cart
+            cy.get('#cart-popup-mobile').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+            cy.wait(2000)
+
+            // Click on 'Apply coupon' button - using improved selector approach
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('#apply-coupon-btn, .apply-coupon button, [class*="apply-coupon"] button')
+                    .should('be.visible')
+                    .click()
+            })
+            cy.wait(2000)
+
+            // Enter invalid coupon code as 'galuma789'
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('.coopan-container input[type="text"], [class*="coupon"] input, [placeholder*="coupon"] input')
+                    .should('be.visible')
+                    .type('galuma789')
+            })
+            cy.wait(1000)
+
+            // Click on 'Apply' button
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('#coopan-apply-btn, .coopan-container button, [class*="coupon"] button:contains("Apply")')
+                    .should('be.visible')
+                    .click()
+            })
+            cy.wait(3000)
+
+            // Check visibility of the error message
+            cy.get('.alert').should('be.visible').should('contain.text', 'Error!').should('contain.text', 'Invalid promo code or expired')
+            cy.wait(2000)
+
+            // Close the error message popup
+            cy.get('.close-alert > .fa').should('be.visible').click()
+            cy.wait(1000)
+
+            // Close the cart if it's still visible
+            cy.get('#cart-popup-mobile').then(($cart) => {
+                if ($cart.is(':visible')) {
+                    cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > #cart-popup-mobile > .cart_content > #close-cart-popup-mobile > strong').should('be.visible').click()
+                }
+            })
         })
     })
 
