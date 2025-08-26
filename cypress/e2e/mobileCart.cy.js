@@ -657,6 +657,248 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         })
     })
 
+    it('TC_GALUMA_MOBILE_CART_009 - Verify user can able to add multiple items to the cart', () => {
+        // Navigate to shop tires page: https://dev.galumatires.com/t/s
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
 
+        // Verify navigation to shop tires page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Browse products to display them
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // Wait for products to load and get the first product
+        cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.wait(2000)
+
+        // Add first product to cart
+        cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
+            const firstDataEid = $product.attr('data-eid')
+
+            // Click on first product
+            cy.get(`#tire-products-container-mobile > [data-eid="${firstDataEid}"] > .box-cover`).click({ force: true })
+            cy.wait(2000)
+
+            // Verify product overlay is shown
+            cy.get(`[data-eid="${firstDataEid}"] > .overlay`).should('be.visible')
+            cy.wait(1000)
+
+            // Click on 'Add to Cart' button
+            cy.get(`[data-eid="${firstDataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+            cy.wait(3000)
+
+            // Check product visibility on the cart
+            cy.get('#cart-popup-mobile').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+            cy.wait(2000)
+
+            // Verify first item is in cart
+            cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('have.length.at.least', 1)
+
+            // Click on 'Continue Shopping' button
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('.continue-shopping-link, .continue-shop a, [class*="continue"] a, button:contains("Continue Shopping")')
+                    .should('be.visible')
+                    .first()
+                    .click()
+            })
+            cy.wait(3000)
+
+            // Verify cart popup is closed
+            cy.get('#cart-popup-mobile').should('not.be.visible')
+
+            // Navigate back to products if needed
+            cy.url().then((url) => {
+                if (url.includes('/t/s')) {
+                    cy.get('.browse_product_mobile').should('exist').click({ force: true })
+                    cy.wait(3000)
+                }
+            })
+
+            // Add second product to cart
+            cy.get('#tire-products-container-mobile [data-eid]').eq(1).then(($secondProduct) => {
+                const secondDataEid = $secondProduct.attr('data-eid')
+
+                // Click on second product
+                cy.get(`#tire-products-container-mobile > [data-eid="${secondDataEid}"] > .box-cover`).click({ force: true })
+                cy.wait(2000)
+
+                // Verify product overlay is shown
+                cy.get(`[data-eid="${secondDataEid}"] > .overlay`).should('be.visible')
+                cy.wait(1000)
+
+                // Click on 'Add to Cart' button for second product
+                cy.get(`[data-eid="${secondDataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+                cy.wait(3000)
+
+                // Check product visibility on the cart - should now have multiple items
+                cy.get('#cart-popup-mobile').should('be.visible')
+                cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+                cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+
+                // Verify multiple items are in cart
+                cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('have.length.at.least', 2)
+                cy.wait(3000)
+
+                // Close the cart
+                cy.get('#cart-popup-mobile').then(($cart) => {
+                    if ($cart.is(':visible')) {
+                        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > #cart-popup-mobile > .cart_content > #close-cart-popup-mobile > strong').should('be.visible').click()
+                    }
+                })
+                cy.wait(2000)
+            })
+        })
+    })
+
+    it('TC_GALUMA_MOBILE_CART_010 - Verify user can able to remove one product from cart and continue shipping', () => {
+        // Navigate to shop tires page: https://dev.galumatires.com/t/s
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop tires page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Browse products to display them
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // Wait for products to load and get the first product
+        cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.wait(2000)
+
+        cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
+            const dataEid = $product.attr('data-eid')
+
+            // Click on one product
+            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+            cy.wait(2000)
+
+            // Verify product overlay is shown
+            cy.get(`[data-eid="${dataEid}"] > .overlay`).should('be.visible')
+            cy.wait(1000)
+
+            // Click on 'Add to Cart' button
+            cy.get(`[data-eid="${dataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+            cy.wait(3000)
+
+            // Click on cart icon to open cart popup if it's not already open
+            cy.get('#cart-popup-mobile').then(($cart) => {
+                if (!$cart.is(':visible')) {
+                    cy.get('.navbar_line_1 .cart_icon_section').first().should('be.visible').click()
+                    cy.wait(2000)
+                }
+            })
+
+            // Check product visibility on the cart
+            cy.get('#cart-popup-mobile').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+            cy.wait(2000)
+
+            // Verify item is visible in cart
+            cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('exist')
+
+            // Click on 'remove' button to remove product from the cart
+            cy.get('#cart-popup-mobile').find('[class*="remove"], [class*="delete"], .remove-btn, .delete-btn').first().should('be.visible').click()
+            cy.wait(3000)
+
+            // Check the cart - should be empty or show empty cart message
+            cy.get('#cart-popup-mobile').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+
+            // Verify cart is empty after removal (check for common empty cart indicators)
+            cy.get('#cart-popup-mobile .cart_content').then(($cartContent) => {
+                const cartText = $cartContent.text().toLowerCase()
+                expect(cartText).to.satisfy((text) => {
+                    return text.includes('empty') || text.includes('no items') || !text.includes('remove')
+                }, 'Cart should be empty or contain empty indicators')
+            })
+            cy.wait(2000)
+
+            // Click on 'Continue Shopping' button
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('.continue-shopping-link, .continue-shop a, [class*="continue"] a, button:contains("Continue Shopping")')
+                    .should('be.visible')
+                    .first()
+                    .click()
+            })
+            cy.wait(3000)
+
+            // Verify cart popup is closed after continuing shopping
+            cy.get('#cart-popup-mobile').should('not.be.visible')
+
+            // Navigate back to products if needed
+            cy.url().then((url) => {
+                if (url.includes('/t/s')) {
+                    cy.get('.browse_product_mobile').should('exist').click({ force: true })
+                    cy.wait(3000)
+                }
+            })
+
+            // Click on another product (second product)
+            cy.get('#tire-products-container-mobile [data-eid]').eq(1).then(($secondProduct) => {
+                const secondDataEid = $secondProduct.attr('data-eid')
+
+                // Click on second product
+                cy.get(`#tire-products-container-mobile > [data-eid="${secondDataEid}"] > .box-cover`).click({ force: true })
+                cy.wait(2000)
+
+                // Verify product overlay is shown
+                cy.get(`[data-eid="${secondDataEid}"] > .overlay`).should('be.visible')
+                cy.wait(1000)
+
+                // Click on 'Add to Cart' button for second product
+                cy.get(`[data-eid="${secondDataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+                cy.wait(3000)
+
+                // Click on cart icon to open cart popup if it's not already open
+                cy.get('#cart-popup-mobile').then(($cart) => {
+                    if (!$cart.is(':visible')) {
+                        cy.get('.navbar_line_1 .cart_icon_section').first().should('be.visible').click()
+                        cy.wait(2000)
+                    }
+                })
+
+                // Check product visibility on the cart
+                cy.get('#cart-popup-mobile').should('be.visible')
+                cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+                cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+
+                // Verify new item is visible in cart
+                cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('exist')
+                cy.wait(2000)
+
+                // Close the cart
+                cy.get('#cart-popup-mobile').then(($cart) => {
+                    if ($cart.is(':visible')) {
+                        cy.get('.navbar_line_1 > .cart_icon_section > .cart_container > #cart-popup-mobile > .cart_content > #close-cart-popup-mobile > strong').should('be.visible').click()
+                    }
+                })
+                cy.wait(2000)
+            })
+        })
+    })
 
 })
