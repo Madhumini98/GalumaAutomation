@@ -582,4 +582,81 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         })
     })
 
+    it('TC_GALUMA_MOBILE_CART_008 - Verify user can able to continue the shopping from my cart', () => {
+        // Navigate to shop tires page: https://dev.galumatires.com/t/s
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop tires page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Browse products to display them
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // Wait for products to load and get the first product
+        cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.wait(2000)
+
+        cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
+            const dataEid = $product.attr('data-eid')
+
+            // Click on one product
+            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+            cy.wait(2000)
+
+            // Verify product overlay is shown
+            cy.get(`[data-eid="${dataEid}"] > .overlay`).should('be.visible')
+            cy.wait(1000)
+
+            // Click on 'Add to Cart' button
+            cy.get(`[data-eid="${dataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+            cy.wait(3000)
+
+            // Check product visibility on the cart
+            cy.get('#cart-popup-mobile').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+            cy.wait(2000)
+
+            // Click on 'Continue Shopping' button - find the first visible continue shopping element
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('.continue-shopping-link, .continue-shop a, [class*="continue"] a, button:contains("Continue Shopping")')
+                    .should('be.visible')
+                    .first()
+                    .click()
+            })
+            cy.wait(3000)
+
+            // Check visibility of the shopping page - verify we're back to the tires page
+            cy.url().should('satisfy', (url) => {
+                return url.includes('/t/s') || url.includes('/t')
+            })
+            cy.get('body').should('be.visible')
+            
+            // Verify we're on a tires/shopping page (check for common elements)
+            cy.get('body').should('satisfy', (body) => {
+                const text = body.text().toLowerCase()
+                return text.includes('tires') || text.includes('shop') || text.includes('browse')
+            })
+            
+            // Verify cart popup is closed after continuing shopping
+            cy.get('#cart-popup-mobile').should('not.be.visible')
+            
+            // Wait to observe the shopping page
+            cy.wait(2000)
+        })
+    })
+
+
+
 })
