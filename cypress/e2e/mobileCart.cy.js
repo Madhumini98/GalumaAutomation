@@ -901,4 +901,64 @@ describe('Galuma Mobile Cart Functionality Tests', () => {
         })
     })
 
+    it('TC_GALUMA_MOBILE_CART_011 - Verify user can able to checkout properly with the button', () => {
+        // Navigate to shop tires page: https://dev.galumatires.com/t/s
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Redmi Note 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop tires page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // Browse products to display them
+        cy.get('.browse_product_mobile').should('exist').click({ force: true })
+        cy.wait(3000)
+
+        // Wait for products to load and get the first product
+        cy.get('#tire-products-container-mobile').should('be.visible')
+        cy.wait(2000)
+
+        cy.get('#tire-products-container-mobile [data-eid]').first().then(($product) => {
+            const dataEid = $product.attr('data-eid')
+
+            // Click on one product
+            cy.get(`#tire-products-container-mobile > [data-eid="${dataEid}"] > .box-cover`).click({ force: true })
+            cy.wait(2000)
+
+            // Verify product overlay is shown
+            cy.get(`[data-eid="${dataEid}"] > .overlay`).should('be.visible')
+            cy.wait(1000)
+
+            // Click on 'Add to Cart' button
+            cy.get(`[data-eid="${dataEid}"] > .overlay > .brand > .cart_btn`).should('be.visible').click()
+            cy.wait(3000)
+
+            // Check product visibility on the cart
+            cy.get('#cart-popup-mobile').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('be.visible')
+            cy.get('#cart-popup-mobile .cart_content').should('contain.text', 'Cart')
+            cy.wait(2000)
+
+            // Verify item is visible in cart
+            cy.get('#cart-popup-mobile').find('[class*="cart"], [class*="item"], .product').should('exist')
+
+            // Click on 'Check Out Now' button - using flexible selector approach
+            cy.get('#cart-popup-mobile').within(() => {
+                cy.get('.b_checkout .col-12, #cart-mobile-bottom-contant .b_checkout .col-12, .cost-det .b_checkout .col-12, [class*="checkout"] button, button:contains("Check Out"), button:contains("Checkout")')
+                    .should('be.visible')
+                    .first()
+                    .click()
+            })
+            cy.wait(3000)
+        })
+    })
+
 })
