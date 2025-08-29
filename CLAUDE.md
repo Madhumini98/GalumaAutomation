@@ -108,6 +108,8 @@ describe('Feature Tests', () => {
 - `mobileCart.cy.js` - Mobile cart functionality testing
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
 - `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
+- `mobileCheckout.cy.js` - Mobile checkout process functionality
+- `mobileTrackYourOrder.cy.js` - Order tracking functionality testing
 
 ### Key Test Scenarios
 - **Authentication Flows**: Valid/invalid credentials, empty field validation, error message verification
@@ -172,7 +174,7 @@ Four distinct search methods with different result validation approaches:
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
 - **Recent Focus**: Enhanced desktop home automation, cart management, and pagination testing with comprehensive filter combinations
-- **Active Files**: Currently working with 9 main test specification files:
+- **Active Files**: Currently working with 11 main test specification files:
   - `desktopSignIn.cy.js` - Desktop authentication flows
   - `desktopHome.cy.js` - Desktop homepage functionality
   - `desktopSearch.cy.js` - Desktop search functionality
@@ -182,6 +184,8 @@ Four distinct search methods with different result validation approaches:
   - `mobileCart.cy.js` - Mobile cart functionality
   - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
   - `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
+  - `mobileCheckout.cy.js` - Mobile checkout process functionality
+  - `mobileTrackYourOrder.cy.js` - Order tracking functionality testing
 
 ### Quick Start for New Developers
 1. Clone repository and run `npm install`
