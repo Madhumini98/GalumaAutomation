@@ -306,7 +306,7 @@ describe('Galuma Home Tests', () => {
         cy.wait(2000)
     })
 
-    it('TC_GALUMA_PRODUCTOVERLAY_MOBILE_011 - Verify product card overlay displays correct details and View Product button navigates to product details page', () => {
+    it('TC_GALUMA_PRODUCTOVERLAY_011 - Verify product card overlay displays correct details and View Product button navigates to product details page', () => {
         // Scroll to sample products section
         cy.get(':nth-child(10) > .container > .row > .col-12').scrollIntoView()
         cy.wait(2000)
