@@ -109,7 +109,7 @@ describe('Galuma Sign-In Tests', () => {
     cy.get('.alert-sub-title', { timeout: 10000 }).should('be.visible')
   })
 
-  it.only('TC_GALUMA_SIGNIN_009 - Verify user can able to reset the password using forget password', () => {
+  it('TC_GALUMA_SIGNIN_009 - Verify user can able to reset the password using forget password', () => {
     // Navigate to the homepage (already done in beforeEach)
     // Click 'Login' link (already done in beforeEach)
     
@@ -128,7 +128,7 @@ describe('Galuma Sign-In Tests', () => {
       .and('not.be.empty')
 
     // Check placeholder text in password field  
-    cy.get('#customer-password').type('Test.123')
+    cy.get('#customer-password').type('Test.1234')
       .should('have.attr', 'placeholder')
       .and('not.be.empty')
   })
@@ -136,7 +136,7 @@ describe('Galuma Sign-In Tests', () => {
   it('TC_GALUMA_SIGNIN_014 - Verify case sensitivity of the password field', () => {
     // Enter valid email and password with incorrect case
     cy.get('#customer-email').type('madhumini@longwapps.com')
-    cy.get('#customer-password').type('TEST.123')
+    cy.get('#customer-password').type('TEST.1234')
 
     // Click sign in button
     cy.get('#sign-in').click()
