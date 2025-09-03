@@ -27,7 +27,7 @@ describe('Galuma Sign-In Tests', () => {
   it('TC_GALUMA_SIGNIN_002 - Verify user able to successful sign in with valid credentials', () => {
     // Enter valid credentials
     cy.get('#customer-email').type('madhumini@longwapps.com')
-    cy.get('#customer-password').type('Test.123')
+    cy.get('#customer-password').type('Test.1234')
 
     // Click sign in button
     cy.get('#sign-in').click()
@@ -107,6 +107,18 @@ describe('Galuma Sign-In Tests', () => {
 
     // Verify error message for invalid credentials
     cy.get('.alert-sub-title', { timeout: 10000 }).should('be.visible')
+  })
+
+  it.only('TC_GALUMA_SIGNIN_009 - Verify user can able to reset the password using forget password', () => {
+    // Navigate to the homepage (already done in beforeEach)
+    // Click 'Login' link (already done in beforeEach)
+    
+    // Click on the "Forgot your password?" link
+    cy.get('.forgot-password-txt').should('be.visible').click()
+    cy.wait(2000)
+    
+    // Verify 'Forgot your password?' pop up is displayed
+    cy.get('#forgot-passowrd-modal > .modal-content').should('be.visible')
   })
 
   it('TC_GALUMA_SIGNIN_013 - Verify placeholder text in input fields', () => {
