@@ -103,13 +103,16 @@ describe('Feature Tests', () => {
 - `desktopHome.cy.js` - Desktop homepage functionality and navigation
 - `desktopSearch.cy.js` - Desktop search functionality testing
 - `desktopCart.cy.js` - Desktop cart functionality testing
+- `desktopTrackYourOrder.cy.js` - Desktop order tracking functionality
+- `desktopProductInfro.cy.js` - Desktop product information page testing
+- `mobileSignIn.cy.js` - Mobile user authentication flows
 - `mobileHome.cy.js` - Mobile homepage functionality and navigation
 - `mobileSearch.cy.js` - Mobile search functionality testing
 - `mobileCart.cy.js` - Mobile cart functionality testing
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
 - `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
 - `mobileCheckout.cy.js` - Mobile checkout process functionality
-- `mobileTrackYourOrder.cy.js` - Order tracking functionality testing
+- `mobileTrackYourOrder.cy.js` - Mobile order tracking functionality testing
 
 ### Key Test Scenarios
 - **Authentication Flows**: Valid/invalid credentials, empty field validation, error message verification
@@ -119,7 +122,7 @@ describe('Feature Tests', () => {
 - **Tire Size Search**: Comprehensive size-based search functionality with filtering options
 - **Mobile Responsiveness**: Most tests use mobile viewport (360x640), signIn uses desktop (1475x750)
 
-### Recent Test Additions (Last Updated: August 2025)
+### Recent Test Additions (Last Updated: September 2025)
 - **Desktop Home Automation**: Enhanced desktop homepage testing functionality
 - **Cart Management**: Product cart addition and removal testing (TC_GALUMA_MOBILE_TBS_CART_020)
 - **Pagination Testing**: Navigation using arrow buttons in tire browsing (TC_GALUMA_MOBILE_TBS_PAGINATION_019)
@@ -174,18 +177,7 @@ Four distinct search methods with different result validation approaches:
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
 - **Recent Focus**: Enhanced desktop home automation, cart management, and pagination testing with comprehensive filter combinations
-- **Active Files**: Currently working with 11 main test specification files:
-  - `desktopSignIn.cy.js` - Desktop authentication flows
-  - `desktopHome.cy.js` - Desktop homepage functionality
-  - `desktopSearch.cy.js` - Desktop search functionality
-  - `desktopCart.cy.js` - Desktop cart functionality
-  - `mobileHome.cy.js` - Mobile homepage functionality  
-  - `mobileSearch.cy.js` - Mobile search functionality testing
-  - `mobileCart.cy.js` - Mobile cart functionality
-  - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
-  - `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
-  - `mobileCheckout.cy.js` - Mobile checkout process functionality
-  - `mobileTrackYourOrder.cy.js` - Order tracking functionality testing
+- **Active Files**: Currently working with 14 main test specification files covering both desktop and mobile platforms with comprehensive feature coverage including authentication, product browsing, cart management, checkout, and order tracking functionalities
 
 ### Quick Start for New Developers
 1. Clone repository and run `npm install`
