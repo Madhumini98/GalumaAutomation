@@ -1,10 +1,10 @@
-describe('Galuma Desktop Product Information Tests', () => {
+describe('Galuma Desktop Product Information Tests for One Tire', () => {
   beforeEach(() => {
     // Handle uncaught exceptions
     Cypress.on('uncaught:exception', (err, runnable) => {
       return false
     })
-    
+
     // Common setup for all test cases
     cy.viewport(1475, 750)
     cy.visit("https://dev.galumatires.com/", {
@@ -19,23 +19,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_SHIPPING_COUNTDOWN_001 - Verify free shipping countdown timer displays correctly and updates in real-time', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -48,10 +48,10 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Check the visibility of shipping countdown
     cy.get('.timeline > p').should('be.visible')
-    
+
     // 8. Wait and watch the timer for 30 seconds
     cy.wait(30000)
   })
@@ -59,23 +59,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_BRAND_PRODUCT_DISPLAY_002 - Verify brand logo, product name, and tire size specifications are displayed correctly on product details page', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -88,13 +88,13 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Check the visibility of Brand logo
     cy.get('.brand-icon > img').should('be.visible')
-    
+
     // 8. Check the visibility of Product name & Mercedes original equipment
     cy.get('.product-title').should('be.visible')
-    
+
     // 9. Check the visibility of Product sizes label (eg: width/profile/radial design & rim load index & speed rating)
     cy.get('.product-title > span').should('be.visible')
   })
@@ -102,23 +102,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_PRODUCT_CATEGORIZATION_003 - Verify product category classification matches tire life remaining percentage ranges', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -131,21 +131,21 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Locate the life remaining section (tread depth indicator)
     cy.get(':nth-child(1) > :nth-child(2) > .tread-box').should('be.visible')
-    
+
     // 8. Note the percentage value shown and get category text
     cy.get(':nth-child(1) > :nth-child(2) > .tread-box').invoke('text').then((treadText) => {
       const percentageMatch = treadText.match(/(\d+)%/)
       if (percentageMatch) {
         const percentage = parseInt(percentageMatch[1])
         cy.log(`Life remaining percentage: ${percentage}%`)
-        
+
         // 9. Check the product category text displayed
         cy.get('.detail_area > .quality-text > span').should('be.visible').invoke('text').then((categoryText) => {
           cy.log(`Product category: ${categoryText}`)
-          
+
           // 10. Verify expected results based on life remaining percentage
           if (percentage === 100) {
             expect(categoryText.toLowerCase()).to.include('brand new')
@@ -170,23 +170,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_PRODUCT_FEATURES_004 - Verify tire type, run-flat status, quantity, condition, and stock information display correctly', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -199,7 +199,7 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Check visibility of Tire type (Summer / Winter / All Season)
     cy.get('.detail_area > :nth-child(5) > :nth-child(1) > .ssn-product > small').should('be.visible').invoke('text').then((tireType) => {
       cy.log(`Tire Type: ${tireType}`)
@@ -207,7 +207,7 @@ describe('Galuma Desktop Product Information Tests', () => {
         return text.includes('summer') || text.includes('winter') || text.includes('all season')
       })
     })
-    
+
     // 8. Check visibility of Run Flat status (Yes/No)
     cy.get('.detail_area > :nth-child(5) > :nth-child(3) > .ssn-product').should('be.visible').invoke('text').then((runFlatText) => {
       cy.log(`Run Flat section: ${runFlatText}`)
@@ -215,7 +215,7 @@ describe('Galuma Desktop Product Information Tests', () => {
         return text.includes('yes') || text.includes('no') || text.includes('run flat')
       })
     })
-    
+
     // 9. Quantity displays with count icon and available number (1/2/4)
     cy.get('.last-season > .col-4 > .ssn-product').should('be.visible').invoke('text').then((quantityText) => {
       cy.log(`Quantity section: ${quantityText}`)
@@ -223,12 +223,12 @@ describe('Galuma Desktop Product Information Tests', () => {
         return text.includes('1 tire') || text.includes('2 tire') || text.includes('4 tire') || text.includes('quantity')
       })
     })
-    
+
     // 10. Check visibility of Item Condition
     cy.get('.last-season > .col-5 > .ssn-product > b').should('be.visible').invoke('text').then((itemCondition) => {
       cy.log(`Item Condition: ${itemCondition}`)
     })
-    
+
     // 11. Check visibility of Stock status
     cy.get('.last-season > .col-3 > .ssn-product > small').should('be.visible').invoke('text').then((stockStatus) => {
       cy.log(`Stock Status: ${stockStatus}`)
@@ -238,23 +238,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_TIRE_SPECIFICATIONS_005 - Verify tire detail fields visibility and DOT code year validation accuracy', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -267,30 +267,30 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Scroll to the tire details section
     cy.get('.product-items-details > :nth-child(1)').scrollIntoView()
     cy.wait(1000)
-    
+
     // 8. Check visibility of all detail fields
-    
+
     // Thread depth displays with measurement and unit (32nd of inch)
     cy.get(':nth-child(1) > :nth-child(1) > .tread-box').should('be.visible').invoke('text').then((threadDepth) => {
       cy.log(`Thread Depth: ${threadDepth}`)
       expect(threadDepth.trim()).to.match(/\d+(\.\d+)?(\s*-\s*\d+(\.\d+)?)?/)
     })
-    
+
     // Life remaining shows percentage range (approx)
     cy.get(':nth-child(1) > :nth-child(2) > .tread-box').should('be.visible').invoke('text').then((lifeRemaining) => {
       cy.log(`Life Remaining: ${lifeRemaining}`)
       expect(lifeRemaining).to.match(/\d+%/)
     })
-    
+
     // New tire tread depth field shows original depth value
     cy.get(':nth-child(2) > .col-12 > .tread-box').should('be.visible').invoke('text').then((newTireDepth) => {
       cy.log(`New Tire Tread Depth: ${newTireDepth}`)
     })
-    
+
     // DOT (age) displays 4-digit code and validate year
     cy.get(':nth-child(3) > :nth-child(1) > .tread-box').should('be.visible').invoke('text').then((dotText) => {
       cy.log(`DOT section: ${dotText}`)
@@ -300,7 +300,7 @@ describe('Galuma Desktop Product Information Tests', () => {
         const weekYear = dotCode.substring(2, 4)
         const expectedYear = parseInt(`20${weekYear}`)
         cy.log(`DOT Code: ${dotCode} → Expected Year: ${expectedYear}`)
-        
+
         // Verify year made field matches DOT code
         cy.get(':nth-child(3) > :nth-child(2) > .tread-box').should('be.visible').invoke('text').then((yearMadeText) => {
           cy.log(`Year Made section: ${yearMadeText}`)
@@ -310,31 +310,31 @@ describe('Galuma Desktop Product Information Tests', () => {
         cy.log('Could not extract DOT code from text')
       }
 
-    //Check the visibility of stock number
-    cy.get('.wish-entry > .col-5').should('be.visible')
+      //Check the visibility of stock number
+      cy.get('.wish-entry > .col-5').should('be.visible')
     })
   })
 
   it('TC_SERVICE_OPTIONS_006 - Verify pickup service, installation options, guarantees, and quality assurance information display', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -347,44 +347,44 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Scroll to service info section
     cy.get('.detail_area > .last-det-section').scrollIntoView()
     cy.wait(1000)
-    
+
     // 8. Check the text visibility and content for pickup service
     cy.get('.col-9 > :nth-child(1) > .pleft-10 > strong').should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim()).to.include('Pick up service available')
     })
-    
+
     // 9. Check the text visibility and content for booking service
     cy.get('.col-9 > :nth-child(2) > .pleft-10 > strong').should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim()).to.include('Booking your Pick up & installation')
     })
-        
+
     // 10. Test the image visibility
     cy.get('.last-det-section > .col-3 > .img-fluid').should('be.visible')
-    
+
     // 11. Test guarantee text area
     cy.get('.media-body > .list-unstyled > :nth-child(1)').scrollIntoView().should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim()).to.include('360 Days Money Back Guranatee')
     })
-    
+
     // 12. Test quality assurance text area
     cy.get('.media-body > .list-unstyled > :nth-child(3)').scrollIntoView().should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim()).to.include('100% free of any leaks, bubbles or broken belts')
     })
-    
+
     // 13. Test transparency text area
     cy.get('.list-unstyled > :nth-child(5)').scrollIntoView().should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim()).to.include('What You See Is What You Get')
     })
-    
+
     // 14. Test shipping text area
     cy.get('.list-unstyled > :nth-child(7)').scrollIntoView().should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim()).to.include('Fedex/UPS All Orders for Free')
     })
-    
+
     // 15. Test the Risk Free Buying shield visibility
     cy.get('.media > .align-self-center').should('be.visible')
   })
@@ -392,23 +392,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_PRICING_SUMMARY_007 - Verify shipping costs, subtotal, and total price calculations display correctly', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -421,20 +421,20 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Test shipping details visibility
     cy.get('.detail_area > .price-with-sales-cout-down > .shippin-price-container > .col-8').scrollIntoView().should('be.visible')
-    
+
     // 8. Verify shipping should be free
     cy.get('.detail_area > .price-with-sales-cout-down > .shippin-price-container > .col-4').should('be.visible').invoke('text').then((text) => {
       expect(text.replace(/\s+/g, ' ').trim().toLowerCase()).to.satisfy((shippingText) => {
         return shippingText.includes('free') || shippingText.includes('$0')
       })
     })
-    
+
     // 9. Test subtotal visibility
     cy.get('.detail_area > .price-with-sales-cout-down > .price > :nth-child(1) > p').scrollIntoView().should('be.visible')
-    
+
     // 10. Verify total price visibility
     cy.get('.detail_area > .price-with-sales-cout-down > .price > :nth-child(2) > h3 > .total-cost-line').should('be.visible').invoke('text').then((text) => {
       cy.log(`Total price: ${text}`)
@@ -445,23 +445,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_DELIVERY_OPTIONS_008 - Verify pickup and delivery section accessibility and visibility', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -474,10 +474,10 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // 7. Check the Pickup section visibility
     cy.get('#accordion > .accordian-card > #heading-1').scrollIntoView().should('be.visible')
-    
+
     // 8. Check the delivery section visibility
     cy.get('.delivery > .card-body').scrollIntoView().should('be.visible')
   })
@@ -485,23 +485,23 @@ describe('Galuma Desktop Product Information Tests', () => {
   it('TC_PRODUCT_GALLERY_009 - Verify product image gallery functionality, thumbnails, zoom features, and navigation', () => {
     // 1. Navigate to home page (already done in beforeEach)
     cy.url().should('include', 'galumatires.com')
-    
+
     // 2. Click 'Shop Products'
     cy.get('#shopProducts > .nav-link').should('be.visible').click()
     cy.wait(2000)
-    
+
     // 3. Click 'Browse All Tires'
     cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
     cy.wait(3000)
-    
+
     // 4. Scroll to Qty of tires section
     cy.get('.box.qty > .qty').scrollIntoView()
     cy.wait(1000)
-    
+
     // 5. Select 1
     cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
     cy.wait(1000)
-    
+
     // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
     cy.get('#tire-products-container').should('be.visible')
     cy.get('#tire-products-container').within(() => {
@@ -514,16 +514,16 @@ describe('Galuma Desktop Product Information Tests', () => {
       })
     })
     cy.wait(3000)
-    
+
     // Click on different product images and verify they are clickable
     // Verify thumbnail container exists
     cy.get('#thumb-container').should('exist')
-    
+
     // Get all thumbnail images and click on them
     cy.get('#thumb-container img').then(($images) => {
       const imageCount = $images.length
       cy.log(`Found ${imageCount} thumbnail images`)
-      
+
       if (imageCount > 0) {
         // Click on first thumbnail if it exists
         cy.get('#thumb-container img').first()
@@ -531,10 +531,10 @@ describe('Galuma Desktop Product Information Tests', () => {
           .should('exist')
           .click({ force: true })
         cy.wait(1000)
-        
+
         // Check stock number visibility of the first image
         cy.get('.stock-number-product').should('be.visible')
-        
+
         // Check tire quantity section image and verify it should be 1 (One)
         cy.get('.product-black-section').should('be.visible').invoke('text').then((quantityText) => {
           cy.log(`Quantity section text: ${quantityText}`)
@@ -542,23 +542,23 @@ describe('Galuma Desktop Product Information Tests', () => {
             return text.includes('1') || text.includes('one') || text.includes('qty')
           })
         })
-        
+
         // Click on the first image zoom icon
         cy.get('.handler.expand img.aseterat')
           .scrollIntoView()
           .should('exist')
           .click({ force: true })
         cy.wait(1000)
-        
+
         // Banner should popup
         cy.get('.ebzoom-banner-container').should('exist')
-        
+
         // Close the banner
         cy.get('.ebzoom-close > img')
           .should('exist')
           .click({ force: true })
         cy.wait(1000)
-        
+
         if (imageCount > 1) {
           // Click on second thumbnail if it exists
           cy.get('#thumb-container img').eq(1)
@@ -567,7 +567,7 @@ describe('Galuma Desktop Product Information Tests', () => {
             .click({ force: true })
           cy.wait(1000)
         }
-        
+
         if (imageCount > 2) {
           // Click on third thumbnail if it exists
           cy.get('#thumb-container img').eq(2)
@@ -576,7 +576,7 @@ describe('Galuma Desktop Product Information Tests', () => {
             .click({ force: true })
           cy.wait(1000)
         }
-        
+
         // Log successful clicks
         cy.log(`Successfully clicked on ${Math.min(imageCount, 3)} thumbnail images`)
       } else {
@@ -588,5 +588,5 @@ describe('Galuma Desktop Product Information Tests', () => {
     cy.get('#thumb-container').should('exist')
   })
 
-   
+
 })
