@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "cypress": "^14.5.4"
+  },
+  "dependencies": {
+    "save-dev": "^0.0.1-security"
   }
 }
