@@ -52,8 +52,8 @@ describe('Galuma Desktop Product Information Tests for One Tire', () => {
     // 7. Check the visibility of shipping countdown
     cy.get('.timeline > p').should('be.visible')
 
-    // 8. Wait and watch the timer for 30 seconds
-    cy.wait(30000)
+    // 8. Wait and watch the timer for 10 seconds
+    cy.wait(10000)
   })
 
   it('TC_BRAND_PRODUCT_DISPLAY_002 - Verify brand logo, product name, and tire size specifications are displayed correctly on product details page', () => {
