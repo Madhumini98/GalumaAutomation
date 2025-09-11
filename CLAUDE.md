@@ -104,10 +104,13 @@ describe('Feature Tests', () => {
 - `desktopSearch.cy.js` - Desktop search functionality testing
 - `desktopCart.cy.js` - Desktop cart functionality testing
 - `desktopTrackYourOrder.cy.js` - Desktop order tracking functionality
-- `desktopProductInfro.cy.js` - Desktop product information page testing
+- `desktopProductInfo1Tire.cy.js` - Desktop single tire product information page testing
+- `desktopProductInfo2Tire.cy.js` - Desktop two tire product information page testing
+- `desktopProductInfo4Tire.cy.js` - Desktop four tire product information page testing
+- `desktopProductInfoViewMorePopup.cy.js` - Desktop product info "view more" popup testing
 - `mobileSignIn.cy.js` - Mobile user authentication flows
-- `mobileHome.cy.js` - Mobile homepage functionality and navigation
-- `mobileSearch.cy.js` - Mobile search functionality testing
+- `mobilehome.cy.js` - Mobile homepage functionality and navigation
+- `mobilesearch.cy.js` - Mobile search functionality testing
 - `mobileCart.cy.js` - Mobile cart functionality testing
 - `mobileTiresBySize.cy.js` - Tire size-based search and filtering
 - `mobileTiresByBrand.cy.js` - Tire brand-based search and filtering
@@ -176,8 +179,8 @@ Four distinct search methods with different result validation approaches:
 
 ### Current Development Status
 - **Test Artifacts**: Screenshot directory may contain results from recent test runs
-- **Recent Focus**: Enhanced desktop home automation, cart management, and pagination testing with comprehensive filter combinations
-- **Active Files**: Currently working with 14 main test specification files covering both desktop and mobile platforms with comprehensive feature coverage including authentication, product browsing, cart management, checkout, and order tracking functionalities
+- **Recent Focus**: Desktop product information page automation with comprehensive testing for single tire (1 tire), two tire (2 tire), and four tire (4 tire) scenarios, including "view more" popup functionality
+- **Active Files**: Currently working with 17 main test specification files covering both desktop and mobile platforms with comprehensive feature coverage including authentication, product browsing, cart management, checkout, order tracking, and detailed product information pages
 
 ### Quick Start for New Developers
 1. Clone repository and run `npm install`
