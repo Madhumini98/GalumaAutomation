@@ -73,7 +73,7 @@ describe('Galuma Desktop Product Information Tests for View More Popups', () => 
         cy.get('.contact-product-title').should('be.visible')
     })
 
-    it.only('TC_CONTACT_POPUP_INFORMATION_002 - Verify contact us popup displays complete business information including questions prompt, sales hours, phone number, email address, and store location', () => {
+    it('TC_CONTACT_POPUP_INFORMATION_002 - Verify contact us popup displays complete business information including questions prompt, sales hours, phone number, email address, and store location', () => {
         // 1. Navigate to home page (already done in beforeEach)
         cy.url().should('include', 'galumatires.com')
 
@@ -141,6 +141,201 @@ describe('Galuma Desktop Product Information Tests for View More Popups', () => 
         cy.get('.section-left-contact > :nth-child(12)').should('be.visible')
             .should('contain.text', '1850 N State Rd 7th')
             .should('contain.text', 'Margate FL, 33063')
+    })
+
+    it('TC_CONTACT_FORM_FIELDS_003 - Verify contact us popup form displays all required input fields with correct placeholder text for user information submission', () => {
+        // 1. Navigate to home page (already done in beforeEach)
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Scroll to Qty of tires section
+        cy.get('.box.qty > .qty').scrollIntoView()
+        cy.wait(1000)
+
+        // 5. Select 1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 7. Scroll to contact us section
+        cy.get('.link_contactus_img').scrollIntoView()
+        cy.wait(1000)
+
+        // 8. Click on contact us image/link
+        cy.get('.link_contactus_img').should('be.visible').click()
+        cy.wait(2000)
+
+        // 9. Show contact us popup - verify popup container is visible
+        cy.get('.contact-popup-content').should('be.visible')
+
+        // 10. Check the visibility and placeholder text of all form fields
+
+        // First name field
+        cy.get('#contact-fname').should('be.visible')
+        cy.get('#contact-fname').should('have.attr', 'placeholder', 'First name')
+
+        // Last name field
+        cy.get('#contact-lname').should('be.visible')
+        cy.get('#contact-lname').should('have.attr', 'placeholder', 'Last name')
+
+        // Phone field
+        cy.get('#contact-number').should('be.visible')
+        cy.get('#contact-number').should('have.attr', 'placeholder', '(XXX) XXX-XXXX')
+
+        // Email field
+        cy.get('#contact-email').should('be.visible')
+        cy.get('#contact-email').should('have.attr', 'placeholder', 'Email')
+    })
+
+    it('TC_LIVE_CHAT_FUNCTIONALITY_004 - Verify live chat button opens chat interface correctly and chat window can be minimized properly from contact us popup', () => {
+        // 1. Navigate to home page (already done in beforeEach)
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Scroll to Qty of tires section
+        cy.get('.box.qty > .qty').scrollIntoView()
+        cy.wait(1000)
+
+        // 5. Select 1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 7. Scroll to contact us section
+        cy.get('.link_contactus_img').scrollIntoView()
+        cy.wait(1000)
+
+        // 8. Click on contact us image/link
+        cy.get('.link_contactus_img').should('be.visible').click()
+        cy.wait(2000)
+
+        // 9. Show contact us popup - verify popup container is visible
+        cy.get('.contact-popup-content').should('be.visible')
+
+        // 10. Click on 'Live Chat' button
+        cy.get('.btn-green').should('be.visible').click()
+        cy.wait(2000)
+
+        // 11. It should popup the Live chat section
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 12. Click on Live Chat minimize arrow
+        cy.get('.chat-minimize-arrow > .fa').should('be.visible').click()
+        cy.wait(1000)
+
+        // Verify chat window is minimized (container should not be visible or have different state)
+        cy.get('.chat-home-container').should('not.be.visible')
+    })
+
+    it('TC_CONTACT_FORM_SUBMISSION_005 - Verify contact us form accepts user input data and successfully submits message with complete customer information', () => {
+        // 1. Navigate to home page (already done in beforeEach)
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Scroll to Qty of tires section
+        cy.get('.box.qty > .qty').scrollIntoView()
+        cy.wait(1000)
+
+        // 5. Select 1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 7. Scroll to contact us section
+        cy.get('.link_contactus_img').scrollIntoView()
+        cy.wait(1000)
+
+        // 8. Click on contact us image/link
+        cy.get('.link_contactus_img').should('be.visible').click()
+        cy.wait(2000)
+
+        // 9. Show contact us popup - verify popup container is visible
+        cy.get('.contact-popup-content').should('be.visible')
+
+        // 10. Fill the form fields with test data
+
+        // First name
+        cy.get('#contact-fname').should('be.visible').clear().type('Madhumini')
+
+        // Last name
+        cy.get('#contact-lname').should('be.visible').clear().type('Kodithuwakku')
+
+        // Phone
+        cy.get('#contact-number').should('be.visible').clear().type('(234) 555-5322')
+
+        // Email
+        cy.get('#contact-email').should('be.visible').clear().type('madhumini@longwapps.com')
+
+        // Your message
+        cy.get('#contact-message').should('be.visible').clear().type('This is Cypress Automation Test')
+
+        // 11. Click on 'Send message' button
+        cy.get('#send-message-btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // 12. Success message popup
+        cy.get('.alert').should('be.visible')
+
+        // 13. Close the alert
+        cy.get('.close-alert > .fa').should('be.visible').click()
+        cy.wait(1000)
     })
 
 })
