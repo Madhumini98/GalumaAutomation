@@ -1,4 +1,4 @@
-describe('Galuma Desktop Product Information Tests for View More Popups', () => {
+describe('Galuma Desktop Product Information Tests for Contact Us Popups', () => {
     beforeEach(() => {
         // Handle uncaught exceptions
         Cypress.on('uncaught:exception', (err, runnable) => {
