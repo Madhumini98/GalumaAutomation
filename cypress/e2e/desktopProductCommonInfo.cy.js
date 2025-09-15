@@ -185,7 +185,7 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.get('.yellow-strap > .yellow-inside > .img-responsive').should('be.visible')
     })
 
-    it.only('TC_QUALITY_ASSURANCE_STEPS_004 - Verify three-step quality assurance process displays correctly with visual inspection, air pressure test, and leak detection procedures including step titles and corresponding images', () => {
+    it('TC_QUALITY_ASSURANCE_STEPS_004 - Verify three-step quality assurance process displays correctly with visual inspection, air pressure test, and leak detection procedures including step titles and corresponding images', () => {
         // 1. Navigate to home page (already done in beforeEach)
         cy.url().should('include', 'galumatires.com')
 
@@ -255,5 +255,62 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.get('.single_product_page_web > .paragraph-product-details > .container > p').should('contain.text', 'high quality tires to our costumers')
     })
 
-    //Continue from Shipping information
+    it.only('TC_SHIPPING_INFORMATION_DETAILS_005 - Verify shipping information section displays complete delivery timeline details, warehouse locations, and redirects to shipping policy page via More Info button', () => {
+        // 1. Navigate to home page (already done in beforeEach)
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Scroll to Qty of tires section
+        cy.get('.box.qty > .qty').scrollIntoView()
+        cy.wait(1000)
+
+        // 5. Select 1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 7. Scroll to 'Shipping information' section
+        cy.get('.single_product_page_web > .cover-productPage').scrollIntoView()
+        cy.wait(1000)
+
+        // 8. Verify text visibility and content in shipping information section
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('be.visible')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', 'before 1pm EST')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', 'same day')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', 'after 1pm EST')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', 'following business day')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', '48 contiguous states')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', '1-6 business')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', 'Pennsylvania, Texas, and Florida')
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > p').should('contain.text', 'smaller warehouses')
+
+        // 9. Check image visibility
+        cy.get('.single_product_page_web > .cover-productPage').should('be.visible')
+
+        // 10. Check 'More info' button functionality and verify redirection to shipping page
+        cy.get('.single_product_page_web > .cover-productPage > .container > .row > .col-md-5 > .btn').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/shipping')
+        cy.url().should('eq', 'https://dev.galumatires.com/shipping')
+    })
+
 })
