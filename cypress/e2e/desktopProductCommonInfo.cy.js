@@ -255,7 +255,7 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.get('.single_product_page_web > .paragraph-product-details > .container > p').should('contain.text', 'high quality tires to our costumers')
     })
 
-    it.only('TC_SHIPPING_INFORMATION_DETAILS_005 - Verify shipping information section displays complete delivery timeline details, warehouse locations, and redirects to shipping policy page via More Info button', () => {
+    it('TC_SHIPPING_INFORMATION_DETAILS_005 - Verify shipping information section displays complete delivery timeline details, warehouse locations, and redirects to shipping policy page via More Info button', () => {
         // 1. Navigate to home page (already done in beforeEach)
         cy.url().should('include', 'galumatires.com')
 
@@ -311,6 +311,120 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.wait(2000)
         cy.url().should('include', '/shipping')
         cy.url().should('eq', 'https://dev.galumatires.com/shipping')
+    })
+
+    it.only('TC_BENEFITS_SECTION_FUNCTIONALITY_006 - Verify Benefits of Shopping at Galuma Tires section displays all service cards with icons, content text, and functional Read More links directing to appropriate policy pages', () => {
+        // 1. Navigate to home page (already done in beforeEach)
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Scroll to Qty of tires section
+        cy.get('.box.qty > .qty').scrollIntoView()
+        cy.wait(1000)
+
+        // 5. Select 1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 7. Scroll to Benefits of Shopping at Galuma Tires & Wheels section
+        cy.get('.single_product_page_web > .benifits-productPage > .container').scrollIntoView()
+        cy.wait(1000)
+
+        // 8. Check "FREE AND FAST SHIPPING" box
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(1) > .card > .card-body').should('be.visible')
+
+        // Check icon visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(1) > .card > .card-body > .img-fluid').should('be.visible')
+
+        // Check text visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(1) > .card > .card-body > .card-text').should('be.visible')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(1) > .card > .card-body > .card-text').should('contain.text', 'Free and fast shipping')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(1) > .card > .card-body > .card-text').should('contain.text', '4:30 pm (ET Time)')
+
+        // Click on "Read more" button and verify redirection
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(1) > .card > .card-body > .card-link').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/shipping')
+        cy.go('back')
+        cy.wait(2000)
+
+        // Check "THE BEST INSTALLATION SERVICE" box
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body').should('be.visible')
+
+        // Check icon visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .img-fluid').should('be.visible')
+
+        // Check text visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-text').should('be.visible')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'latest generation')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'machines')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'qualified personnel')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'installations')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'quality standards')
+
+        // Click on "Read more" button and verify redirection
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(1) > :nth-child(2) > .card > .card-body > .card-link').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/services')
+        cy.go('back')
+        cy.wait(2000)
+
+        // Check "CUSTOMER SERVICE" box
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body').should('be.visible')
+
+        // Check icon visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .img-fluid').should('be.visible')
+
+        // Check text visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-text').should('be.visible')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-text').should('contain.text', 'just call, chat or')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-text').should('contain.text', 'email')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-text').should('contain.text', 'help with any product')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-text').should('contain.text', 'questions')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-text').should('contain.text', 'technical issues')
+
+        // Click on "Read more" button and verify redirection
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > .card-container > .card > .card-body > .card-link').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/help-n-advice')
+        cy.go('back')
+        cy.wait(2000)
+
+        // Check "PERFECT FIT PROMISE" box
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > :nth-child(2) > .card > .card-body').should('be.visible')
+
+        // Check icon visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > :nth-child(2) > .card > .card-body > .img-fluid').should('be.visible')
+
+        // Check text visibility
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > :nth-child(2) > .card > .card-body > .card-text').should('be.visible')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'perfect fit is guaranteed')
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > :nth-child(2) > .card > .card-body > .card-text').should('contain.text', 'vehicle information')
+
+        // Click on "Read more" button and verify redirection
+        cy.get('.single_product_page_web > .benifits-productPage > .container > :nth-child(2) > :nth-child(2) > :nth-child(2) > .card > .card-body > .card-link').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/read-my-tires')
     })
 
 })
