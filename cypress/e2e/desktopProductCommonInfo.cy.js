@@ -502,7 +502,7 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.get('.single_product_page_web > .warranty-infomation > .container > .return-policy > .col-9 > .content > p').should('contain.text', 'rotting')
     })
 
-    it.only('TC_ALL_OFFERS_NAVIGATION_008 - Verify All Offers section displays four promotional boxes with functional navigation to Latest Promotions, Guarantee, Payment Options, and Delivery Promise pages', () => {
+    it('TC_ALL_OFFERS_NAVIGATION_008 - Verify All Offers section displays four promotional boxes with functional navigation to Latest Promotions, Guarantee, Payment Options, and Delivery Promise pages', () => {
         // 1. Navigate to home page (already done in beforeEach)
         cy.url().should('include', 'galumatires.com')
 
