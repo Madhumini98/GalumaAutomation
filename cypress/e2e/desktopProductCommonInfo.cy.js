@@ -427,7 +427,7 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.url().should('include', '/read-my-tires')
     })
 
-    it.only('TC_TERMS_CONDITIONS_RETURN_POLICY_007 - Verify Sales Terms and Conditions and Return Policy sections display complete legal disclaimers, warranty information, and one-year return policy details with corresponding icons', () => {
+    it('TC_TERMS_CONDITIONS_RETURN_POLICY_007 - Verify Sales Terms and Conditions and Return Policy sections display complete legal disclaimers, warranty information, and one-year return policy details with corresponding icons', () => {
         // 1. Navigate to home page (already done in beforeEach)
         cy.url().should('include', 'galumatires.com')
 
@@ -500,6 +500,86 @@ describe('Galuma Desktop Product Common Information Tests', () => {
         cy.get('.single_product_page_web > .warranty-infomation > .container > .return-policy > .col-9 > .content > p').should('contain.text', 'unexposed to water or')
         cy.get('.single_product_page_web > .warranty-infomation > .container > .return-policy > .col-9 > .content > p').should('contain.text', 'sun to')
         cy.get('.single_product_page_web > .warranty-infomation > .container > .return-policy > .col-9 > .content > p').should('contain.text', 'rotting')
+    })
+
+    it.only('TC_ALL_OFFERS_NAVIGATION_008 - Verify All Offers section displays four promotional boxes with functional navigation to Latest Promotions, Guarantee, Payment Options, and Delivery Promise pages', () => {
+        // 1. Navigate to home page (already done in beforeEach)
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Scroll to Qty of tires section
+        cy.get('.box.qty > .qty').scrollIntoView()
+        cy.wait(1000)
+
+        // 5. Select 1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 7. Scroll to "All offers" section
+        cy.get('.single_product_page_web > .product-offers > .container > .sec-heading').scrollIntoView()
+        cy.wait(1000)
+
+        // 8. Check "LATEST PROMOTIONS" box visibility and click on that box
+        cy.get('.single_product_page_web > .product-offers > .container > .row > :nth-child(1) > .card > #promo').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/t')
+        cy.url().should('eq', 'https://dev.galumatires.com/t')
+        cy.go('back')
+        cy.wait(2000)
+
+        // Scroll to "All offers" section
+        cy.get('.single_product_page_web > .product-offers > .container > .sec-heading').scrollIntoView()
+        cy.wait(1000)
+
+        // Check "GUARANTEE" box visibility and click on that box
+        cy.get('.single_product_page_web > .product-offers > .container > .row > :nth-child(2) > .card > #war').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/warranty')
+        cy.url().should('eq', 'https://dev.galumatires.com/warranty')
+        cy.go('back')
+        cy.wait(2000)
+
+        // Scroll to "All offers" section
+        cy.get('.single_product_page_web > .product-offers > .container > .sec-heading').scrollIntoView()
+        cy.wait(1000)
+
+        // Check "PAYMENT OPTIONS" box visibility and click on that box
+        cy.get('.single_product_page_web > .product-offers > .container > .row > :nth-child(3) > .card > #pay').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/payments/options')
+        cy.url().should('eq', 'https://dev.galumatires.com/payments/options')
+        cy.go('back')
+        cy.wait(2000)
+
+        // Scroll to "All offers" section
+        cy.get('.single_product_page_web > .product-offers > .container > .sec-heading').scrollIntoView()
+        cy.wait(1000)
+
+        // Check "DELIVERY PROMISE" box visibility and click on that box
+        cy.get('.single_product_page_web > .product-offers > .container > .row > :nth-child(4) > .card > #del').should('be.visible').click()
+        cy.wait(2000)
+        cy.url().should('include', '/shipping')
+        cy.url().should('eq', 'https://dev.galumatires.com/shipping')
     })
 
 })
