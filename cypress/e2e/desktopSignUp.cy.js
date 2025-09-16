@@ -12,6 +12,9 @@ describe('Galuma Create Account Tests for Desktop', () => {
     cy.wait(3000)
   })
 
+  // For successful execution of TC_USER_REGISTRATION_FORM_SUBMISSION_002 and TC_COMPANY_EMPTY_016, 
+  // use unique email addresses in the registration form to avoid existing email errors. 
+
   it('TC_USER_REGISTRATION_NAVIGATION_001 - Verify successful navigation to user registration through Login link and Register option displaying New Account popup correctly', () => {
     // Login link is already clicked in beforeEach
     // Verify we're on the login page
@@ -27,6 +30,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
     cy.get('.black_stripe').should('be.visible')
   })
 
+  // For successful execution of TC_USER_REGISTRATION_FORM_SUBMISSION_002, use unique email addresses in the registration form to avoid existing email errors. 
   it('TC_USER_REGISTRATION_FORM_SUBMISSION_002 - Verify successful user account creation with complete registration form including personal information, address details, credentials, and agreement acceptance', () => {
     // Login link is already clicked in beforeEach
     // Verify we're on the login page
@@ -227,14 +231,14 @@ describe('Galuma Create Account Tests for Desktop', () => {
     cy.get('.alert').should('be.visible')
       .should('contain.text', 'Error!')
       .should('contain.text', 'please enter valid details')
-    
+
     // Close the alert
     cy.get('.close-alert > .fa').should('be.visible').click()
 
     // Check for error message for empty first name field
     cy.get('#register-fname-input-error').should('be.visible').should('contain.text', 'This field is required.')
-  }) 
-  
+  })
+
   it('TC_EMPTYFIELD_LNAME_005 - Ensure an error message is displayed when submitting the registration form with an empty last name field.', () => {
     // Login link is already clicked in beforeEach
     // Verify we're on the login page
@@ -305,7 +309,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
 
     // Check for error message for empty last name field
     cy.get('#register-lname-input-error').should('be.visible').should('contain.text', 'This field is required.')
-  }) 
+  })
 
   it('TC_EMPTYFIELD_STREET_006 - Validate that an error message appears when the registration form is submitted with an empty street address field', () => {
     // Login link is already clicked in beforeEach
@@ -521,7 +525,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
 
     // Check for error message for empty city field
     cy.get('#register-city-input-error').should('be.visible').should('contain.text', 'This field is required.')
-  }) 
+  })
 
   it('TC_EMPTYFIELD_ZIP_009 - Ensure an error message appears when the registration form is submitted with an empty zip code field.', () => {
     // Login link is already clicked in beforeEach
@@ -593,7 +597,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
 
     // Check for error message for empty zip code field
     cy.get('#register-zip-input-error').should('be.visible').should('contain.text', 'This field is required.')
-  }) 
+  })
 
   it('TC_EMPTYFIELD_EMAIL_010 - Validate that an error message is triggered when the registration form is submitted with an empty email address field.', () => {
     // Login link is already clicked in beforeEach
@@ -665,7 +669,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
 
     // Check for error message for empty email address field
     cy.get('#register-email-input-error').should('be.visible').should('contain.text', 'This field is required.')
-  }) 
+  })
 
   it('TC_EMPTYFIELD_PHONE_011 - Confirm that an error message is displayed when the registration form is submitted with an empty phone number field.', () => {
     // Login link is already clicked in beforeEach
@@ -737,7 +741,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
 
     // Check for error message for empty phone number field
     cy.get('#register-phone-input-error').should('be.visible').should('contain.text', 'This field is required.')
-  }) 
+  })
 
   it('TC_EMPTYFIELD_PASSWORD_012 - Verify that an error message appears when the registration form is submitted with empty password fields.', () => {
     // Login link is already clicked in beforeEach
@@ -807,7 +811,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
     // Check for error message for empty password field 
     cy.get('#register-password-input-error').should('be.visible').should('contain.text', 'This field is required.')
   })
-  
+
   it('TC_EMPTYFIELD_CONFIRM_PASSWORD_013 - Ensure an error message is shown when the registration form is submitted with an empty confirm password field.', () => {
     // Login link is already clicked in beforeEach
     // Verify we're on the login page
@@ -950,7 +954,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
     cy.get('.alert').should('be.visible')
       .should('contain.text', 'Error!')
       .should('contain.text', 'please enter valid details')
-  }) 
+  })
 
   it('TC_CHECKBOX_EMPTY_015 - Verify button disability when consent checkbox is not checked', () => {
     // Login link is already clicked in beforeEach
@@ -1010,6 +1014,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
     cy.get('#create_acc_register').should('be.disabled')
   })
 
+  // For successful execution of TC_COMPANY_EMPTY_016, use unique email addresses in the registration form to avoid existing email errors. 
   it('TC_COMPANY_EMPTY_016 - Verify registration with optional company name', () => {
     // Login link is already clicked in beforeEach
     // Verify we're on the login page
@@ -1072,7 +1077,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
 
     // Verify welcome popup display
     cy.get('.img_container').should('be.visible')
-  }) 
+  })
 
   it('TC_PLACEHOLDER_TEXT_017 - Verify placeholder text in input fields', () => {
     // Login link is already clicked in beforeEach
@@ -1180,7 +1185,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
     // Verify error message is displayed 
     cy.get('.alert').should('be.visible')
       .should('contain.text', 'Error!')
-  }) 
+  })
 
   //This scenario is getting error. Needs to update redirection to Privacy Policy page
   it('TC_PRIVACY_POLICY_LINK_019 - Validate that clicking the Privacy Policy link in the New Account popup redirects to the correct Privacy Policy page.', () => {
@@ -1231,8 +1236,5 @@ describe('Galuma Create Account Tests for Desktop', () => {
     // Verify redirection to Terms and Conditions page
     cy.url().should('eq', 'https://dev.galumatires.com/sales-terms-and-condition')
   })
-
   
-
-
 })
