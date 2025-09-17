@@ -12,6 +12,7 @@ describe('Galuma Create Account Tests for Desktop', () => {
     cy.wait(3000)
   })
 
+  // Note!!!!!!
   // For successful execution of TC_USER_REGISTRATION_FORM_SUBMISSION_002 and TC_COMPANY_EMPTY_016, 
   // use unique email addresses in the registration form to avoid existing email errors. 
 
