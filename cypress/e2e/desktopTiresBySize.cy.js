@@ -322,4 +322,184 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         cy.get('#tire-products-container').should('be.visible')
     })
 
+    it('TC_GALUMA_TBS_FILTER_011 - Verify dropdown filter functionality with specific values (245/50R19)', () => {
+        // 1. Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop by size page
+        cy.url().should('include', '/t/s')
+
+        // 2. Scroll to "Browse all products" section
+        cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
+        cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
+        cy.wait(2000)
+
+        // 3. Select the width of the product - set value as '245'
+        cy.get('#sidebar-width-select').should('be.visible').select('245')
+        cy.wait(2000)
+
+        // 4. Select the aspect ratio of the product - set value as '50'
+        cy.get('#sidebar-profile-select').should('be.visible').select('50')
+        cy.wait(2000)
+
+        // 5. Select the diameter of the product - set value as '19'
+        cy.get('#sidebar-rim-select').should('be.visible').select('19')
+        cy.wait(3000)
+
+        // Verify that filters have been applied and results are displayed
+        cy.get('#tire-products-container').should('be.visible')
+
+        // 6. Select first product randomly in the results list
+        cy.get('#tire-products-container [data-eid]').should('have.length.greaterThan', 0)
+
+        // Scroll to the first result to make it visible
+        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+        cy.wait(1000)
+
+        cy.get('#tire-products-container [data-eid]').first().then(($product) => {
+            const dataEid = $product.attr('data-eid')
+            cy.log(`Selected product with data-eid: ${dataEid}`)
+
+            // 7. Check the filtered results in title section
+            // First try to find tire size in the product card itself, then use overlay if needed
+            cy.get(`#tire-products-container > [data-eid="${dataEid}"]`).first().then(($productCard) => {
+                // Check if .det element exists in the product card
+                if ($productCard.find('.det').length > 0) {
+                    cy.get(`#tire-products-container > [data-eid="${dataEid}"] .det`).should('contain', '245/50R19')
+                    cy.log('Found tire size in product card: 245/50R19')
+                } else {
+                    // If not found in product card, open overlay to check
+                    cy.get(`#tire-products-container > [data-eid="${dataEid}"] .box-cover`).click({ force: true })
+                    cy.wait(3000)
+
+                    // Wait for overlay to be fully visible and check for tire size
+                    // 8. It should be "245/50R19" according to above search and verify results correctly
+                    cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('be.visible')
+                    cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('contain', '245/50R19')
+
+                    cy.log('Verified that filtered product shows correct tire size: 245/50R19')
+
+                    // Close the overlay
+                    cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                    cy.wait(1000)
+                }
+            })
+        })
+
+        // Final verification
+        cy.log('Dropdown filter test with specific values (245/50R19) completed successfully')
+    })
+
+    it.only('TC_GALUMA_TBS_FILTER_012 - Verify the hierarchical filter dependency (top-to-bottom clearing)', () => {
+        // 1. Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop by size page
+        cy.url().should('include', '/t/s')
+
+        // 2. Scroll to "Browse all products" section
+        cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
+        cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
+        cy.wait(2000)
+
+        // 3. Click quantity of tires as 2
+        cy.get('.brdr-pastel-grey > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Select the width of the product - set value as '225'
+        cy.get('#sidebar-width-select').should('be.visible').select('225')
+        cy.wait(2000)
+
+        // 5. Select the aspect ratio of the product - set value as '60'
+        cy.get('#sidebar-profile-select').should('be.visible').select('60')
+        cy.wait(2000)
+
+        // 6. Select the diameter of the product - set value as '18'
+        cy.get('#sidebar-rim-select').should('be.visible').select('18')
+        cy.wait(3000)
+
+        // Verify that filters have been applied and results are displayed
+        cy.get('#tire-products-container').should('be.visible')
+
+        // 7. Select first product randomly in the results list
+        cy.get('#tire-products-container [data-eid]').should('have.length.greaterThan', 0)
+
+        // Scroll to the first result to make it visible
+        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+        cy.wait(1000)
+
+        cy.get('#tire-products-container [data-eid]').first().then(($product) => {
+            const dataEid = $product.attr('data-eid')
+            cy.log(`Selected product with data-eid: ${dataEid}`)
+
+            // 8. Check the filtered results in title section
+            // First try to find tire size in the product card itself, then use overlay if needed
+            cy.get(`#tire-products-container > [data-eid="${dataEid}"]`).first().then(($productCard) => {
+                // Check if .det element exists in the product card
+                if ($productCard.find('.det').length > 0) {
+                    // 9. It should be "225/60R18" according to above search and verify results correctly
+                    cy.get(`#tire-products-container > [data-eid="${dataEid}"] .det`).should('contain', '225/60R18')
+                    cy.log('Found tire size in product card: 225/60R18')
+                } else {
+                    // If not found in product card, open overlay to check
+                    cy.get(`#tire-products-container > [data-eid="${dataEid}"] .box-cover`).click({ force: true })
+                    cy.wait(3000)
+
+                    // 9. It should be "225/60R18" according to above search and verify results correctly
+                    cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('be.visible')
+                    cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('contain', '225/60R18')
+
+                    cy.log('Verified that filtered product shows correct tire size: 225/60R18')
+
+                    // Close the overlay
+                    cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                    cy.wait(1000)
+                }
+            })
+        })
+
+        // 10. Click quantity of tires as 1 (this should clear the below filters due to hierarchical dependency)
+        cy.get('.box.qty > .d-flex > :nth-child(1)').should('be.visible').click()
+        cy.wait(3000)
+
+        // 11. Verify the below filters are cleared due to hierarchical dependency
+        cy.log('Verifying that filters are cleared due to hierarchical dependency...')
+
+        // Check width filter is cleared
+        cy.get('#sidebar-width-select').then(($select) => {
+            const value = $select.val()
+            expect(value).to.not.equal('225')
+            cy.log(`Width filter cleared - current value: ${value}`)
+        })
+
+        // Check profile/ratio filter is cleared
+        cy.get('#sidebar-profile-select').then(($select) => {
+            const value = $select.val()
+            expect(value).to.not.equal('60')
+            cy.log(`Profile filter cleared - current value: ${value}`)
+        })
+
+        // Check diameter/rim filter is cleared
+        cy.get('#sidebar-rim-select').then(($select) => {
+            const value = $select.val()
+            expect(value).to.not.equal('18')
+            cy.log(`Diameter filter cleared - current value: ${value}`)
+        })
+
+        // Final verification
+        cy.log('Hierarchical filter dependency test (top-to-bottom clearing) completed successfully')
+    })
+
 })
