@@ -502,7 +502,7 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         cy.log('Hierarchical filter dependency test (top-to-bottom clearing) completed successfully')
     })
 
-    it.only('TC_GALUMA_TBS_FILTER_013 - Verify filter combinations work correctly', () => {
+    it('TC_GALUMA_TBS_FILTER_013 - Verify filter combinations work correctly', () => {
         // 1. Navigate to shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
@@ -709,6 +709,363 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
 
         // 5. Log test completion - Verify filter combinations work correctly
         cy.log('Filter combinations test completed successfully')
+    })
+
+    it.only('TC_GALUMA_TBS_ADDITIONAL_FILTERS_014 - Verify individual additional filter functionality for checkbox-based filters', () => {
+        // 1. Navigate to shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // 2. Verify URL includes '/t/s' and page is visible
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // 3. Navigate to "Browse All Products" section - check for visible mobile selector, otherwise use desktop
+        cy.get('body').then(($body) => {
+            const mobileElement = $body.find('.browse_product_mobile:visible')
+            if (mobileElement.length > 0) {
+                cy.get('.browse_product_mobile').click()
+                cy.log('Clicked mobile Browse All Products section')
+            } else {
+                // Use desktop selector and scroll to "Browse All Products" section
+                cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
+                cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
+                cy.log('Scrolled to desktop Browse All Products section')
+            }
+        })
+        cy.wait(2000)
+
+        // 4. Test checkbox filter categories:
+
+        // Brands:
+        cy.log('Testing Brands filter category')
+
+        // Navigate to additional filters
+        cy.get('.add-filters').should('be.visible').click()
+        cy.wait(3000)
+
+        // Wait for additional filters panel to be visible or force interaction
+        cy.get('body').then(($body) => {
+            if ($body.find('.additional-filters:visible').length > 0) {
+                cy.get('.additional-filters').should('be.visible')
+                cy.log('Additional filters panel is visible')
+            } else {
+                cy.log('Additional filters panel not visible, continuing with force option')
+            }
+        })
+        cy.wait(1000)
+
+        // Expand Brands section - use force if necessary
+        cy.get('#headingOne > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Test Continental (if available)
+        cy.log('Testing Continental brand filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('#continental-54').length > 0) {
+                cy.get('#continental-54').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Continental brand filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Continental brand filter')
+                    }
+                })
+
+                // Unselect Continental
+                cy.get('#continental-54').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Continental filter tested successfully')
+            } else {
+                cy.log('Continental filter not available, skipping this test')
+            }
+        })
+
+        // Test Michelin (if available)
+        cy.log('Testing Michelin brand filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('#michelin-55').length > 0) {
+                cy.get('#michelin-55').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Michelin brand filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Michelin brand filter')
+                    }
+                })
+
+                // Unselect Michelin
+                cy.get('#michelin-55').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Michelin filter tested successfully')
+            } else {
+                cy.log('Michelin filter not available, skipping this test')
+            }
+        })
+
+        // Close additional filters to reset
+        cy.get('.add-filters').click()
+        cy.wait(1000)
+
+        // Models:
+        cy.log('Testing Models filter category')
+
+        // Open filters and navigate to additional filters
+        cy.get('.add-filters').should('be.visible').click()
+        cy.wait(3000)
+
+        // Wait for additional filters panel to be visible or force interaction
+        cy.get('body').then(($body) => {
+            if ($body.find('.additional-filters:visible').length > 0) {
+                cy.get('.additional-filters').should('be.visible')
+                cy.log('Additional filters panel is visible')
+            } else {
+                cy.log('Additional filters panel not visible, continuing with force option')
+            }
+        })
+        cy.wait(1000)
+
+        // Expand Models section - use force if necessary
+        cy.get('#headingTwo > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Test ADVAN Apex V601 (if available)
+        cy.log('Testing ADVAN Apex V601 model filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('#advan-apex-v601-356').length > 0) {
+                cy.get('#advan-apex-v601-356').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for ADVAN Apex V601 model filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for ADVAN Apex V601 model filter')
+                    }
+                })
+
+                // Unselect ADVAN Apex V601
+                cy.get('#advan-apex-v601-356').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('ADVAN Apex V601 filter tested successfully')
+            } else {
+                cy.log('ADVAN Apex V601 filter not available, skipping this test')
+            }
+        })
+
+        // Test Capricorn HP (if available)
+        cy.log('Testing Capricorn HP model filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('#capricorn-hp-561').length > 0) {
+                cy.get('#capricorn-hp-561').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Capricorn HP model filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Capricorn HP model filter')
+                    }
+                })
+
+                // Unselect Capricorn HP
+                cy.get('#capricorn-hp-561').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Capricorn HP filter tested successfully')
+            } else {
+                cy.log('Capricorn HP filter not available, skipping this test')
+            }
+        })
+
+        // Load Index:
+        cy.log('Testing Load Index filter category')
+
+        // Expand Load Index section - use force if necessary
+        cy.get('#headingThree > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Test Load 87 (if available)
+        cy.log('Testing Load 87 filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('#load-87').length > 0) {
+                cy.get('#load-87').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Load 87 filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Load 87 filter')
+                    }
+                })
+
+                // Unselect Load 87
+                cy.get('#load-87').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Load 87 filter tested successfully')
+            } else {
+                cy.log('Load 87 filter not available, skipping this test')
+            }
+        })
+
+        // Test Load 92 (if available)
+        cy.log('Testing Load 92 filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('#load-92').length > 0) {
+                cy.get('#load-92').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Load 92 filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Load 92 filter')
+                    }
+                })
+
+                // Unselect Load 92
+                cy.get('#load-92').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Load 92 filter tested successfully')
+            } else {
+                cy.log('Load 92 filter not available, skipping this test')
+            }
+        })
+
+        // Speed Rating:
+        cy.log('Testing Speed Rating filter category')
+
+        // Expand Speed Rating section - use force if necessary
+        cy.get('#headingFour > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Test Speed H (if available)
+        cy.log('Testing Speed H filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').length > 0) {
+                cy.get('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Speed H filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Speed H filter')
+                    }
+                })
+
+                // Unselect Speed H
+                cy.get('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Speed H filter tested successfully')
+            } else {
+                cy.log('Speed H filter not available, skipping this test')
+            }
+        })
+
+        // Test Speed T (if available)
+        cy.log('Testing Speed T filter')
+        cy.get('body').then(($body) => {
+            if ($body.find('.speed-accordian-list > .list > :nth-child(12) > .form-check-input').length > 0) {
+                cy.get('.speed-accordian-list > .list > :nth-child(12) > .form-check-input').check({ force: true })
+                cy.wait(3000)
+
+                // Verify results
+                cy.get('#tire-products-container').should('be.visible')
+
+                // Interact with first product if available
+                cy.get('body').then(($body) => {
+                    const products = $body.find('#tire-products-container [data-eid]')
+                    if (products.length > 0) {
+                        cy.log(`Found ${products.length} products for Speed T filter`)
+                        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                        cy.wait(1000)
+                        cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+                    } else {
+                        cy.log('No products found for Speed T filter')
+                    }
+                })
+
+                // Unselect Speed T
+                cy.get('.speed-accordian-list > .list > :nth-child(12) > .form-check-input').uncheck({ force: true })
+                cy.wait(2000)
+                cy.log('Speed T filter tested successfully')
+            } else {
+                cy.log('Speed T filter not available, skipping this test')
+            }
+        })
+
+        // Close additional filters
+        cy.get('.add-filters').click()
+        cy.wait(1000)
+
+        // 5. Log test completion - Verify all checkbox filter categories tested successfully
+        cy.log('All checkbox filter categories tested successfully')
     })
 
 })
