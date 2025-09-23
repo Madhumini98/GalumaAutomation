@@ -396,11 +396,11 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         cy.log('Dropdown filter test with specific values (245/50R19) completed successfully')
     })
 
-    it.only('TC_GALUMA_TBS_FILTER_012 - Verify the hierarchical filter dependency (top-to-bottom clearing)', () => {
+    it('TC_GALUMA_TBS_FILTER_012 - Verify the hierarchical filter dependency (top-to-bottom clearing)', () => {
         // 1. Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
-                username: 'galumadev',
+                 username: 'galumadev',
                 password: 'Test.123'
             }
         })
@@ -417,7 +417,7 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         // 3. Click quantity of tires as 2
         cy.get('.brdr-pastel-grey > .btn').should('be.visible').click()
         cy.wait(3000)
-
+ 
         // 4. Select the width of the product - set value as '225'
         cy.get('#sidebar-width-select').should('be.visible').select('225')
         cy.wait(2000)
@@ -500,6 +500,215 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
 
         // Final verification
         cy.log('Hierarchical filter dependency test (top-to-bottom clearing) completed successfully')
+    })
+
+    it.only('TC_GALUMA_TBS_FILTER_013 - Verify filter combinations work correctly', () => {
+        // 1. Navigate to shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // 2. Verify URL includes '/t/s' and page is visible
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // 3. Navigate to "Browse All Products" section - check for visible mobile selector, otherwise use desktop
+        cy.get('body').then(($body) => {
+            const mobileElement = $body.find('.browse_product_mobile:visible')
+            if (mobileElement.length > 0) {
+                cy.get('.browse_product_mobile').click()
+                cy.log('Clicked mobile Browse All Products section')
+            } else {
+                // Use desktop selector and scroll to "Browse All Products" section
+                cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
+                cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
+                cy.log('Scrolled to desktop Browse All Products section')
+            }
+        })
+        cy.wait(2000)
+
+        // 4. Test filter combinations:
+
+        // Combination 1: Qty=1 + Width
+        cy.log('Testing Combination 1: Qty=1 + Width=245')
+
+        // Select Qty=1
+        cy.get('.d-flex > :nth-child(1) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // Select Width=245
+        cy.get('#sidebar-width-select').should('be.visible').select('245')
+        cy.wait(3000)
+
+        // Verify results displayed
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Check product count and interact with first product if available
+        cy.get('#tire-products-container [data-eid]').then(($products) => {
+            if ($products.length > 0) {
+                cy.log(`Found ${$products.length} products for Qty=1 + Width=245`)
+
+                // Scroll to the first result and verify it's visible
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+                cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+            } else {
+                cy.log('No products found for Qty=1 + Width=245 combination')
+            }
+        })
+
+        // Combination 2: Qty=2 + Width + Profile
+        cy.log('Testing Combination 2: Qty=2 + Width=245 + Profile=35')
+
+        // Select Qty=2
+        cy.get('.brdr-pastel-grey > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // Select Width=245 (should already be selected, but ensuring it's set)
+        cy.get('#sidebar-width-select').should('be.visible').select('245')
+        cy.wait(2000)
+
+        // Select Profile=35 - if not available, fallback to 50
+        cy.get('#sidebar-profile-select').then(($select) => {
+            const options = Array.from($select[0].options).map(option => option.value)
+            if (options.includes('35')) {
+                cy.get('#sidebar-profile-select').select('35')
+                cy.log('Selected Profile=35')
+            } else {
+                cy.get('#sidebar-profile-select').select('50')
+                cy.log('Profile=35 not available, selected Profile=50 instead')
+            }
+        })
+        cy.wait(3000)
+
+        // Verify results displayed
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Check products for this combination
+        cy.get('#tire-products-container [data-eid]').then(($products) => {
+            if ($products.length > 0) {
+                cy.log(`Found ${$products.length} products for Qty=2 + Width=245 + Profile combination`)
+
+                // Scroll to the first result and interact with it
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+
+                // Get the first product and verify its tire size contains the selected values
+                cy.get('#tire-products-container [data-eid]').first().then(($product) => {
+                    const dataEid = $product.attr('data-eid')
+                    cy.log(`Selected product with data-eid: ${dataEid}`)
+
+                    // Check if tire size information is visible in the product card
+                    cy.get(`#tire-products-container > [data-eid="${dataEid}"]`).first().then(($productCard) => {
+                        if ($productCard.find('.det').length > 0) {
+                            cy.get(`#tire-products-container > [data-eid="${dataEid}"] .det`).should('contain', '245')
+                            cy.log('Verified tire size contains selected filter value: 245')
+                        } else {
+                            // Open overlay to check tire size
+                            cy.get(`#tire-products-container > [data-eid="${dataEid}"] .box-cover`).click({ force: true })
+                            cy.wait(3000)
+
+                            cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('be.visible')
+                            cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('contain', '245')
+
+                            cy.log('Verified tire size in overlay contains selected filter value: 245')
+
+                            // Close the overlay
+                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        }
+                    })
+                })
+            } else {
+                cy.log('No products found for Qty=2 + Width=245 + Profile combination')
+            }
+        })
+
+        // Combination 3: Qty=4 + Width + Profile + Rim
+        cy.log('Testing Combination 3: Qty=4 + Width=245 + Profile + Rim=19')
+
+        // Select Qty=4
+        cy.get('.d-flex > :nth-child(3) > .btn').should('be.visible').click()
+        cy.wait(3000)
+
+        // Select Width=245
+        cy.get('#sidebar-width-select').should('be.visible').select('245')
+        cy.wait(2000)
+
+        // Select Profile - try 50 first, then 60 if 50 is not available
+        let selectedProfile = ''
+        cy.get('#sidebar-profile-select').then(($select) => {
+            const options = Array.from($select[0].options).map(option => option.value)
+            if (options.includes('50')) {
+                cy.get('#sidebar-profile-select').select('50')
+                selectedProfile = '50'
+                cy.log('Selected Profile=50')
+            } else if (options.includes('60')) {
+                cy.get('#sidebar-profile-select').select('60')
+                selectedProfile = '60'
+                cy.log('Selected Profile=60')
+            } else {
+                cy.log('No suitable profile value found')
+            }
+        })
+        cy.wait(2000)
+
+        // Select Rim=19
+        cy.get('#sidebar-rim-select').should('be.visible').select('19')
+        cy.wait(3000)
+
+        // Verify results displayed
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Check products for this combination
+        cy.get('#tire-products-container [data-eid]').then(($products) => {
+            if ($products.length > 0) {
+                cy.log(`Found ${$products.length} products for Qty=4 + Width=245 + Profile + Rim=19`)
+
+                // Scroll to the first result and interact with it
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+
+                // Get the first product and verify its tire size contains the selected values
+                cy.get('#tire-products-container [data-eid]').first().then(($product) => {
+                    const dataEid = $product.attr('data-eid')
+                    cy.log(`Selected product with data-eid: ${dataEid}`)
+
+                    // Check if tire size information is visible in the product card
+                    cy.get(`#tire-products-container > [data-eid="${dataEid}"]`).first().then(($productCard) => {
+                        if ($productCard.find('.det').length > 0) {
+                            // Verify contains width 245 and rim 19
+                            cy.get(`#tire-products-container > [data-eid="${dataEid}"] .det`).should('contain', '245')
+                            cy.get(`#tire-products-container > [data-eid="${dataEid}"] .det`).should('contain', '19')
+                            cy.log('Verified tire size contains selected filter values: 245 and R19')
+                        } else {
+                            // Open overlay to check tire size
+                            cy.get(`#tire-products-container > [data-eid="${dataEid}"] .box-cover`).click({ force: true })
+                            cy.wait(3000)
+
+                            cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('be.visible')
+                            cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('contain', '245')
+                            cy.get(`[data-eid="${dataEid}"] > .box-cover > .overlay > .brand_img > .title-details > .my-0 > .det`).should('contain', '19')
+
+                            cy.log('Verified tire size in overlay contains selected filter values: 245 and R19')
+
+                            // Close the overlay
+                            cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
+                            cy.wait(1000)
+                        }
+                    })
+                })
+            } else {
+                cy.log('No products found for Qty=4 + Width=245 + Profile + Rim=19 combination')
+            }
+        })
+
+        // 5. Log test completion - Verify filter combinations work correctly
+        cy.log('Filter combinations test completed successfully')
     })
 
 })
