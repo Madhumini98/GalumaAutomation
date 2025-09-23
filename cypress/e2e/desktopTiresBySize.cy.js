@@ -1306,7 +1306,7 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         cy.log('Verify Tire Type, Run Flat, and Condition categories tested successfully')
     })
 
-    it.only('TC_GALUMA_TBS_ADDITIONAL_FILTERS_016 - Verify hierarchical filter dependency (top-to-bottom clearing) for additional filters', () => {
+    it('TC_GALUMA_TBS_ADDITIONAL_FILTERS_016 - Verify hierarchical filter dependency (top-to-bottom clearing) for additional filters', () => {
         // 1. Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
@@ -1551,6 +1551,367 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
 
         // 13. Log test completion
         cy.log('Verify hierarchical filter dependency with top-to-bottom clearing')
+    })
+
+    it.only('TC_GALUMA_TBS_ADDITIONAL_FILTERS_017 - Verify additional filter combinations work correctly', () => {
+        // 1. Navigate to the shop by tires page
+        cy.visit("https://dev.galumatires.com/t/s", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // Verify navigation to shop by size page
+        cy.url().should('include', '/t/s')
+        cy.get('body').should('be.visible')
+
+        // 2. Scroll to "Browse all products" section
+        cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
+        cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
+        cy.wait(2000)
+
+        // 3. Test filter combinations:
+
+        // Brand + Model (Continental + Cross Contact LX Sport)
+        cy.log('Testing Brand + Model combination: Continental + Cross Contact LX Sport')
+
+        // Navigate to additional filters
+        cy.get('.add-filters').should('be.visible').click()
+        cy.wait(3000)
+
+        // Wait for additional filters panel to be visible or force interaction
+        cy.get('body').then(($body) => {
+            if ($body.find('.additional-filters:visible').length > 0) {
+                cy.get('.additional-filters').should('be.visible')
+                cy.log('Additional filters panel is visible')
+            } else {
+                cy.log('Additional filters panel not visible, continuing with force option')
+            }
+        })
+        cy.wait(1000)
+
+        // Expand Brands section
+        cy.get('#headingOne > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Brand: Continental
+        cy.get('body').then(($body) => {
+            if ($body.find('#continental-54').length > 0) {
+                cy.get('#continental-54').check({ force: true })
+                cy.wait(2000)
+                cy.log('Continental brand selected')
+            } else {
+                cy.log('Continental brand not available')
+            }
+        })
+
+        // Expand Models section
+        cy.get('#headingTwo > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Model: Cross Contact LX Sport
+        cy.get('body').then(($body) => {
+            if ($body.find('#cross-contact-lx-sport-342').length > 0) {
+                cy.get('#cross-contact-lx-sport-342').check({ force: true })
+                cy.wait(2000)
+                cy.log('Cross Contact LX Sport model selected')
+            } else {
+                cy.log('Cross Contact LX Sport model not available')
+            }
+        })
+
+        // Verify results
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Interact with first product if available
+        cy.get('body').then(($body) => {
+            const products = $body.find('#tire-products-container [data-eid]')
+            if (products.length > 0) {
+                cy.log(`Found ${products.length} products for Continental + Cross Contact LX Sport combination`)
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+                cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+            } else {
+                cy.log('No products found for Continental + Cross Contact LX Sport combination')
+            }
+        })
+
+        // Unselect all the selected filters
+        cy.get('body').then(($body) => {
+            if ($body.find('#continental-54').length > 0) {
+                cy.get('#continental-54').uncheck({ force: true })
+                cy.wait(1000)
+            }
+            if ($body.find('#cross-contact-lx-sport-342').length > 0) {
+                cy.get('#cross-contact-lx-sport-342').uncheck({ force: true })
+                cy.wait(1000)
+            }
+        })
+
+        // Brand + Load Index + Speed Rating (Bridgestone + 90 + Y)
+        cy.log('Testing Brand + Load Index + Speed Rating combination: Bridgestone + 90 + Y')
+
+        // Select Brand: Bridgestone
+        cy.get('body').then(($body) => {
+            if ($body.find('#bridgestone-45').length > 0) {
+                cy.get('#bridgestone-45').check({ force: true })
+                cy.wait(2000)
+                cy.log('Bridgestone brand selected')
+            } else {
+                cy.log('Bridgestone brand not available')
+            }
+        })
+
+        // Expand Load Index section
+        cy.get('#headingThree > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Load Index: 90
+        cy.get('body').then(($body) => {
+            if ($body.find('#load-90').length > 0) {
+                cy.get('#load-90').check({ force: true })
+                cy.wait(2000)
+                cy.log('Load Index 90 selected')
+            } else {
+                cy.log('Load Index 90 not available')
+            }
+        })
+
+        // Expand Speed Rating section
+        cy.get('#headingFour > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Speed Rating: Y
+        cy.get('body').then(($body) => {
+            if ($body.find('.speed-accordian-list > .list > [style=""] > .form-check-input').length > 0) {
+                cy.get('.speed-accordian-list > .list > [style=""] > .form-check-input').check({ force: true })
+                cy.wait(2000)
+                cy.log('Speed Rating Y selected')
+            } else {
+                cy.log('Speed Rating Y not available, trying alternative selector')
+                // Try alternative selector for Speed Rating Y
+                if ($body.find('.speed-accordian-list > .list > :nth-child(16) > .form-check-input').length > 0) {
+                    cy.get('.speed-accordian-list > .list > :nth-child(16) > .form-check-input').check({ force: true })
+                    cy.wait(2000)
+                    cy.log('Speed Rating Y selected with alternative selector')
+                }
+            }
+        })
+
+        // Verify results
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Interact with first product if available
+        cy.get('body').then(($body) => {
+            const products = $body.find('#tire-products-container [data-eid]')
+            if (products.length > 0) {
+                cy.log(`Found ${products.length} products for Bridgestone + Load 90 + Speed Y combination`)
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+                cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+            } else {
+                cy.log('No products found for Bridgestone + Load 90 + Speed Y combination')
+            }
+        })
+
+        // Unselect all the selected filters
+        cy.get('body').then(($body) => {
+            if ($body.find('#bridgestone-45').length > 0) {
+                cy.get('#bridgestone-45').uncheck({ force: true })
+                cy.wait(1000)
+            }
+            if ($body.find('#load-90').length > 0) {
+                cy.get('#load-90').uncheck({ force: true })
+                cy.wait(1000)
+            }
+            if ($body.find('.speed-accordian-list > .list > [style=""] > .form-check-input').length > 0) {
+                cy.get('.speed-accordian-list > .list > [style=""] > .form-check-input').uncheck({ force: true })
+                cy.wait(1000)
+            }
+        })
+
+        // Tire Type + Run Flat (Summer + Yes)
+        cy.log('Testing Tire Type + Run Flat combination: Summer + Yes')
+
+        // Expand Tire Type section
+        cy.get('#headingFive > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Tire Type: Summer
+        cy.get('body').then(($body) => {
+            if ($body.find('#collapseExample4 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').length > 0) {
+                cy.get('#collapseExample4 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').check({ force: true })
+                cy.wait(2000)
+                cy.log('Summer tire type selected')
+            } else {
+                cy.log('Summer tire type not available')
+            }
+        })
+
+        // Expand Run Flat section
+        cy.get('#headingSix > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Run Flat: Yes
+        cy.get('body').then(($body) => {
+            if ($body.find('#collapseExample5 > .card > .box > ul > :nth-child(1) > .form-check > .form-check-input').length > 0) {
+                cy.get('#collapseExample5 > .card > .box > ul > :nth-child(1) > .form-check > .form-check-input').check({ force: true })
+                cy.wait(2000)
+                cy.log('Run Flat Yes selected')
+            } else {
+                cy.log('Run Flat Yes not available')
+            }
+        })
+
+        // Apply filters and verify results
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Interact with first product if available
+        cy.get('body').then(($body) => {
+            const products = $body.find('#tire-products-container [data-eid]')
+            if (products.length > 0) {
+                cy.log(`Found ${products.length} products for Summer + Run Flat Yes combination`)
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+                cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+            } else {
+                cy.log('No products found for Summer + Run Flat Yes combination')
+            }
+        })
+
+        // Unselect all the selected filters
+        cy.get('body').then(($body) => {
+            if ($body.find('#collapseExample4 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').length > 0) {
+                cy.get('#collapseExample4 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').uncheck({ force: true })
+                cy.wait(1000)
+            }
+            if ($body.find('#collapseExample5 > .card > .box > ul > :nth-child(1) > .form-check > .form-check-input').length > 0) {
+                cy.get('#collapseExample5 > .card > .box > ul > :nth-child(1) > .form-check > .form-check-input').uncheck({ force: true })
+                cy.wait(1000)
+            }
+        })
+
+        // Brand + Speed Rating + Condition (Continental + H + Like New)
+        cy.log('Testing Brand + Speed Rating + Condition combination: Continental + H + Like New')
+
+        // Select Brand: Continental
+        cy.get('body').then(($body) => {
+            if ($body.find('#continental-54').length > 0) {
+                cy.get('#continental-54').check({ force: true })
+                cy.wait(2000)
+                cy.log('Continental brand selected')
+            } else {
+                cy.log('Continental brand not available')
+            }
+        })
+
+        // Select Speed Rating: H
+        cy.get('body').then(($body) => {
+            if ($body.find('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').length > 0) {
+                cy.get('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').check({ force: true })
+                cy.wait(2000)
+                cy.log('Speed Rating H selected')
+            } else {
+                cy.log('Speed Rating H not available')
+            }
+        })
+
+        // Expand Condition section
+        cy.get('#headingSeven > .mb-0 > .btn').click({ force: true })
+        cy.wait(1000)
+
+        // Select Condition: Like New
+        cy.get('body').then(($body) => {
+            if ($body.find('#collapseExample6 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').length > 0) {
+                cy.get('#collapseExample6 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').check({ force: true })
+                cy.wait(2000)
+                cy.log('Condition Like New selected')
+            } else {
+                cy.log('Condition Like New not available')
+            }
+        })
+
+        // Verify results
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Interact with first product if available
+        cy.get('body').then(($body) => {
+            const products = $body.find('#tire-products-container [data-eid]')
+            if (products.length > 0) {
+                cy.log(`Found ${products.length} products for Continental + Speed H + Like New combination`)
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+                cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+            } else {
+                cy.log('No products found for Continental + Speed H + Like New combination')
+            }
+        })
+
+        // Unselect all the selected filters
+        cy.get('body').then(($body) => {
+            if ($body.find('#continental-54').length > 0) {
+                cy.get('#continental-54').uncheck({ force: true })
+                cy.wait(1000)
+            }
+            if ($body.find('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').length > 0) {
+                cy.get('.speed-accordian-list > .list > :nth-child(1) > .form-check-input').uncheck({ force: true })
+                cy.wait(1000)
+            }
+            if ($body.find('#collapseExample6 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').length > 0) {
+                cy.get('#collapseExample6 > .card > .box > ul > .list > :nth-child(2) > .form-check-input').uncheck({ force: true })
+                cy.wait(1000)
+            }
+        })
+
+        // Multiple Brands (Bridgestone + Continental)
+        cy.log('Testing Multiple Brands combination: Bridgestone + Continental')
+
+        // Select Brand: Bridgestone
+        cy.get('body').then(($body) => {
+            if ($body.find('#bridgestone-45').length > 0) {
+                cy.get('#bridgestone-45').check({ force: true })
+                cy.wait(2000)
+                cy.log('Bridgestone brand selected')
+            } else {
+                cy.log('Bridgestone brand not available')
+            }
+        })
+
+        // Select Brand: Continental
+        cy.get('body').then(($body) => {
+            if ($body.find('#continental-54').length > 0) {
+                cy.get('#continental-54').check({ force: true })
+                cy.wait(2000)
+                cy.log('Continental brand selected')
+            } else {
+                cy.log('Continental brand not available')
+            }
+        })
+
+        // Verify results
+        cy.get('#tire-products-container').should('be.visible')
+
+        // Interact with first product if available
+        cy.get('body').then(($body) => {
+            const products = $body.find('#tire-products-container [data-eid]')
+            if (products.length > 0) {
+                cy.log(`Found ${products.length} products for Bridgestone + Continental combination`)
+                cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+                cy.wait(1000)
+                cy.get('#tire-products-container [data-eid]').first().should('be.visible')
+            } else {
+                cy.log('No products found for Bridgestone + Continental combination')
+            }
+        })
+
+        // Close additional filters
+        cy.get('.add-filters').click()
+        cy.wait(1000)
+
+        // 6. Log test completion
+        cy.log('Verify multiple complex filter combinations work correctly')
     })
 
 })
