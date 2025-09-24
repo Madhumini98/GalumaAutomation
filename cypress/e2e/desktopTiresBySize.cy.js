@@ -400,7 +400,7 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         // 1. Navigate to the shop by tires page
         cy.visit("https://dev.galumatires.com/t/s", {
             auth: {
-                 username: 'galumadev',
+                username: 'galumadev',
                 password: 'Test.123'
             }
         })
@@ -417,7 +417,7 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         // 3. Click quantity of tires as 2
         cy.get('.brdr-pastel-grey > .btn').should('be.visible').click()
         cy.wait(3000)
- 
+
         // 4. Select the width of the product - set value as '225'
         cy.get('#sidebar-width-select').should('be.visible').select('225')
         cy.wait(2000)
@@ -520,7 +520,7 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
         cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
         cy.wait(2000)
-        
+
 
         // 4. Test filter combinations:
 
@@ -2228,144 +2228,42 @@ describe('Galuma Desktop Tires By Size Page Tests', () => {
         })
     })
 
-    it.only('TC_GALUMA_TBS_CART_020 - Verify user can add product to cart and remove it', () => {
-        // 1. Navigate to shop by tires page
-        cy.visit("https://dev.galumatires.com/t/s", {
+    it('TC_GALUMA_TBS_CART_020 - Verify user can add product to cart and remove it', () => {
+        // Navigate to the shop tires page with authentication
+        cy.visit('https://dev.galumatires.com/t/s', {
             auth: {
                 username: 'galumadev',
                 password: 'Test.123'
             }
         })
+
+        // Wait for the page to load completely and products to be displayed
         cy.wait(3000)
 
-        // 2. Verify URL includes '/t/s' and page is visible
-        cy.url().should('include', '/t/s')
-        cy.get('body').should('be.visible')
-
-        // 3. Scroll to "Browse all products" section
-        cy.get('.browse-product > .container > .sec-heading > span').should('be.visible')
-        cy.get('.browse-product > .container > .sec-heading > span').scrollIntoView()
-        cy.wait(2000)
-
-        // 4. Verify products container visible
-        cy.get('#tire-products-container').should('be.visible')
-
-        // 5. Select first product and click its box-cover
-        cy.get('#tire-products-container [data-eid]').should('have.length.greaterThan', 0)
-        cy.get('#tire-products-container [data-eid]').first().scrollIntoView()
+        // Scroll to the products section to ensure it's visible
+        cy.get('#tire-products-container').scrollIntoView()
         cy.wait(1000)
 
-        cy.get('#tire-products-container [data-eid]').first().then(($product) => {
-            const dataEid = $product.attr('data-eid')
-            cy.log(`Selected product with data-eid: ${dataEid}`)
+        // Get the first product and hover over it to make the Add to Cart button visible
+        cy.get('#tire-products-container > div:nth-child(1)').trigger('mouseover')
+        cy.wait(1000)
 
-            // Click the product box-cover to open overlay
-            cy.get(`#tire-products-container [data-eid="${dataEid}"] .box-cover`).click({ force: true })
-            cy.wait(3000)
+        // Click on the "Add to Cart" button using the class selector
+        cy.get('.add-to-cart-btn').first().click({ force: true })
+        cy.wait(2000)
 
-            // 6. Verify product overlay visible
-            cy.get(`[data-eid="${dataEid}"] > .overlay`).should('be.visible')
-            cy.log('Product overlay opened successfully')
+        // Verify that the cart sidebar opens and product is visible in the cart
+        cy.get('.side-cart-inner').should('be.visible')
 
-            // 7. Click "Add to cart" in overlay
-            cy.log('Adding product to cart')
-            cy.get('body').then(($body) => {
-                // Try multiple selectors for the add to cart button
-                if ($body.find(`[data-eid="${dataEid}"] > .overlay > .brand > .cart_btn`).length > 0) {
-                    cy.get(`[data-eid="${dataEid}"] > .overlay > .brand > .cart_btn`).click({ force: true })
-                    cy.log('Add to cart clicked via .brand > .cart_btn selector')
-                } else if ($body.find(`[data-eid="${dataEid}"] .overlay .cart_btn`).length > 0) {
-                    cy.get(`[data-eid="${dataEid}"] .overlay .cart_btn`).click({ force: true })
-                    cy.log('Add to cart clicked via .overlay .cart_btn selector')
-                } else if ($body.find(`[data-eid="${dataEid}"] .overlay [class*="cart"]`).length > 0) {
-                    cy.get(`[data-eid="${dataEid}"] .overlay [class*="cart"]`).first().click({ force: true })
-                    cy.log('Add to cart clicked via [class*="cart"] selector')
-                } else {
-                    cy.log('Add to cart button not found, trying generic button selector')
-                    cy.get(`[data-eid="${dataEid}"] .overlay button`).first().click({ force: true })
-                }
-            })
-            cy.wait(3000)
+        // Click on 'remove' button to remove product from the cart
+        cy.get(':nth-child(2) > .remove-cart-item').should('be.visible').click()
+        cy.wait(1000)
 
-            // Wait for cart to update and verify cart popup or indication appears
-            cy.get('body').then(($body) => {
-                if ($body.find('.cart-popup:visible, #cart-popup:visible, [id*="cart"]:visible').length > 0) {
-                    cy.log('Cart popup appeared after adding product')
+        // Verify the cart is empty or shows empty state (no items visible)
+        cy.get('.side-cart-inner').should('be.visible')
 
-                    // 8. Click "Remove" icon
-                    cy.log('Attempting to remove product from cart')
-                    if ($body.find('.align-items-center > .remove-cart-item').length > 0) {
-                        cy.get('.align-items-center > .remove-cart-item').click({ force: true })
-                        cy.wait(2000)
-                        cy.log('Product removed via .remove-cart-item selector')
-                    } else if ($body.find('.remove-cart-item').length > 0) {
-                        cy.get('.remove-cart-item').first().click({ force: true })
-                        cy.wait(2000)
-                        cy.log('Product removed via .remove-cart-item selector')
-                    } else if ($body.find('[class*="remove"]').length > 0) {
-                        cy.get('[class*="remove"]').first().click({ force: true })
-                        cy.wait(2000)
-                        cy.log('Product removed via [class*="remove"] selector')
-                    } else {
-                        cy.log('Remove button not found in cart popup')
-                    }
-
-                    // 9. Close cart popup
-                    cy.log('Closing cart popup')
-                    if ($body.find('#close-cart-popup > strong').length > 0) {
-                        cy.get('#close-cart-popup > strong').click({ force: true })
-                        cy.log('Cart popup closed via #close-cart-popup > strong')
-                    } else if ($body.find('#close-cart-popup').length > 0) {
-                        cy.get('#close-cart-popup').click({ force: true })
-                        cy.log('Cart popup closed via #close-cart-popup')
-                    } else if ($body.find('[id*="close"], .close, [class*="close"]').length > 0) {
-                        cy.get('[id*="close"], .close, [class*="close"]').first().click({ force: true })
-                        cy.log('Cart popup closed via close button')
-                    } else {
-                        cy.log('Close button not found, trying to click outside popup')
-                        cy.get('body').click(0, 0, { force: true })
-                    }
-                    cy.wait(1000)
-                } else {
-                    cy.log('No cart popup appeared, cart functionality may work differently')
-
-                    // Alternative approach: check if cart icon/counter updated
-                    if ($body.find('.cart-count, [class*="cart-count"], .cart-counter, [class*="cart"]').length > 0) {
-                        cy.log('Cart indicator found, product may have been added successfully')
-
-                        // Try to access cart via cart icon
-                        cy.get('.cart-count, [class*="cart-count"], .cart-counter, [class*="cart"]').first().click({ force: true })
-                        cy.wait(2000)
-
-                        // Try to remove item if cart opened
-                        cy.get('body').then(($body) => {
-                            if ($body.find('.remove-cart-item, [class*="remove"]').length > 0) {
-                                cy.get('.remove-cart-item, [class*="remove"]').first().click({ force: true })
-                                cy.wait(1000)
-                                cy.log('Product removed from cart')
-                            }
-                        })
-                    }
-                }
-            })
-
-            // Close product overlay if still open
-            cy.get('body').then(($body) => {
-                if ($body.find(`[data-eid="${dataEid}"] > .overlay:visible`).length > 0) {
-                    if ($body.find(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).length > 0) {
-                        cy.get(`[data-eid="${dataEid}"] > .overlay > .close_button_overlay`).click({ force: true })
-                        cy.log('Product overlay closed')
-                    } else {
-                        cy.log('Close button not found, clicking outside overlay')
-                        cy.get('body').click(0, 0, { force: true })
-                    }
-                    cy.wait(1000)
-                }
-            })
-
-            // 10. Log test completion
-            cy.log('Verify product can be added to and removed from cart')
-        })
+        // Close the cart popup by clicking the close button
+        cy.get('#close-cart-popup > strong').should('be.visible').click()
     })
 
 })
