@@ -452,7 +452,7 @@ describe('Galuma Desktop Tires By Brand Page Tests', () => {
         cy.get('#close-cart-popup > strong').should('be.visible').click()
     })
 
-    it('TC_GALUMA_MOBILE_TBB_HELP_SECTION_010 - Verify visibility of help section content', () => {
+    it('TC_GALUMA_TBB_HELP_SECTION_010 - Verify visibility of help section content', () => {
         // Navigate to shop tires by brand page
         cy.visit("https://dev.galumatires.com/t/b", {
             auth: {
