@@ -737,6 +737,4 @@ describe('Galuma Desktop Product Information Tests for Four Tires', () => {
         // Verify that thumbnail container is still present after clicking
         cy.get('#thumb-container').should('exist')
     })
-
-
 })
