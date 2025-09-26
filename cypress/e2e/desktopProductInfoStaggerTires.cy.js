@@ -257,12 +257,7 @@ describe('Galuma Desktop Product Information Tests for Stagger Tires', () => {
             })
         })
 
-        // 9. Check visibility of Original Equipment logo
-        cy.get('.col-6 > .ssn-product').should('be.visible').invoke('text').then((originalEquipmentText) => {
-            cy.log(`Original Equipment section: ${originalEquipmentText}`)
-        })
-
-        // 10. Quantity displays with count icon and available number (1/2/4)
+        // 9. Quantity displays with count icon and available number (1/2/4)
         cy.get('.last-season > .col-4 > .ssn-product').should('be.visible').invoke('text').then((quantityText) => {
             cy.log(`Quantity section: ${quantityText}`)
             expect(quantityText.toLowerCase()).to.satisfy((text) => {
@@ -270,12 +265,12 @@ describe('Galuma Desktop Product Information Tests for Stagger Tires', () => {
             })
         })
 
-        // 11. Check visibility of Item Condition
+        // 10. Check visibility of Item Condition
         cy.get('.last-season > .col-5 > .ssn-product > b').should('be.visible').invoke('text').then((itemCondition) => {
             cy.log(`Item Condition: ${itemCondition}`)
         })
 
-        // 12. Check visibility of Stock status
+        // 11. Check visibility of Stock status
         cy.get('.last-season > .col-3 > .ssn-product > small').should('be.visible').invoke('text').then((stockStatus) => {
             cy.log(`Stock Status: ${stockStatus}`)
         })
