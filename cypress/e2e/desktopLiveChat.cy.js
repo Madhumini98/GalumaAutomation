@@ -200,7 +200,7 @@ describe('Galuma Desktop Live Chat Tests', () => {
         cy.get('#chat-goback').click()
     })
 
-    it.only('TC_GALUMA_LIVECHAT_GUEST_006 - Verify live chat search functionality for tire size', () => {
+    it('TC_GALUMA_LIVECHAT_GUEST_006 - Verify live chat search functionality for tire size', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -224,5 +224,98 @@ describe('Galuma Desktop Live Chat Tests', () => {
 
         // 8. Click on suggested result
         cy.get('[data-id="tire-size"]').click()
+    })
+
+    it.only('TC_GALUMA_LIVECHAT_GUEST_007 - Verify live chat email contact form submission and admin message visibility', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Verify page is visible
+        cy.get('body').should('be.visible')
+
+        // 3. Click live chat icon
+        cy.get('.live-chat-icon').click()
+
+        // 4. Verify chat home container visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 5. Visibility of send-email section and content verification
+        cy.get('#send-email').should('be.visible')
+            .and('contain.text', 'Send us a email')
+            .and('contain.text', 'We will be back as soon as possible')
+
+        // 6. Click on "Contact us by Email" to open popup
+        cy.get('#send-email').click()
+
+        // 7. Verify "Contact us by Email" popup visibility
+        cy.get('.contact-form-body').should('be.visible')
+
+        // 8. Verify popup title content
+        cy.get('.contact-form-body > .mb-2').should('contain.text', 'Contact us by Email')
+
+        // 9. Verify popup description content
+        cy.get('.contact-form-body > :nth-child(3)').should('contain.text', 'We will reply as quickly as possible')
+
+        // 10. Fill in Subject field
+        cy.get('#chat-contact-subject').click().type('Automated Testing - Guest')
+
+        // 11. Fill in Description field
+        cy.get('#chat-contact-body').click().type('This is an automated test message sent via Cypress to verify the contact form functionality in the Galuma project. Please ignore this message as it is part of our QA testing process.')
+
+        // 12. Fill in Email field with unregistered email
+        cy.get('#chat-contact-mail').click().type('madhumini+7334@longwapps.com')
+
+        // 13. Click Submit button
+        cy.get('.pt-3 > .btn').click()
+
+        // 14. Verify confirmation popup appears
+        cy.get('.survey-confirm-content').should('be.visible')
+
+        // 15. Verify confirmation message content
+        cy.get('.survey-confirm-content p > b').should('contain.text', 'Thanks')
+            .and('contain.text', 'reach out')
+            .and('contain.text', 'shortly')
+
+        // 16. Navigate to admin side to check message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // 17. Login to admin panel
+            cy.get('input[type="email"]').type('charani@longwapps.com')
+            cy.get('input[type="password"]').type('Test.123')
+            cy.get('#submit-login').click()
+            cy.wait(3000)
+
+            // 18. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').click({ force: true })
+            cy.wait(2000)
+
+            // 19. Click "All Messages" section (live-chat messages)
+            cy.get('a[href="/messages/live-chat"]').click()
+            cy.wait(2000)
+
+            // 20. Check visibility of newest message at first
+            cy.get('.last-chat.fw-bold').first().should('be.visible').click()
+
+            // 21. It should display as "Customer (Unregistered)"
+            cy.get('.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Customer (Unregistered)')
+
+            // 22. Message visibility check - verify chat window body
+            cy.get('#chat-window-body').should('be.visible')
+
+            // 23. Check the online/offline mode in admin side live chat
+            cy.get('#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
+
+            // 24. Verify live chat status (should be offline for this process to be correct)
+            cy.get('#liveChatState').should('not.be.checked')
+        })
     })
 })
