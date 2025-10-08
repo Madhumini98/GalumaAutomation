@@ -854,7 +854,7 @@ describe('Galuma Desktop Live Chat Tests', () => {
         cy.get('.chat-offline-header').should('not.be.visible')
     })
 
-    it.only('TC_GALUMA_LIVECHAT_GUEST_ONLINE_012 - Verify live chat initiation with form submission in online mode', () => {
+    it('TC_GALUMA_LIVECHAT_GUEST_ONLINE_012 - Verify live chat initiation with form submission in online mode', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
