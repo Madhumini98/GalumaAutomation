@@ -727,7 +727,7 @@ describe('Galuma Desktop Live Chat Tests', () => {
 
     })
 
-    it.only('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_011 - Verify admin response in live chat and check online mode with logged user', () => {
+    it('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_011 - Verify admin response in live chat and check online mode with logged user', () => {
         // STEP 1: First, enable online mode in admin panel
         cy.origin('https://devadmin.galumatires.com', () => {
             cy.on('uncaught:exception', (e) => {
@@ -1011,5 +1011,226 @@ describe('Galuma Desktop Live Chat Tests', () => {
             // 24. Verify it is in online mode (checked)
             cy.get('input#liveChatState').should('be.checked')
         })
+    })
+
+    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_013 - Verify chat close after 10-12 minutes of inactivity', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Verify page is visible
+        cy.get('body').should('be.visible')
+
+        // 3. Click live chat icon
+        cy.get('.live-chat-icon').click()
+        cy.wait(1000)
+
+        // 4. Click Live chat icon in the footer
+        cy.get('#live-chat').click()
+        cy.wait(1000)
+
+        // 5. Verify live chat container visible
+        cy.get('.contact-form-body').should('be.visible')
+
+        // 6. Check welcome message
+        cy.get('.chat-welcome-msg').should('be.visible')
+            .and('contain.text', 'Welcome to our live Chat! Please fill in the form below before a starting the chat.')
+
+        // 7. Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
+
+        // 8. Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
+
+        // 9. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 10. Offline header should be visible
+        cy.get('.chat-offline-header').should('be.visible')
+            .and('contain.text', "We'll be back online later today")
+            .and('contain.text', 'Looking for tires? Have a look around! Happy to assist if you have any questions.')
+
+        // 11. Write a message to test the scenario
+        cy.get('#chatInput').click().type('This is Cypress Testing Process - Inactivity Test')
+        cy.wait(1000)
+        cy.get('.send-btn').click()
+        cy.wait(1000)
+
+        // 12. Check the following messages visibility
+        cy.get('.chat-assistant > :nth-child(3) > p').should('be.visible')
+            .and('contain.text', 'Hi! Thanks for reaching out!')
+
+        cy.get('.chat-assistant > :nth-child(4) > p').should('be.visible')
+            .and('contain.text', 'Our live chat is currently closed.')
+
+        cy.get('.card').should('be.visible')
+            .and('contain.text', 'Feel free to send us a message')
+            .and('contain.text', 'with your request')
+            .and('contain.text', 'Send us a message')
+
+        // 13. Then, login to the admin side to check the message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // Click "username:" and type
+            cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+            // Click "password:" and type
+            cy.get('input[type="password"]').click().type('Test.123')
+
+            // Then, click on login button
+            cy.get('#submit-login').click()
+            cy.wait(3000)
+
+            // 14. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+            cy.wait(2000)
+
+            // 15. Click "All Messages" section
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+            cy.wait(2000)
+
+            // 16. Check visibility of newest message at first and click
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                // 17. Verify the message shows "Madhumini Kodithuwakku"
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Madhumini Kodithuwakku')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // Click on the first message to open it
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 17. It should display as "Madhumini Kodithuwakku"
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Madhumini Kodithuwakku')
+
+            // 18. Click on message tab and type
+            cy.get('textarea#message-input').click().type('Okay, go ahead')
+            cy.wait(1000)
+            cy.get('.chat-input-section > button.btn > img').click()
+            cy.wait(1000)
+
+            // 19. Check the online/offline mode in admin side live chat
+            cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
+
+            // If it is offline, verify it's not checked
+            cy.get('input#liveChatState').should('not.be.checked')
+        })
+
+        // 20. Then again navigate back to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // 21. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 22. Verify page is visible
+        cy.get('body').should('be.visible')
+
+        // 23. Click live chat icon
+        cy.get('.live-chat-icon').click({ force: true })
+        cy.wait(1000)
+
+        // 24. Now live chat should provide the ability to message in user side
+        cy.get('input#chatInput').should('be.visible')
+
+        // 25. Wait 12 minutes to verify chat close functionality after inactivity
+        // NOTE: Using cy.wait() for 12 minutes (720000ms) for inactivity timeout
+        cy.log('Waiting 12 minutes to test chat inactivity timeout...')
+        cy.wait(720000) // 12 minutes = 720,000 milliseconds
+
+        // 26. Chat service message visibility
+        cy.get('.chat-service-msg').should('be.visible')
+            .and('contain.text', 'Thank you for using our chat service.')
+            .and('contain.text', 'This support session is now finished')
+            .and('contain.text', 'Would you like to receive a copy of this conversation to')
+
+        // 27. Click on 'Yes' button to receive transcript
+        cy.get('.send-transcript-yes').click()
+        cy.wait(2000)
+
+        // 28. Success alert display
+        cy.get('.alert').should('be.visible')
+            .and('contain.text', 'Success!')
+            .and('contain.text', 'Transcript sent successfully')
+
+        // Close the alert
+        cy.get('.close-alert > .fa').click()
+        cy.wait(1000)
+
+        // 29. Survey request visibility
+        cy.get('.survey-confirm-content').should('be.visible')
+            .and('contain.text', 'Would you like to answer a')
+            .and('contain.text', 'short survey to help us')
+            .and('contain.text', 'evaluate our live chat service?')
+
+        // 30. Click on 'Yes' button for survey
+        cy.get('.yes-survey').click()
+        cy.wait(1000)
+
+        // 31. Feedback container visibility
+        cy.get('.chat-feedback-container').should('be.visible')
+
+        // Verify thank you message
+        cy.get('b').should('contain.text', 'Thank you for using our chat service!')
+
+        // 32. Answer the survey questions
+
+        // Question 1: Is this the first time you have chatted with us about the case?
+        cy.get('.chat-feedback-questions > :nth-child(1)').should('be.visible')
+        cy.get(':nth-child(1) > [name="previous-chat"]').click()
+        cy.wait(500)
+
+        // Question 2: Was the case resolved during the chat?
+        cy.get('.chat-feedback-questions > :nth-child(3)').should('be.visible')
+        cy.get(':nth-child(1) > [name="resolved"]').click()
+        cy.wait(500)
+
+        // Question 3: How would you rate this chat?
+        cy.get('.chat-feedback-questions > :nth-child(5)').should('be.visible')
+        cy.get(':nth-child(1) > [name="rating"]').click()
+        cy.wait(500)
+
+        // 33. Submit the survey
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 34. Success alert for feedback submission
+        cy.get('.alert').should('be.visible')
+            .and('contain.text', 'Success!')
+            .and('contain.text', 'Feedback submitted and mailed successfully')
+
+        // Close the alert
+        cy.get('.close-alert > .fa').click()
+        cy.wait(1000)
+
+        // 35. Chat end container visibility
+        cy.get('.chat-end-content').should('be.visible')
+            .and('contain.text', 'We appreciate you chatting')
+            .and('contain.text', 'with us. Let us know if you')
+            .and('contain.text', 'need any further assistance')
+
+        // 36. Click close button to end chat
+        cy.get('.chat-button').click()
+        cy.wait(1000)
+
+        // 37. Verify live chat popup has disappeared
+        cy.get('.chat-container').should('not.be.visible')
+        cy.log('Live chat session closed successfully after inactivity timeout')
     })
 })
