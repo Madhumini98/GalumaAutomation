@@ -13,5 +13,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+// Import cypress-file-upload plugin
+import 'cypress-file-upload';
+
 // Import commands.js using ES2015 syntax:
 import './commands'
