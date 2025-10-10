@@ -1,4 +1,4 @@
-describe('Galuma Desktop Live Chat Tests', () => {
+describe('Galuma Desktop Live Home Chat Tests', () => {
     beforeEach(() => {
         // Common setup for all test cases
         cy.viewport(1475, 750)
@@ -1386,7 +1386,7 @@ describe('Galuma Desktop Live Chat Tests', () => {
         })
     })
 
-    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_015 - Verify attachments and images functionality in live chat', () => {
+    it('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_015 - Verify attachments and images functionality in live chat', () => {
             // 1. Verify homepage loaded
             cy.url().should('include', 'galumatires.com')
             cy.log('Step 1: Homepage loaded successfully')
@@ -1627,5 +1627,125 @@ describe('Galuma Desktop Live Chat Tests', () => {
             cy.log('✓ Test completed successfully: Image attachment functionality and popup verified on both user and admin sides')
 
             }) // End cy.readFile().then() block
+    })
+
+    it('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_016 - Verify attachment limits', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+        cy.log('Step 1: Homepage loaded successfully')
+
+        // 2. Verify page is visible
+        cy.get('body').should('be.visible')
+        cy.log('Step 2: Page content is visible')
+
+        // 3. Click live chat icon
+        cy.get('.live-chat-icon').click()
+        cy.wait(1000)
+        cy.log('Step 3: Live chat icon clicked')
+
+        // 4. Click Live chat icon in the footer
+        cy.get('#live-chat').click()
+        cy.wait(1000)
+        cy.log('Step 4: Live chat opened from footer')
+
+        // 5. Verify live chat container visible
+        cy.get('.contact-form-body').should('be.visible')
+        cy.log('Step 5: Live chat form container is visible')
+
+        // 6. Check welcome message
+        cy.get('.chat-welcome-msg').should('be.visible')
+            .and('contain.text', 'Welcome to our live Chat! Please fill in the form below before a starting the chat.')
+        cy.log('Step 6: Welcome message verified')
+
+        // 7. Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
+        cy.log('Step 7: Name entered successfully')
+
+        // 8. Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
+        cy.log('Step 8: Email entered successfully')
+
+        // 9. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+        cy.log('Step 9: Chat session started')
+
+        // 10. Offline header should be visible
+        cy.get('.chat-offline-header').should('be.visible')
+            .and('contain.text', "We'll be back online later today")
+            .and('contain.text', 'Looking for tires? Have a look around! Happy to assist if you have any questions.')
+        cy.log('Step 10: Offline mode header verified')
+
+        // ============================================================
+        // SECTION 2: USER SIDE - Attach Multiple Images to Test Limit
+        // ============================================================
+
+        // 12. Attempt to attach 6 image files in the same message (exceeding the typical limit of 5)
+        cy.log('Step 12: Starting to attach multiple files to test attachment limit...')
+
+        // Attach all 6 files at once using array syntax
+        cy.get('input[type="file"]').attachFile([
+            'Attachment1.png',
+            'Attachment2.png',
+            'Attachment3.png',
+            'Attachment4.png',
+            'Attachment5.png',
+            'Attachment6.png'
+        ])
+        cy.wait(2000) // Wait for all files to process
+        cy.log('Step 12: All 6 attachments uploaded in the same message - Testing attachment limit')
+
+        // 13. Verify error message popup appears
+        cy.log('Step 13: Verifying attachment limit error popup...')
+
+        // Verify error alert popup is visible
+        cy.get('.alert').should('be.visible')
+            .and('contain.text', 'Error!')
+            .and('contain.text', 'You can upload a maximum of 5 images per message.')
+        cy.log('Step 13a: Error popup verified - Maximum 5 images limit message displayed')
+
+        // Close the alert popup
+        cy.get('.close-alert > .fa').click()
+        cy.wait(500)
+        cy.log('Step 13b: Error alert closed successfully')
+
+        // 14. Now attach 5 images (within the limit) and send
+        cy.log('Step 14: Attaching 5 images (within limit) to send message...')
+
+        cy.get('input[type="file"]').attachFile([
+            'Attachment1.png',
+            'Attachment2.png',
+            'Attachment3.png',
+            'Attachment4.png',
+            'Attachment5.png'
+        ])
+        cy.wait(2000)
+        cy.log('Step 14a: 5 attachments uploaded successfully in the same message')
+
+        // 14b. Send the message with attachments by clicking send button
+        cy.get('.send-btn').click()
+        cy.wait(2000)
+        cy.log('Step 14b: Message with 5 attachments sent successfully')
+
+        // 15. Verify automated assistant response messages
+        cy.get('.chat-assistant > :nth-child(3) > p').should('exist')
+            .and('contain.text', 'Hi! Thanks for reaching out!')
+        cy.log('Step 15: First automated assistant response verified')
+
+        cy.get('.chat-assistant > :nth-child(4) > p').should('exist')
+            .and('contain.text', 'Our live chat is currently closed.')
+        cy.log('Step 15: Second automated assistant response verified')
+
+        // 16. Verify offline message card is displayed
+        cy.get('.card').should('be.visible')
+            .and('contain.text', 'Feel free to send us a message')
+            .and('contain.text', 'with your request')
+            .and('contain.text', 'Send us a message')
+        cy.log('Step 16: Offline message card verified')
+
+        // ============================================================
+        // TEST COMPLETION
+        // ============================================================
+        cy.log('✓ Test completed successfully: Attachment limit verification tested with 6 files')
     })
 })
