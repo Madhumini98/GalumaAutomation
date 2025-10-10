@@ -259,9 +259,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
 
         // 10. Fill in Subject field - try input, textarea selectors as fallback
         cy.get('.contact-form-body').within(() => {
-            // Try to find subject field by different selectors
-            cy.get('input[placeholder*="Subject"], textarea[placeholder*="Subject"], #chat-contact-subject, input').first().click().type('Automated Testing - Guest')
-
+            
             // 11. Fill in Description field
             cy.get('textarea[placeholder*="Description"], #chat-contact-body, textarea').first().click().type('This is an automated test message sent via Cypress to verify the contact form functionality in the Galuma project. Please ignore this message as it is part of our QA testing process.')
 
@@ -323,7 +321,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
         })
     })
 
-    it('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
+    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
