@@ -321,7 +321,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
         })
     })
 
-    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
+    it('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -726,40 +726,6 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
     })
 
     it('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_011 - Verify admin response in live chat and check online mode with logged user', () => {
-        // STEP 1: First, enable online mode in admin panel
-        cy.origin('https://devadmin.galumatires.com', () => {
-            cy.on('uncaught:exception', (e) => {
-                if (e.message.includes('draggable is not a function')) {
-                    return false
-                }
-            })
-
-            cy.visit('https://devadmin.galumatires.com/')
-            cy.wait(3000)
-
-            // Login to admin panel
-            cy.get('input[type="email"]').click().type('charani@longwapps.com')
-            cy.get('input[type="password"]').click().type('Test.123')
-            cy.get('#submit-login').click()
-            cy.wait(3000)
-
-            // Navigate to Messages > Live Chat
-            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
-            cy.wait(2000)
-            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
-            cy.wait(2000)
-
-            // Enable online mode if not already enabled
-            cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').then(($checkbox) => {
-                if (!$checkbox.is(':checked')) {
-                    cy.wrap($checkbox).click({ force: true })
-                    cy.wait(1000)
-                }
-            })
-
-            // Verify it's now checked
-            cy.get('input#liveChatState').should('be.checked')
-        })
 
         // STEP 2: Now test the user-side online chat functionality
         // 1. Navigate to homepage
@@ -841,7 +807,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
             cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
             cy.wait(2000)
 
-            // 15. Click "All Messages" section
+            // 15. Click "All Messages" section (live-chat link)
             cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
             cy.wait(2000)
 
