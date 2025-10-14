@@ -582,6 +582,14 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
 
             // 31. If it is offline, this process is correct 
             cy.get('input#liveChatState').should('not.be.checked')
+
+            // 32. Close the chat
+            cy.get('.close-chat-btn').click()
+            cy.wait(1000)
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.wait(1000)
+            cy.contains('p', 'Chat has been closed').should('be.visible')
         })
     })
 
@@ -1711,7 +1719,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
         cy.log('✓ Test completed successfully: Attachment limit verification tested with 6 files')
     })
 
-    it.only('TC_GALUMA_LIVECHAT_GUEST_OFFLINE_017 - Test live chat fast response', () => {
+    it('TC_GALUMA_LIVECHAT_GUEST_OFFLINE_017 - Test live chat fast response', () => {
         // Step 1: Visit homepage
         cy.visit('https://dev.galumatires.com/', {
             auth: { username: 'galumadev', password: 'Test.123' }
