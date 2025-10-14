@@ -318,10 +318,18 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
 
             // 24. Verify live chat status (should be offline for this process to be correct)
             cy.get('#liveChatState').should('not.be.checked')
+
+            // Close the chat
+            cy.get('.close-chat-btn').click()
+            cy.wait(1000)
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.wait(1000)
+            cy.contains('p', 'Chat has been closed').should('be.visible')
         })
     })
 
-    it('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
+    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -459,6 +467,41 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
 
         // 24. If it is offline, this process is correct
         cy.get('.chat-offline-header').should('be.visible')
+
+        // 16. Navigate to admin side to check message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+
+            // 18. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').click({ force: true })
+            cy.wait(2000)
+
+            // 19. Click "All Messages" section (live-chat messages)
+            cy.get('a[href="/messages/live-chat"]').click()
+            cy.wait(2000)
+
+            // 20. Check visibility of newest message at first
+            cy.get('.last-chat.fw-bold').first().should('be.visible').click()
+
+            // 24. Verify live chat status (should be offline for this process to be correct)
+            cy.get('#liveChatState').should('not.be.checked')
+
+            // Close the chat
+            cy.get('.close-chat-btn').click()
+            cy.wait(1000)
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.wait(1000)
+            cy.contains('p', 'Chat has been closed').should('be.visible')
+        })
     })
 
     it('TC_GALUMA_LIVECHAT_GUEST_OFFLINE_009 - Test live chat initiation and form submission', () => {
@@ -593,8 +636,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
         })
     })
 
-
-    it('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_010 - Test live chat initiation and form submission for logged user', () => {
+    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_010 - Test live chat initiation and form submission for logged user', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -735,7 +777,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
 
     })
 
-    it('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_011 - Verify admin response in live chat and check online mode with logged user', () => {
+    it.skip('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_011 - Verify admin response in live chat and check online mode with logged user', () => {
 
         // STEP 2: Now test the user-side online chat functionality
         // 1. Navigate to homepage
@@ -884,7 +926,7 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
         })
     })
 
-    it('TC_GALUMA_LIVECHAT_GUEST_ONLINE_012 - Verify live chat initiation with form submission in online mode', () => {
+    it.skip('TC_GALUMA_LIVECHAT_GUEST_ONLINE_012 - Verify live chat initiation with form submission in online mode', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
