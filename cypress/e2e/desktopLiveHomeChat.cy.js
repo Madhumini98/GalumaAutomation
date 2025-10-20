@@ -868,7 +868,121 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
 
     })
 
-    it.skip('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_011 - Verify admin response in live chat and check online mode with logged user', () => {
+    it('TC_GALUMA_LIVECHAT_GUEST_ONLINE_011 - Verify live chat initiation with form submission in online mode', () => {
+        // 1. Navigate to homepage
+        cy.visit("https://dev.galumatires.com/", {
+            auth: {
+                username: 'galumadev',
+                password: 'Test.123'
+            }
+        })
+        cy.wait(3000)
+
+        // 2. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 3. Verify page is visible
+        cy.get('body').should('be.visible')
+
+        // 4. Click live chat icon
+        cy.get('.live-chat-icon').click()
+        cy.wait(1000)
+
+        // 5. Click Live chat icon in the footer
+        cy.get('#live-chat').click()
+        cy.wait(1000)
+
+        // 6. Verify live chat container visible
+        cy.get('.contact-form-body').should('be.visible')
+
+        // 7. Check welcome message
+        cy.get('.chat-welcome-msg').should('be.visible')
+            .and('contain.text', 'Welcome to our live Chat! Please fill in the form below before a starting the chat.')
+
+        // 7. Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Cypress Test User')
+
+        // 8. Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini+7281@longwapps.com')
+
+        // 9. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 10. User info should be visible (online mode)
+        cy.get('.chat-user-info').should('be.visible')
+            .and('contain.text', "Name:Cypress Test User (Guest)")
+            .and('contain.text', 'Email:madhumini+7281@longwapps.com')
+
+        // 11. Write a message to test the scenario
+        cy.get('#chatInput').click().type('This is Cypress Testing Process')
+        cy.wait(1000)
+        cy.get('.send-btn > .chat-action-img').click()
+        cy.wait(1000)
+
+        // 12. In online mode, no offline popup appears
+
+        // 13. Navigate to admin side to check message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // 14. Login to admin panel - Enter username
+            cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+            // 15. Enter password
+            cy.get('input[type="password"]').click().type('Test.123')
+
+            // 16. Click on login button
+            cy.get('#submit-login').click()
+            cy.wait(3000)
+
+            // 17. Scroll and click "Messages" tab in the side nav bar to expand submenu
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+            cy.wait(2000)
+
+            // 18. Click "All Messages" section (live-chat link) with force to handle hidden submenu
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+            cy.wait(2000)
+
+            // 19. Check visibility of newest message at first and click
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                // 20. Verify the message shows "Cypress Test User (Guest)"
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Cypress Test User (Guest)')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // 21. Click on the first message to open it
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 22. It should display as "Cypress Test User (Guest)" in the chat header
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Cypress Test User (Guest)')
+
+            // 23. Check the online/offline mode in admin side live chat
+            cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
+
+            // 24. Verify it is in online mode (checked)
+            cy.get('input#liveChatState').should('be.checked')
+
+            // 25. Confirm and close the chat
+            cy.get('.close-chat-btn').click()
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.contains('p', 'Chat has been closed').should('be.visible')
+        })
+    })
+
+    it('TC_GALUMA_LIVECHAT_LOGGED__ONLINE_012 - Verify admin response in live chat and check online mode with logged user', () => {
 
         // STEP 2: Now test the user-side online chat functionality
         // 1. Navigate to homepage
@@ -1014,105 +1128,6 @@ describe('Galuma Desktop Live Home Chat Tests', () => {
             cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
             cy.get('.chat-close-btn.close-chat-yes').click()
             cy.contains('p', 'Chat has been closed').should('be.visible')
-        })
-    })
-
-    it.skip('TC_GALUMA_LIVECHAT_GUEST_ONLINE_012 - Verify live chat initiation with form submission in online mode', () => {
-        // 1. Verify homepage loaded
-        cy.url().should('include', 'galumatires.com')
-
-        // 2. Verify page is visible
-        cy.get('body').should('be.visible')
-
-        // 3. Click live chat icon 
-        cy.get('.live-chat-icon').click()
-        cy.wait(1000)
-
-        // 4. Click Live chat icon in the footer
-        cy.get('#live-chat').click()
-        cy.wait(1000)
-
-        // 5. Verify live chat container visible
-        cy.get('.contact-form-body').should('be.visible')
-
-        // 6. Check welcome message
-        cy.get('.chat-welcome-msg').should('be.visible')
-            .and('contain.text', 'Welcome to our live Chat! Please fill in the form below before a starting the chat.')
-
-        // 7. Click on "Name:" and enter name
-        cy.get('#live-chat-name').click().type('Cypress Test User')
-
-        // 8. Click on "Email:" and enter email
-        cy.get('#live-chat-email').click().type('madhumini+7281@longwapps.com')
-
-        // 9. Click the "Start the chat" button
-        cy.get('.chat-button').click()
-        cy.wait(2000)
-
-        // 10. User info should be visible (online mode)
-        cy.get('.chat-user-info').should('be.visible')
-            .and('contain.text', "Name:Cypress Test User (Guest)")
-            .and('contain.text', 'Email:madhumini+7281@longwapps.com')
-
-        // 11. Write a message to test the scenario
-        cy.get('#chatInput').click().type('This is Cypress Testing Process')
-        cy.wait(1000)
-        cy.get('.send-btn > .chat-action-img').click()
-        cy.wait(1000)
-
-        // 12. In online mode, no offline popup appears
-
-        // 13. Navigate to admin side to check message visibility
-        cy.origin('https://devadmin.galumatires.com', () => {
-            cy.on('uncaught:exception', (e) => {
-                if (e.message.includes('draggable is not a function')) {
-                    return false
-                }
-            })
-
-            cy.visit('https://devadmin.galumatires.com/')
-            cy.wait(3000)
-
-            // 14. Login to admin panel - Enter username
-            cy.get('input[type="email"]').click().type('charani@longwapps.com')
-
-            // 15. Enter password
-            cy.get('input[type="password"]').click().type('Test.123')
-
-            // 16. Click on login button
-            cy.get('#submit-login').click()
-            cy.wait(3000)
-
-            // 17. Scroll and click "Messages" tab in the side nav bar to expand submenu
-            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
-            cy.wait(2000)
-
-            // 18. Click "All Messages" section (live-chat link) with force to handle hidden submenu
-            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
-            cy.wait(2000)
-
-            // 19. Check visibility of newest message at first and click
-            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
-                // 20. Verify the message shows "Cypress Test User (Guest)"
-                cy.get('.live-chat-name').should('be.visible')
-                    .and('contain.text', 'Cypress Test User (Guest)')
-
-                cy.get('.last-chat').should('be.visible')
-            })
-
-            // 21. Click on the first message to open it
-            cy.get('.live-chat-msgs-list').first().click()
-            cy.wait(1000)
-
-            // 22. It should display as "Cypress Test User (Guest)" in the chat header
-            cy.get('p.single-line-text').first().should('be.visible')
-                .and('contain.text', 'Cypress Test User (Guest)')
-
-            // 23. Check the online/offline mode in admin side live chat
-            cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
-
-            // 24. Verify it is in online mode (checked)
-            cy.get('input#liveChatState').should('be.checked')
         })
     })
 
