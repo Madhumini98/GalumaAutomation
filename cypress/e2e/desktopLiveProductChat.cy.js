@@ -628,6 +628,125 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
 
         // 9. Enter login details
         // Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
+
+        // Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
+
+        // 10. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 11. Offline header visibility
+        cy.get('.chat-offline-header > :nth-child(2) > b').should('contain.text', "We'll be back online later today")
+        cy.wait(2000)
+
+        // 12. Automated messages popup
+        cy.get('.chat-assistant').should('contain.text', 'Hi! Thanks for reaching out!')
+        cy.get('.chat-assistant').should('contain.text', 'Would you like more information about these tire(s)?')
+
+        // 13. Product banner visibility
+        cy.get('.product-banner > .right').should('be.visible')
+
+        // 14. Click 'Yes'
+        cy.get('[value="Yes"]').click()
+
+        // 15. Automated messages popup
+        cy.get('.chat-assistant > :nth-child(7) > p').should('contain.text', 'Our live chat is currently closed.')
+
+        cy.get('.chat-assistant > :nth-child(8) > .card').should('contain.text', 'Feel free to send us a message')
+
+        // 16. Send us a message button visibility
+        cy.get('.card > .btn').should('be.visible')
+
+        // 13. Then, login to the admin side to check the message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // Click "username:" and type
+            cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+            // Click "password:" and type
+            cy.get('input[type="password"]').click().type('Test.123')
+
+            // Then, click on login button
+            cy.get('#submit-login').click()
+            cy.wait(3000)
+
+            // 14. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+            cy.wait(2000)
+
+            // 15. Click "All Messages" section
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+            cy.wait(2000)
+
+            // 16. Check visibility of newest message at first and click
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                // 17. Verify the message shows "Madhumini Kodithuwakku"
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Madhumini Kodithuwakku')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // Click on the first message to open it
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 17. It should display as "Madhumini Kodithuwakku"
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Madhumini Kodithuwakku')
+
+        })
+
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 5. Click live chat icon
+        cy.get('.live-chat-icon').click()
+
+        // 6. Verify chat home container visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 7. Click Live Chat icon
+        cy.get('#live-chat > .empty-img').click()
+
+        // 8. Contact form visibility check
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('contain.text', 'Welcome to our live Chat! Please fill in the')
+            .and('contain.text', ' form below before a starting the chat.')
+
+        // 9. Enter login details
+        // Click on "Name:" and enter name
         cy.get('#live-chat-name').click().type('Madhumi Kodi')
 
         // Click on "Email:" and enter email
@@ -728,7 +847,7 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
 
     })
 
-    it.only('TC_GALUMA_LIVECHAT_LOGGED_OFFLINE_010 - Verify chat close after 10-12 minutes of inactivity', () => {
+    it('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_010 - Verify chat close after 10-12 minutes of inactivity', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -884,6 +1003,474 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
         cy.get('.chat-container').should('not.be.visible')
         cy.log('Live chat session closed successfully after inactivity timeout')
     })
-        
+
+    /*
+    it('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_011 - Verify attachments and images functionality in live chat', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 5. Click live chat icon
+        cy.get('.live-chat-icon').click()
+
+        // 6. Verify chat home container visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 7. Click Live Chat icon
+        cy.get('#live-chat > .empty-img').click()
+
+        // 8. Contact form visibility check
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('contain.text', 'Welcome to our live Chat! Please fill in the')
+            .and('contain.text', ' form below before a starting the chat.')
+
+        // 9. Enter login details
+        // Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
+
+        // Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
+
+        // 10. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 11. Offline header visibility
+        cy.get('.chat-offline-header > :nth-child(2) > b').should('contain.text', "We'll be back online later today")
+        cy.wait(2000)
+
+        // 12. Automated messages popup
+        cy.get('.chat-assistant').should('contain.text', 'Hi! Thanks for reaching out!')
+        cy.get('.chat-assistant').should('contain.text', 'Would you like more information about these tire(s)?')
+
+        // 13. Product banner visibility
+        cy.get('.product-banner > .right').should('be.visible')
+
+        // 14. Click 'Yes'
+        cy.get('[value="Yes"]').click()
+
+        // 15. Automated messages popup
+        cy.get('.chat-assistant > :nth-child(7) > p').should('contain.text', 'Our live chat is currently closed.')
+
+        cy.get('.chat-assistant > :nth-child(8) > .card').should('contain.text', 'Feel free to send us a message')
+
+        // 16. Send us a message button visibility
+        cy.get('.card > .btn').should('be.visible')
+
+        // 13. Then, login to the admin side to check the message visibility
+        // Load attachment fixture as base64 and pass into cy.origin via args
+        cy.fixture('Attachment2.png', 'base64').then((attachment2Base64) => {
+            cy.origin('https://devadmin.galumatires.com', { args: { attachment2Base64 } }, ({ attachment2Base64 }) => {
+                cy.on('uncaught:exception', (e) => {
+                    if (e.message.includes('draggable is not a function')) {
+                        return false
+                    }
+                })
+
+                cy.visit('https://devadmin.galumatires.com/')
+                cy.wait(3000)
+
+                // Click "username:" and type
+                cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+                // Click "password:" and type
+                cy.get('input[type="password"]').click().type('Test.123')
+
+                // Then, click on login button
+                cy.get('#submit-login').click()
+                cy.wait(3000)
+
+                // 14. Scroll and click "Messages" tab in the side nav bar
+                cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+                cy.wait(2000)
+
+                // 15. Click "All Messages" section
+                cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+                cy.wait(2000)
+
+                // 16. Check visibility of newest message at first and click
+                cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                    // 17. Verify the message shows "Madhumini Kodithuwakku"
+                    cy.get('.live-chat-name').should('be.visible')
+                        .and('contain.text', 'Madhumini Kodithuwakku')
+
+                    cy.get('.last-chat').should('be.visible')
+                })
+
+                // Click on the first message to open it
+                cy.get('.live-chat-msgs-list').first().click()
+                cy.wait(1000)
+
+                // 17. It should display as "Madhumini Kodithuwakku"
+                cy.get('p.single-line-text').first().should('be.visible')
+                    .and('contain.text', 'Madhumini Kodithuwakku')
+
+                // 31. Attach image file from admin side (Attachment2.png) using the upload button
+                cy.get('.upload > img').should('be.visible').click()
+                cy.wait(500)
+                cy.log('Step 31a: Upload button clicked')
+
+                // 31b. Select file using base64 data passed from parent context
+                // Convert base64 back to buffer for selectFile
+                const attachment2Buffer = Cypress.Buffer.from(attachment2Base64, 'base64')
+                cy.get('input[type="file"]').first().selectFile({
+                    contents: attachment2Buffer,
+                    fileName: 'Attachment2.png',
+                    mimeType: 'image/png'
+                }, { force: true })
+                cy.wait(2000) // Wait for file to process/upload
+                cy.log('Step 31b: Admin attachment (Attachment2.png) uploaded successfully')
+
+                // 32. Send admin message with attachment
+                cy.get('.chat-input-section > button.btn > img').should('be.visible').click()
+                cy.wait(2000)
+                cy.log('Step 32: Admin message with attachment sent successfully')
+
+                // 33. Verify live chat online/offline toggle is visible
+                cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
+                cy.log('Step 33: Live chat state toggle visible')
+
+                // 34. Verify chat is in offline mode
+                cy.get('input#liveChatState').should('not.be.checked')
+                cy.log('Step 34: Live chat offline mode confirmed')
+            }) // End cy.origin block
+        })
+
+
+    })
+
+})
+*/
+
+    it('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_012 - Test live chat fast response', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 5. Click live chat icon
+        cy.get('.live-chat-icon').click()
+
+        // 6. Verify chat home container visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 7. Click Live Chat icon
+        cy.get('#live-chat > .empty-img').click()
+
+        // 8. Contact form visibility check
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('contain.text', 'Welcome to our live Chat! Please fill in the')
+            .and('contain.text', ' form below before a starting the chat.')
+
+        // 9. Enter login details
+        // Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
+
+        // Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
+
+        // 10. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 11. Offline header visibility
+        cy.get('.chat-offline-header > :nth-child(2) > b').should('contain.text', "We'll be back online later today")
+        cy.wait(2000)
+
+        // 12. Automated messages popup
+        cy.get('.chat-assistant').should('contain.text', 'Hi! Thanks for reaching out!')
+        cy.get('.chat-assistant').should('contain.text', 'Would you like more information about these tire(s)?')
+
+        // 13. Product banner visibility
+        cy.get('.product-banner > .right').should('be.visible')
+
+        // 14. Click 'Yes'
+        cy.get('[value="Yes"]').click()
+
+        // 15. Automated messages popup
+        cy.get('.chat-assistant > :nth-child(7) > p').should('contain.text', 'Our live chat is currently closed.')
+
+        cy.get('.chat-assistant > :nth-child(8) > .card').should('contain.text', 'Feel free to send us a message')
+
+        // 16. Send us a message button visibility
+        cy.get('.card > .btn').should('be.visible')
+
+        // 13. Then, login to the admin side to check the message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // Click "username:" and type
+            cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+            // Click "password:" and type
+            cy.get('input[type="password"]').click().type('Test.123')
+
+            // Then, click on login button
+            cy.get('#submit-login').click()
+            cy.wait(3000)
+
+            // 14. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+            cy.wait(2000)
+
+            // 15. Click "All Messages" section
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+            cy.wait(2000)
+
+            // 16. Check visibility of newest message at first and click
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                // 17. Verify the message shows "Madhumini Kodithuwakku"
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Madhumini Kodithuwakku')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // Click on the first message to open it
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 17. It should display as "Madhumini Kodithuwakku"
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Madhumini Kodithuwakku')
+
+            // === FAST RESPONSE SECTION ===
+
+            // Step 9: Open fast response toggle
+            cy.get('.fr-header i.fa.fa-chevron-up', { timeout: 10000 }).click()
+            cy.wait(1000)
+
+            // Step 10: Send “in stock” fast response
+            cy.contains('button', 'in stock').click()
+            cy.get('#message-input')
+            cy.get('img[src="/images/messages/chat_send.svg"]').click()
+            cy.wait(1000)
+
+            /*
+            // Fixed Step 11 - Can't process with this step
+            cy.get('.user-message > p').should('be.visible').click()
+            cy.get('button.msg-delete-btn i.fa-trash-can').click()
+            cy.contains('Do you want to delete selected message?').should('be.visible')
+            cy.contains('button', 'Yes').click()
+            cy.contains('strong', 'Success!').should('be.visible')
+            */
+
+            // Step 12: Try "no patch" response and clear
+            cy.get('.fr-header i.fa.fa-chevron-up').click()
+            cy.wait(500)
+            cy.contains('button', 'no patch').click()
+            cy.get('#message-input')
+            cy.get('#clear-qrs').click()
+            cy.get('#message-input').should('have.value', '')
+
+            // Step 13: Create a new fast response
+            cy.get('i.fas.fa-plus').click()
+            cy.contains('Create/Update fast response').should('be.visible')
+            cy.get('[name="name"]', { timeout: 10000 })
+                .should('be.visible')
+                .click({ force: true })
+                .clear()
+                .type('Live Chat', { delay: 100, force: true }) // type slower & force typing
+            cy.get('[name="message"]').type('This is automated live chat testing process with fast responses')
+            cy.get('#response-form > .d-flex > .btn-secondary').click()
+            cy.get('#alert-container p').should('be.visible')
+
+            // Step 14: Edit the fast response
+            cy.get('i.fas.fa-pencil').click()
+            cy.get('#response-select').select('Live Chat')
+            cy.get('#response-content')
+                .clear()
+                .type('This is automated live chat testing process with fast responses on edit option')
+            cy.contains('button', 'Save').click()
+            cy.get('#alert-container p').should('be.visible')
+
+            // Step 15: Delete the fast response
+            cy.get('#load-del-qrs i.fa-trash-can').click()
+            cy.get('#del-qr-list').select('Live Chat')
+            cy.contains('button', 'Delete').click()
+            cy.contains('strong', 'Success!').should('be.visible')
+
+
+            // Close the chat
+            cy.get('.close-chat-btn').click()
+            cy.wait(1000)
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.wait(1000)
+            cy.contains('p', 'Chat has been closed').should('be.visible')
+        })
+
+    })
+
+    it.only('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_013 - Verify product information in the live chat', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 5. Click live chat icon
+        cy.get('.live-chat-icon').click()
+
+        // 6. Verify chat home container visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 7. Click Live Chat icon
+        cy.get('#live-chat > .empty-img').click()
+
+        // 8. Contact form visibility check
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('contain.text', 'Welcome to our live Chat! Please fill in the')
+            .and('contain.text', ' form below before a starting the chat.')
+
+        // 9. Enter login details
+        // Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
+
+        // Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
+
+        // 10. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
+
+        // 11. Offline header visibility
+        cy.get('.chat-offline-header > :nth-child(2) > b').should('contain.text', "We'll be back online later today")
+        cy.wait(2000)
+
+        // 12. Automated messages popup
+        cy.get('.chat-assistant').should('contain.text', 'Hi! Thanks for reaching out!')
+        cy.get('.chat-assistant').should('contain.text', 'Would you like more information about these tire(s)?')
+
+        // 13. Product banner visibility
+        cy.get('.product-banner > .right').should('be.visible')
+
+        // 14. Click 'Yes'
+        cy.get('[value="Yes"]').click()
+
+        // 15. Automated messages popup
+        cy.get('.chat-assistant > :nth-child(7) > p').should('contain.text', 'Our live chat is currently closed.')
+
+        cy.get('.chat-assistant > :nth-child(8) > .card').should('contain.text', 'Feel free to send us a message')
+
+        // 16. Send us a message button visibility
+        cy.get('.card > .btn').should('be.visible')
+
+        // 13. Then, login to the admin side to check the message visibility
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // Click "username:" and type
+            cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+            // Click "password:" and type
+            cy.get('input[type="password"]').click().type('Test.123')
+
+            // Then, click on login button
+            cy.get('#submit-login').click()
+            cy.wait(3000)
+
+            // 14. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+            cy.wait(2000)
+
+            // 15. Click "All Messages" section
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+            cy.wait(2000)
+
+            // 16. Check visibility of newest message at first and click
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                // 17. Verify the message shows "Madhumini Kodithuwakku"
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Madhumini Kodithuwakku')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // Click on the first message to open it
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 17. It should display as "Madhumini Kodithuwakku"
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Madhumini Kodithuwakku')
+
+
+
+        })
+
+    })
+
 
 })
