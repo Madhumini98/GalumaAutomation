@@ -447,159 +447,144 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
     })
 
     it.only('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_008 - Verify admin response and offline mode for logged user', () => {
-
-        // === STEP 1: Visit Homepage ===
-        cy.visit('https://dev.galumatires.com/', {
-            auth: { username: 'galumadev', password: 'Test.123' },
-            timeout: 120000
-        })
+        // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
-        cy.get('body', { timeout: 20000 }).should('be.visible')
 
-        // === STEP 2: Click “Shop Products” ===
-        cy.get('#shopProducts > .nav-link', { timeout: 20000 })
-            .should('be.visible')
-            .click()
+        // 2. Click 'Shop Products'
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
         cy.wait(2000)
 
-        // === STEP 3: Click “Browse All Tires” ===
-        cy.get('.header-section-details > [href="/t"]', { timeout: 20000 })
-            .should('be.visible')
-            .click()
+        // 3. Click 'Browse All Tires'
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
         cy.wait(3000)
 
-        // === STEP 4: Select 2nd product and open details ===
-        cy.get('#tire-products-container', { timeout: 25000 })
-            .should('be.visible')
-            .within(() => {
-                cy.get('div[class*="product"], div[class*="tire"], .product, .tire')
-                    .should('have.length.at.least', 2)
-                    .eq(1)
-                    .trigger('mouseover')
-                    .wait(1000)
-                    .find('button, a')
-                    .contains(/View Product|View Details|View|Quick View/i)
-                    .click({ force: true })
+        // 4. Select the 2nd random product from the list. Click on the overlay 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500) // Wait for overlay to appear
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
             })
+        })
+        cy.wait(3000)
 
-        // Wait for product details to appear (with multiple fallback selectors)
-        cy.get('.product-details, .product-container, .product-info, .single-product, #product-details', { timeout: 30000 })
-            .should('be.visible')
-            .and(($el) => {
-                expect($el.text().length).to.be.greaterThan(10)
-            })
+        // 5. Click live chat icon
+        cy.get('.live-chat-icon').click()
 
-        // === STEP 5: Open live chat ===
-        cy.get('.live-chat-icon', { timeout: 15000 }).should('be.visible').click({ force: true })
-        cy.wait(1000)
+        // 6. Verify chat home container visible
+        cy.get('.chat-home-container').should('be.visible')
 
-        // === STEP 6: Open Live Chat Form ===
-        cy.get('#live-chat > span', { timeout: 10000 }).should('be.visible').click()
-        cy.get('.contact-form-body', { timeout: 15000 }).should('be.visible')
+        // 7. Click Live Chat icon
+        cy.get('#live-chat > .empty-img').click()
 
-        // === STEP 7: Check welcome message ===
-        cy.get('.chat-welcome-msg, .chat-offline-header, .chat-header', { timeout: 20000 })
-            .should('be.visible')
-            .and('contain.text', 'Welcome to our live Chat')
+        // 8. Contact form visibility check
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('contain.text', 'Welcome to our live Chat! Please fill in the')
+            .and('contain.text', ' form below before a starting the chat.')
 
-        // === STEP 8: Enter name and email ===
-        cy.get('#live-chat-name', { timeout: 15000 })
-            .should('be.visible')
-            .clear()
-            .type('Madhumini Kodithuwakku', { delay: 50 })
-        cy.get('#live-chat-email', { timeout: 15000 })
-            .should('be.visible')
-            .clear()
-            .type('madhumini@longwapps.com', { delay: 50 })
+        // 9. Enter login details
+        // Click on "Name:" and enter name
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
 
-        // Click the "Start the chat" button
-        cy.get('.chat-button', { timeout: 15000 })
-            .should('be.visible')
-            .click()
-        cy.get('.chat-window, .chat-offline-header', { timeout: 20000 }).should('be.visible')
+        // Click on "Email:" and enter email
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
 
-        // === STEP 9: Verify offline header ===
-        cy.get('.chat-offline-header', { timeout: 20000 })
-            .should('be.visible')
-            .and('contain.text', "We'll be back online later today")
-            .and('contain.text', 'Looking for tires? Have a look around!')
+        // 10. Click the "Start the chat" button
+        cy.get('.chat-button').click()
+        cy.wait(2000)
 
-        // Input should be visible but disabled
-        cy.get('#chatInput', { timeout: 15000 })
-            .should('exist')
-            .and('be.visible')
-            .and('be.disabled')
+        // 11. Offline header visibility
+        cy.get('.chat-offline-header > :nth-child(2) > b').should('contain.text', "We'll be back online later today")
+        cy.wait(2000)
 
-        // === STEP 10: Verify automated messages ===
-        cy.contains('Hi! Thanks for reaching out!', { timeout: 15000 }).should('exist')
-        cy.contains('Would you like more information about', { timeout: 15000 }).should('exist')
+        // 12. Automated messages popup
+        cy.get('.chat-assistant').should('contain.text', 'Hi! Thanks for reaching out!')
+        cy.get('.chat-assistant').should('contain.text', 'Would you like more information about these tire(s)?')
 
-        // === STEP 11: Click “Yes” for product assistance ===
-        cy.get('.product-banner > .right', { timeout: 15000 }).should('be.visible')
-        cy.get('[value="Yes"]').should('be.visible').click({ force: true })
-        cy.wait(1500)
+        // 13. Product banner visibility
+        cy.get('.product-banner > .right').should('be.visible')
 
-        // === STEP 12: Verify offline assistant response ===
-        cy.get('.chat-assistant', { timeout: 20000 })
-            .should('exist')
-            .and('contain.text', 'Our live chat is currently closed.')
+        // 14. Click 'Yes'
+        cy.get('[value="Yes"]').click()
 
-        // === STEP 13: Verify “Send us a message” card ===
-        cy.get('.chat-assistant .card', { timeout: 20000 })
-            .should('be.visible')
-            .and('contain.text', 'Feel free to send us a message')
-            .and('contain.text', 'with your request')
+        // 15. Automated messages popup
+        cy.get('.chat-assistant > :nth-child(7) > p').should('contain.text', 'Our live chat is currently closed.')
 
-        cy.get('.card > .btn')
-            .should('be.visible')
-            .and('contain.text', 'Send us a message')
+        cy.get('.chat-assistant > :nth-child(8) > .card').should('contain.text', 'Feel free to send us a message')
 
-        // === STEP 14: Go to Admin Side ===
+        // 16. Send us a message button visibility
+        cy.get('.card > .btn').should('be.visible')
+
+        // 13. Then, login to the admin side to check the message visibility
         cy.origin('https://devadmin.galumatires.com', () => {
             cy.on('uncaught:exception', (e) => {
-                if (e.message.includes('draggable is not a function')) return false
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
             })
 
             cy.visit('https://devadmin.galumatires.com/')
-            cy.get('input[type="email"]').should('be.visible').type('charani@longwapps.com')
-            cy.get('input[type="password"]').should('be.visible').type('Test.123')
+            cy.wait(3000)
+
+            // Click "username:" and type
+            cy.get('input[type="email"]').click().type('charani@longwapps.com')
+
+            // Click "password:" and type
+            cy.get('input[type="password"]').click().type('Test.123')
+
+            // Then, click on login button
             cy.get('#submit-login').click()
-            cy.get('body', { timeout: 15000 }).should('be.visible')
+            cy.wait(3000)
 
-            cy.get('[data-baselink="messages"] > .nav-tab-title')
-                .scrollIntoView()
-                .click({ force: true })
-            cy.get('a[href="/messages/live-chat"]').should('be.visible').click({ force: true })
-            cy.get('.live-chat-msgs-list', { timeout: 10000 }).should('exist')
+            // 14. Scroll and click "Messages" tab in the side nav bar
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().click({ force: true })
+            cy.wait(2000)
 
-            cy.get('.live-chat-msgs-list').first().within(() => {
-                cy.get('.live-chat-name').should('contain.text', 'Madhumini Kodithuwakku')
-            }).click()
+            // 15. Click "All Messages" section
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').click({ force: true })
+            cy.wait(2000)
 
-            cy.get('p.single-line-text').first().should('contain.text', 'Madhumini Kodithuwakku')
-            cy.get('textarea#message-input').should('be.visible').type('Okay, go ahead', { delay: 50 })
+            // 16. Check visibility of newest message at first and click
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                // 17. Verify the message shows "Madhumini Kodithuwakku"
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Madhumini Kodithuwakku')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // Click on the first message to open it
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 17. It should display as "Madhumini Kodithuwakku"
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Madhumini Kodithuwakku')
+
+            // 18. Click on message tab and type
+            cy.get('textarea#message-input').click().type('Okay, go ahead')
+            cy.wait(1000)
             cy.get('.chat-input-section > button.btn > img').click()
+            cy.wait(1000)
 
+            // 18. Check the online/offline mode in admin side live chat
+            cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
+
+            // If it is offline, verify it's not checked
             cy.get('input#liveChatState').should('not.be.checked')
+
+            // Close the chat
+            cy.get('.close-chat-btn').click()
+            cy.wait(1000)
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.wait(1000)
+            cy.contains('p', 'Chat has been closed').should('be.visible')
         })
 
-        // === STEP 15: Return to frontend ===
-        cy.visit('https://dev.galumatires.com/', {
-            auth: { username: 'galumadev', password: 'Test.123' },
-            timeout: 120000
-        })
-        cy.url().should('include', 'galumatires.com')
-        cy.get('body').should('be.visible')
-
-        // === STEP 16: Verify chat still offline ===
-        cy.get('.live-chat-icon', { timeout: 20000 }).should('be.visible').click({ force: true })
-        cy.get('input#chatInput', { timeout: 20000 })
-            .should('be.visible')
-            .and('be.disabled')
-        cy.get('.chat-offline-header', { timeout: 20000 })
-            .should('be.visible')
-            .and('contain.text', "We'll be back online later today")
     })
-
 
 })
