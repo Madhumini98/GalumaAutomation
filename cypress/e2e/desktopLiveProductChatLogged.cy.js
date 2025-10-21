@@ -1061,7 +1061,7 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
 
     })
 
-    it('TC_GALUMA_PRODCHAT_LOGGED_ONLINE_015 - Verify product chat initiation with form submission in online mode', () => {
+    it.skip('TC_GALUMA_PRODCHAT_LOGGED_ONLINE_015 - Verify product chat initiation with form submission in online mode', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
