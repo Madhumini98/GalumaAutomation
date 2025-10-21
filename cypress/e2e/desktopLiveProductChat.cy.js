@@ -1971,18 +1971,21 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
         // 12. Verify product banner is visible
         cy.get('.product-banner > .right').should('be.visible')
 
-        // 13. Click 'Yes' to proceed with product information
-        cy.get('[value="Yes"]').should('be.visible').click()
+        // 13. Click 'No' to proceed with product information
+        cy.get('[value="No"]').should('be.visible').click()
         cy.wait(2000)
 
-        // 13a. Verify first automated response message after clicking 'Yes'
+        // 13a. Verify first automated response message after clicking 'No'
         cy.get('.chat-assistant').should('be.visible')
-            .and('contain.text', "Great! I'm glad we could identify the item.")
+            .and('contain.text', "Thank you for letting us know!")
 
         // 13b. Verify second automated assistance message
         cy.get('.chat-assistant').should('be.visible')
-            .and('contain.text', 'How can I assist you with this product?')
-            .and('contain.text', 'I\'m here to help!')
+            .and('contain.text', 'Could you please provide more details about the product or issue you\'re looking for assistance with? This will help us better support you.')
+
+        // 13c. Verify third automated assistance message
+        cy.get('.chat-assistant').should('be.visible')
+            .and('contain.text', 'Feel free to share the product name, size, or any additional information, and we\’ll do our best to assist promptly.')
 
         // 14. Verify user information is visible in online mode (logged user - no "(Guest)" label)
         cy.get('.chat-user-info').should('be.visible')
