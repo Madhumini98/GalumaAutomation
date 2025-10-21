@@ -1,4 +1,4 @@
-describe('Galuma Desktop Live Product Chat Tests', () => {
+describe('Galuma Desktop Live Product Chat Guest Tests', () => {
     beforeEach(() => {
         // Common setup for all test cases
         cy.viewport(1475, 750)
@@ -600,7 +600,7 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
 
     })
 
-    it.skip('TC_GALUMA_PRODCHAT_GUEST_ONLINE_014 - Verify product chat initiation with form submission in online mode', () => {
+    it('TC_GALUMA_PRODCHAT_GUEST_ONLINE_014 - Verify product chat initiation with form submission in online mode', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 

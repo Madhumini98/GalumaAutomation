@@ -1,4 +1,4 @@
-describe('Galuma Desktop Live Product Chat Tests', () => {
+describe('Galuma Desktop Live Product Chat Logged Tests', () => {
     beforeEach(() => {
         // Common setup for all test cases
         cy.viewport(1475, 750)
@@ -152,7 +152,7 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
 
     })
 
-    it.skip('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_010 - Verify chat close after 10-12 minutes of inactivity', () => {
+    it('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_010 - Verify chat close after 10-12 minutes of inactivity', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -842,34 +842,31 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
         cy.wait(3000)
 
         // 5. Click live chat icon
-        cy.get('.live-chat-icon').should('be.visible').click()
-        cy.wait(1000)
+        cy.get('.live-chat-icon').click()
+        cy.wait(2000)
 
         // 6. Verify chat home container visible
         cy.get('.chat-home-container').should('be.visible')
 
-        // 7. Click Live Chat icon to open contact form
-        cy.get('#live-chat > .empty-img').should('be.visible').click({ force: true })
-        cy.wait(2000)
+        // 7. Click Live Chat icon
+        cy.get('#live-chat > .empty-img').click()
+        cy.wait(3000)
 
         // 8. Contact form visibility check
-        cy.get('.contact-form-body', { timeout: 10000 }).should('be.visible')
-        cy.get('.chat-welcome-msg').should('be.visible')
-            .and('contain.text', 'Welcome to our live Chat! Please fill in the')
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('contain.text', 'Welcome to our live Chat! Please fill in the')
             .and('contain.text', ' form below before a starting the chat.')
 
         // 9. Enter login details
         // Click on "Name:" and enter name
-        cy.get('#live-chat-name').should('be.visible').click().clear().type('Madhumini Kodithuwakku')
-        cy.wait(500)
+        cy.get('#live-chat-name').click().type('Madhumini Kodithuwakku')
 
         // Click on "Email:" and enter email
-        cy.get('#live-chat-email').should('be.visible').click().clear().type('madhumini@longwapps.com')
-        cy.wait(500)
+        cy.get('#live-chat-email').click().type('madhumini@longwapps.com')
 
         // 10. Click the "Start the chat" button
-        cy.get('.chat-button').should('be.visible').click()
-        cy.wait(3000)
+        cy.get('.chat-button').click()
+        cy.wait(2000)
 
         // 11. Offline header visibility
         cy.get('.chat-offline-header > :nth-child(2) > b').should('contain.text', "We'll be back online later today")
@@ -1061,7 +1058,7 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
 
     })
 
-    it.skip('TC_GALUMA_PRODCHAT_LOGGED_ONLINE_015 - Verify product chat initiation with form submission in online mode', () => {
+    it('TC_GALUMA_PRODCHAT_LOGGED_ONLINE_015 - Verify product chat initiation with form submission in online mode', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
