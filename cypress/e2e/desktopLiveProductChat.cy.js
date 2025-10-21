@@ -1004,7 +1004,7 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
         cy.log('Live chat session closed successfully after inactivity timeout')
     })
 
-    it.only('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_011 - Verify attachments and images functionality in live chat', () => {
+    it('TC_GALUMA_PRODCHAT_LOGGED_OFFLINE_011 - Verify attachments and images functionality in live chat', () => {
         // 1. Verify homepage loaded
         cy.url().should('include', 'galumatires.com')
 
@@ -1624,10 +1624,290 @@ describe('Galuma Desktop Live Product Chat Tests', () => {
             cy.get('p.single-line-text').first().should('be.visible')
                 .and('contain.text', 'Madhumini Kodithuwakku')
 
+            // === PRODUCT INFORMATION SECTION ===
 
+            // 1. Product search - search for product by ID
+            cy.log('Step 1: Searching for product using ID 87430...')
+
+            // Click on the search button
+            cy.get('#product-search').should('be.visible').click()
+            cy.wait(1000)
+
+            // Type the product ID to search
+            cy.get('#product-search').clear().type('87430')
+            cy.wait(2000)
+
+            // Verify the searched product is displayed
+            cy.get('span[class="product-title"]').should('be.visible')
+            cy.log('Step 1: Product search completed - Product found and displayed')
+
+            // 2. Product information visibility checks
+            cy.log('Step 2: Verifying product information visibility...')
+
+            // a. Stock number visibility check
+            cy.get('.product-txt').should('be.visible')
+            cy.log('Step 2a: Stock number is visible')
+
+            // b. Product link visibility check
+            cy.get('span[title*="Set of"]').should('be.visible')
+            cy.log('Step 2b: Product link/title is visible')
+
+            // c. Product live/sold visibility check
+            cy.get('div[class="live-chat-right vm-scroll text-black"] span:nth-child(3)').should('be.visible')
+            cy.log('Step 2c: Product live/sold status is visible')
+
+            // d. Product price visibility check
+            cy.get('span:nth-child(4)').should('be.visible')
+            cy.log('Step 2d: Product price is visible')
+
+            // e. Product link to copy section visibility check
+            cy.get('#link-copy').should('be.visible')
+            cy.log('Step 2e: Product link copy section is visible')
+
+            // f. Product images display
+            cy.get('.lc-thumbnail-grid.hm-scroll').should('be.visible')
+            cy.log('Step 2f: Product images are displayed')
+
+            // g. 'Item Specifics' list of details visibility check
+            cy.get('table:nth-child(1) thead:nth-child(1) tr:nth-child(1) th:nth-child(1)').should('be.visible')
+            cy.log('Step 2g: Item Specifics section is visible')
+
+            // h. 'Additional information' list of details visibility check
+            cy.get('table:nth-child(2) thead:nth-child(1) tr:nth-child(1) th:nth-child(1)').should('be.visible')
+            cy.log('Step 2h: Additional information section is visible')
+
+            // 3. 'Listing images' section visibility check
+            cy.log('Step 3: Verifying Listing images section...')
+            cy.get('.lc-heading').should('be.visible')
+            cy.log('Step 3a: Listing images heading is visible')
+
+            // Verify attachments button visibility (no need to add images, just check visibility)
+            cy.get('.btn.btn-outline-secondary.lc-add-img').should('be.visible')
+            cy.log('Step 3b: Add images button is visible')
+
+            // 4. Send coupon functionality
+            cy.log('Step 4: Testing Send coupon functionality...')
+
+            // Click on 'Send coupon' button
+            cy.get('#sendCouponBtn').should('be.visible').click()
+            cy.wait(1000)
+            cy.log('Step 4a: Send coupon button clicked')
+
+            // Verify 'Send coupon' form is displayed
+            cy.get('div.modal-content.modal-bg').should('be.visible')
+            cy.log('Step 4b: Send coupon form is visible')
+
+            // Click on 'Template' dropdown and select 'Promo/Coupon code'
+            cy.get('select#template-select.form-control.form-select[name="template"]').should('be.visible').select('Promo/Coupon code')
+            cy.wait(1000)
+            cy.log('Step 4c: Template selected - Promo/Coupon code')
+
+            // Click on 'Coupon' dropdown and select 'qatest - 10% off'
+            cy.get('select#coupon-select.form-control.form-select[name="template"]').should('be.visible').select('qatest - 10% off')
+            cy.wait(1000)
+            cy.log('Step 4d: Coupon selected - qatest - 10% off')
+
+            // Click on 'Send' button
+            cy.get('button#send-coupon.btn.custom-cancel-btn.col[type="submit"]').should('be.visible').click()
+            cy.wait(2000)
+            cy.log('Step 4e: Send button clicked')
+
+            // Verify success alert popup
+            cy.get('.alert, [role="alert"]').should('be.visible')
+                .and('contain.text', 'Success')
+                .and('contain.text', 'Coupon sent successfully')
+            cy.log('Step 4f: Coupon sent successfully - Success alert displayed')
+
+            // 5. View similar products functionality
+            cy.log('Step 5: Testing View similar products functionality...')
+
+            // Click on 'View similar products' button
+            cy.get('#get-similar-products').should('be.visible').click()
+            cy.wait(2000)
+            cy.log('Step 5a: View similar products button clicked')
+
+            // Verify similar products list is displayed
+            cy.get('.similar-products').should('be.visible')
+            cy.log('Step 5b: Similar products list is displayed')
+
+            cy.log('All product information scenarios completed successfully!')
+
+            // Close the chat
+            cy.get('.close-chat-btn').click()
+            cy.wait(1000)
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').click()
+            cy.wait(1000)
+            cy.contains('p', 'Chat has been closed').should('be.visible')
 
         })
 
+    })
+
+    it.only('TC_GALUMA_PRODCHAT_GUEST_ONLINE_014 - Verify product chat initiation with form submission in online mode', () => {
+        // 1. Verify homepage loaded
+        cy.url().should('include', 'galumatires.com')
+
+        // 2. Navigate to Shop Products
+        cy.get('#shopProducts > .nav-link').should('be.visible').click()
+        cy.wait(2000)
+
+        // 3. Navigate to Browse All Tires
+        cy.get('.header-section-details > [href="/t"]').should('be.visible').click()
+        cy.wait(3000)
+
+        // 4. Select the 2nd product and click 'View Product' button
+        cy.get('#tire-products-container').should('be.visible')
+        cy.get('#tire-products-container').within(() => {
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').should('have.length.at.least', 2)
+            // Hover over the 2nd product to reveal the overlay button
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).trigger('mouseover')
+            cy.wait(500)
+            cy.get('div[class*="product"], div[class*="tire"], .product, .tire').eq(1).within(() => {
+                cy.get('button, a').contains(/View Product|View Details|View|Quick View/).click({ force: true })
+            })
+        })
+        cy.wait(3000)
+
+        // 5. Open live chat
+        cy.get('.live-chat-icon').should('be.visible').click()
+        cy.wait(1000)
+
+        // 6. Verify chat home container is visible
+        cy.get('.chat-home-container').should('be.visible')
+
+        // 7. Click on Live Chat icon to open chat form
+        cy.get('#live-chat > .empty-img').should('be.visible').click()
+        cy.wait(1000)
+
+        // 8. Verify contact form is visible and contains welcome message
+        cy.get('.contact-form-body').should('be.visible')
+        cy.get('.chat-welcome-msg').should('be.visible')
+            .and('contain.text', 'Welcome to our live Chat! Please fill in the')
+            .and('contain.text', 'form below before a starting the chat.')
+
+        // 9. Fill in the chat form with user details
+        cy.get('#live-chat-name').should('be.visible').click().clear().type('Cypress Online Test User')
+        cy.wait(500)
+
+        cy.get('#live-chat-email').should('be.visible').click().clear().type('madhumini+7281@longwapps.com')
+        cy.wait(500)
+
+        // 10. Submit the form to start the chat
+        cy.get('.chat-button').should('be.visible').click()
+        cy.wait(2000)
+
+        // 11. Verify automated greeting messages appear
+        cy.get('.chat-assistant').should('be.visible')
+            .and('contain.text', 'Hi! Thanks for reaching out!')
+        cy.get('.chat-assistant').should('contain.text', 'Would you like more information about these tire(s)?')
+
+        // 12. Verify product banner is visible
+        cy.get('.product-banner > .right').should('be.visible')
+
+        // 13. Click 'Yes' to proceed with product information
+        cy.get('[value="Yes"]').should('be.visible').click()
+        cy.wait(2000)
+
+        // 13a. Verify first automated response message after clicking 'Yes'
+        cy.get('.chat-assistant').should('be.visible')
+            .and('contain.text', "Great! I'm glad we could identify the item.")
+
+        // 13b. Verify second automated assistance message
+        cy.get('.chat-assistant').should('be.visible')
+            .and('contain.text', 'How can I assist you with this product?')
+            .and('contain.text', 'I\'m here to help!')
+
+        // 14. Verify user information is visible in online mode
+        cy.get('.chat-user-info').should('be.visible')
+            .and('contain.text', 'Name:')
+            .and('contain.text', 'Cypress Test User (Guest)')
+            .and('contain.text', 'Email:')
+            .and('contain.text', 'madhumini+7281@longwapps.com')
+
+        // 15. Send a test message in the chat
+        cy.get('#chatInput').should('be.visible').click().type('This is Cypress Testing Process - Online Mode')
+        cy.wait(1000)
+
+        cy.get('.send-btn > .chat-action-img').should('be.visible').click()
+        cy.wait(2000)
+
+        // 16. Navigate to admin side to verify message and online mode
+        cy.origin('https://devadmin.galumatires.com', () => {
+            cy.on('uncaught:exception', (e) => {
+                if (e.message.includes('draggable is not a function')) {
+                    return false
+                }
+            })
+
+            // 17. Visit admin panel
+            cy.visit('https://devadmin.galumatires.com/')
+            cy.wait(3000)
+
+            // 18. Login to admin panel
+            cy.get('input[type="email"]').should('be.visible').click().type('charani@longwapps.com')
+            cy.get('input[type="password"]').should('be.visible').click().type('Test.123')
+            cy.get('#submit-login').should('be.visible').click()
+            cy.wait(3000)
+
+            // 19. Navigate to Messages section
+            cy.get('[data-baselink="messages"] > .nav-tab-title').scrollIntoView().should('be.visible').click({ force: true })
+            cy.wait(2000)
+
+            // 20. Click on "All Messages" (live-chat)
+            cy.get('a.link-hover.live-chat.d-flex.justify-content-between[href="/messages/live-chat"]').should('be.visible').click({ force: true })
+            cy.wait(2000)
+
+            // 21. Verify newest message is visible and contains correct user name
+            cy.get('.live-chat-msgs-list').first().should('be.visible').within(() => {
+                cy.get('.live-chat-name').should('be.visible')
+                    .and('contain.text', 'Cypress Test User (Guest)')
+
+                cy.get('.last-chat').should('be.visible')
+            })
+
+            // 22. Open the chat message
+            cy.get('.live-chat-msgs-list').first().click()
+            cy.wait(1000)
+
+            // 23. Verify chat header displays correct user name
+            cy.get('p.single-line-text').first().should('be.visible')
+                .and('contain.text', 'Cypress Test User (Guest)')
+
+            // 24. Verify the user's message is visible in chat window
+            cy.get('#chat-window-body').should('be.visible')
+                .and('contain.text', 'This is Cypress Testing Process - Online Mode')
+
+            // 25. Verify live chat state toggle is visible
+            cy.get('input#liveChatState.form-check-input[type="checkbox"][role="switch"]').should('be.visible')
+
+            // 26. Verify chat is in ONLINE mode (toggle should be checked)
+            cy.get('input#liveChatState').should('be.checked')
+            cy.log('Live chat is in ONLINE mode - verified')
+
+            // 27. Send admin response to the user
+            cy.get('textarea#message-input').should('be.visible').click().type('Hello! This is an automated admin response from Cypress test.')
+            cy.wait(1000)
+
+            cy.get('.chat-input-section > button.btn > img').should('be.visible').click()
+            cy.wait(2000)
+
+            // 28. Verify admin message was sent
+            cy.get('#chat-window-body').should('contain.text', 'Hello! This is an automated admin response from Cypress test.')
+
+            // 29. Close the chat session
+            cy.get('.close-chat-btn').should('be.visible').click()
+            cy.wait(1000)
+
+            // 30. Confirm chat closure
+            cy.contains('p', 'Are you sure you want to close session with the client').should('be.visible')
+            cy.get('.chat-close-btn.close-chat-yes').should('be.visible').click()
+            cy.wait(1000)
+
+            // 31. Verify chat closure success message
+            cy.contains('p', 'Chat has been closed').should('be.visible')
+            cy.log('Chat session closed successfully')
+        })
     })
 
 })
